@@ -23,7 +23,8 @@ import {
   ArrowRight,
   Sparkles,
   Zap,
-  Info
+  Info,
+  X
 } from 'lucide-react';
 import { useKeysStore, ProxySimulationResult } from '../../stores/useKeysStore';
 import { useAgentsStore } from '../../stores/useAgentsStore';
@@ -51,7 +52,7 @@ const PROVIDER_OPTIONS: ProviderOption[] = [
     name: 'Anthropic',
     placeholder: 'sk-ant-api03-••••••••••••••••••••••',
     defaultModel: 'claude-3-5-haiku',
-    badgeColor: 'bg-amber-500/10 text-amber-600 dark:text-amber-400 border-amber-500/20'
+    badgeColor: 'bg-amber-500/10 text-[#d97706] dark:text-[#f59e0b] border-amber-500/20'
   },
   {
     id: 'GEMINI',
@@ -214,86 +215,86 @@ export const VirtualKeyVault: React.FC = () => {
       {/* Header & KPI Summary Strip */}
       <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
         <div>
-          <h2 className="text-lg font-bold text-slate-950 dark:text-white flex items-center gap-2">
-            <KeyRound className="w-5 h-5 text-amber-600 dark:text-yellow-400" />
+          <h2 className="text-lg font-bold text-[#1f1e1b] dark:text-[#f5f3ef] flex items-center gap-2">
+            <KeyRound className="w-5 h-5 text-[#d97706] dark:text-[#f59e0b]" />
             <span>Virtual Key Vault & Gateway Bridge</span>
           </h2>
-          <p className="text-xs text-slate-600 dark:text-slate-400 mt-0.5 font-medium">
-            Register external platform API keys and issue safe, governed virtual keys (<code className="text-amber-700 dark:text-yellow-400 font-mono font-bold">al_live_***</code>).
+          <p className="text-xs text-[#5c5850] dark:text-[#b8b4aa] mt-0.5 font-medium">
+            Register external platform API keys and issue safe, governed virtual keys (<code className="text-[#d97706] dark:text-[#f59e0b] font-mono font-bold">al_live_***</code>).
           </p>
         </div>
 
         <button
           id="connect-external-key-btn"
           onClick={() => setNewKeyModalOpen(true)}
-          className="px-3.5 py-2 bg-yellow-400 hover:bg-yellow-300 text-slate-950 font-bold text-xs rounded-xl flex items-center justify-center gap-1.5 shadow-sm border border-yellow-300 transition-all cursor-pointer"
+          className="px-4 py-2 bg-[#d97706] hover:bg-[#b45309] dark:bg-[#f59e0b] dark:hover:bg-[#fbbf24] text-white dark:text-[#181715] font-bold text-xs rounded-xl flex items-center justify-center gap-1.5 shadow-xs transition-all cursor-pointer"
         >
-          <Plus className="w-4 h-4 text-slate-950" />
+          <Plus className="w-4 h-4" />
           <span>Register External AI Key</span>
         </button>
       </div>
 
       {/* KPI Stats Strip */}
       <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
-        <div className="p-3.5 rounded-xl border border-yellow-300/40 dark:border-yellow-500/20 bg-white/85 dark:bg-[#0c0e18]/85 backdrop-blur-md shadow-xs">
-          <span className="text-[10px] font-mono uppercase font-bold text-slate-500 dark:text-slate-400">Active Keys</span>
-          <div className="text-lg font-bold font-mono text-slate-950 dark:text-white mt-1">
-            {activeKeysCount} <span className="text-xs font-normal text-slate-500">/ {virtualKeys.length}</span>
+        <div className="p-4 rounded-2xl border border-[#e5e0d5] dark:border-[#33302b] bg-white dark:bg-[#211f1c] shadow-xs">
+          <span className="text-[10px] font-mono uppercase font-bold text-[#878278] dark:text-[#7d7970]">Active Keys</span>
+          <div className="text-lg font-bold font-mono text-[#1f1e1b] dark:text-[#f5f3ef] mt-1">
+            {activeKeysCount} <span className="text-xs font-normal text-[#878278]">/ {virtualKeys.length}</span>
           </div>
         </div>
 
-        <div className="p-3.5 rounded-xl border border-yellow-300/40 dark:border-yellow-500/20 bg-white/85 dark:bg-[#0c0e18]/85 backdrop-blur-md shadow-xs">
-          <span className="text-[10px] font-mono uppercase font-bold text-slate-500 dark:text-slate-400">Today's Spend</span>
-          <div className="text-lg font-bold font-mono text-slate-950 dark:text-white mt-1">
-            ${totalSpendToday.toFixed(2)} <span className="text-xs font-normal text-slate-500">USD</span>
+        <div className="p-4 rounded-2xl border border-[#e5e0d5] dark:border-[#33302b] bg-white dark:bg-[#211f1c] shadow-xs">
+          <span className="text-[10px] font-mono uppercase font-bold text-[#878278] dark:text-[#7d7970]">Today's Spend</span>
+          <div className="text-lg font-bold font-mono text-[#1f1e1b] dark:text-[#f5f3ef] mt-1">
+            ${totalSpendToday.toFixed(2)} <span className="text-xs font-normal text-[#878278]">USD</span>
           </div>
         </div>
 
-        <div className="p-3.5 rounded-xl border border-yellow-300/40 dark:border-yellow-500/20 bg-white/85 dark:bg-[#0c0e18]/85 backdrop-blur-md shadow-xs">
-          <span className="text-[10px] font-mono uppercase font-bold text-slate-500 dark:text-slate-400">Threats Stopped</span>
+        <div className="p-4 rounded-2xl border border-[#e5e0d5] dark:border-[#33302b] bg-white dark:bg-[#211f1c] shadow-xs">
+          <span className="text-[10px] font-mono uppercase font-bold text-[#878278] dark:text-[#7d7970]">Threats Stopped</span>
           <div className="text-lg font-bold font-mono text-emerald-600 dark:text-emerald-400 mt-1 flex items-center gap-1">
             <ShieldCheck className="w-4 h-4" />
             <span>{totalBlockedThreats}</span>
           </div>
         </div>
 
-        <div className="p-3.5 rounded-xl border border-yellow-300/40 dark:border-yellow-500/20 bg-white/85 dark:bg-[#0c0e18]/85 backdrop-blur-md shadow-xs">
-          <span className="text-[10px] font-mono uppercase font-bold text-slate-500 dark:text-slate-400">Gateway Latency</span>
-          <div className="text-lg font-bold font-mono text-slate-950 dark:text-white mt-1">
-            1.2ms <span className="text-xs font-normal text-slate-500">p95</span>
+        <div className="p-4 rounded-2xl border border-[#e5e0d5] dark:border-[#33302b] bg-white dark:bg-[#211f1c] shadow-xs">
+          <span className="text-[10px] font-mono uppercase font-bold text-[#878278] dark:text-[#7d7970]">Gateway Latency</span>
+          <div className="text-lg font-bold font-mono text-[#1f1e1b] dark:text-[#f5f3ef] mt-1">
+            1.2ms <span className="text-xs font-normal text-[#878278]">p95</span>
           </div>
         </div>
       </div>
 
       {/* New Key Alert Banner (if created recently) */}
       {recentlyCreatedKey && (
-        <div className="p-4 rounded-xl bg-yellow-100/70 dark:bg-yellow-950/40 border border-yellow-300/80 dark:border-yellow-500/30 space-y-3">
+        <div className="p-4 rounded-2xl bg-[#faf8f5] dark:bg-[#181715] border border-[#e5e0d5] dark:border-[#33302b] space-y-3 shadow-xs">
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-2">
               <CheckCircle2 className="w-4 h-4 text-emerald-600 dark:text-emerald-400" />
-              <h3 className="font-bold text-xs text-slate-950 dark:text-white">
+              <h3 className="font-bold text-xs text-[#1f1e1b] dark:text-[#f5f3ef]">
                 New Virtual Key Generated Successfully
               </h3>
             </div>
             <button
               onClick={() => setRecentlyCreatedKey(null)}
-              className="text-xs text-slate-500 hover:text-slate-900 dark:hover:text-white cursor-pointer"
+              className="text-xs text-[#878278] hover:text-[#1f1e1b] dark:hover:text-[#f5f3ef] cursor-pointer"
             >
               Dismiss
             </button>
           </div>
 
-          <p className="text-xs text-slate-700 dark:text-slate-300 font-medium">
+          <p className="text-xs text-[#5c5850] dark:text-[#b8b4aa] font-medium">
             Connected to <strong>{recentlyCreatedKey.agentName}</strong> ({recentlyCreatedKey.provider}) with a daily budget cap of <strong>${recentlyCreatedKey.budget}.00 USD</strong>.
           </p>
 
-          <div className="p-2.5 bg-white dark:bg-black/50 rounded-lg border border-yellow-300/80 dark:border-yellow-500/30 flex items-center justify-between gap-2 font-mono text-xs">
-            <span className="truncate text-amber-800 dark:text-yellow-300 font-bold select-all">
+          <div className="p-2.5 bg-white dark:bg-[#211f1c] rounded-xl border border-[#e5e0d5] dark:border-[#33302b] flex items-center justify-between gap-2 font-mono text-xs">
+            <span className="truncate text-[#d97706] dark:text-[#f59e0b] font-bold select-all">
               {recentlyCreatedKey.fullSecret}
             </span>
             <button
               onClick={() => handleCopy(recentlyCreatedKey.fullSecret, 'recent')}
-              className="px-2.5 py-1 rounded bg-yellow-400 hover:bg-yellow-300 text-slate-950 font-bold text-xs flex items-center gap-1 flex-shrink-0 transition-colors border border-yellow-300 cursor-pointer"
+              className="px-2.5 py-1 rounded-lg bg-[#d97706] hover:bg-[#b45309] dark:bg-[#f59e0b] dark:hover:bg-[#fbbf24] text-white dark:text-[#181715] font-bold text-xs flex items-center gap-1 flex-shrink-0 transition-colors cursor-pointer shadow-xs"
             >
               {copiedKeyId === 'recent' ? <Check className="w-3 h-3" /> : <Copy className="w-3 h-3" />}
               <span>{copiedKeyId === 'recent' ? 'Copied' : 'Copy'}</span>
@@ -303,16 +304,16 @@ export const VirtualKeyVault: React.FC = () => {
       )}
 
       {/* Main Tab Switcher */}
-      <div className="flex border-b border-yellow-300/40 dark:border-yellow-500/20 gap-6 text-xs font-bold">
+      <div className="flex border-b border-[#e5e0d5] dark:border-[#33302b] gap-6 text-xs font-bold">
         <button
           onClick={() => setActiveTab('keys')}
           className={`pb-2.5 flex items-center gap-1.5 transition-colors cursor-pointer ${
             activeTab === 'keys'
-              ? 'border-b-2 border-yellow-400 text-slate-950 dark:text-yellow-300 font-bold'
-              : 'text-slate-600 dark:text-slate-400 hover:text-slate-950 dark:hover:text-yellow-200'
+              ? 'border-b-2 border-[#d97706] dark:border-[#f59e0b] text-[#1f1e1b] dark:text-[#f5f3ef] font-bold'
+              : 'text-[#878278] dark:text-[#7d7970] hover:text-[#1f1e1b] dark:hover:text-[#f5f3ef]'
           }`}
         >
-          <KeyRound className="w-3.5 h-3.5 text-amber-600 dark:text-yellow-400" />
+          <KeyRound className="w-3.5 h-3.5 text-[#d97706] dark:text-[#f59e0b]" />
           <span>Governed Keys ({virtualKeys.length})</span>
         </button>
 
@@ -320,11 +321,11 @@ export const VirtualKeyVault: React.FC = () => {
           onClick={() => setActiveTab('sandbox')}
           className={`pb-2.5 flex items-center gap-1.5 transition-colors cursor-pointer ${
             activeTab === 'sandbox'
-              ? 'border-b-2 border-yellow-400 text-slate-950 dark:text-yellow-300 font-bold'
-              : 'text-slate-600 dark:text-slate-400 hover:text-slate-950 dark:hover:text-yellow-200'
+              ? 'border-b-2 border-[#d97706] dark:border-[#f59e0b] text-[#1f1e1b] dark:text-[#f5f3ef] font-bold'
+              : 'text-[#878278] dark:text-[#7d7970] hover:text-[#1f1e1b] dark:hover:text-[#f5f3ef]'
           }`}
         >
-          <Terminal className="w-3.5 h-3.5 text-amber-600 dark:text-yellow-400" />
+          <Terminal className="w-3.5 h-3.5 text-[#d97706] dark:text-[#f59e0b]" />
           <span>Gateway Security Sandbox</span>
         </button>
 
@@ -332,11 +333,11 @@ export const VirtualKeyVault: React.FC = () => {
           onClick={() => setActiveTab('docs')}
           className={`pb-2.5 flex items-center gap-1.5 transition-colors cursor-pointer ${
             activeTab === 'docs'
-              ? 'border-b-2 border-yellow-400 text-slate-950 dark:text-yellow-300 font-bold'
-              : 'text-slate-600 dark:text-slate-400 hover:text-slate-950 dark:hover:text-yellow-200'
+              ? 'border-b-2 border-[#d97706] dark:border-[#f59e0b] text-[#1f1e1b] dark:text-[#f5f3ef] font-bold'
+              : 'text-[#878278] dark:text-[#7d7970] hover:text-[#1f1e1b] dark:hover:text-[#f5f3ef]'
           }`}
         >
-          <Code className="w-3.5 h-3.5 text-amber-600 dark:text-yellow-400" />
+          <Code className="w-3.5 h-3.5 text-[#d97706] dark:text-[#f59e0b]" />
           <span>Integration Code</span>
         </button>
       </div>
@@ -345,13 +346,13 @@ export const VirtualKeyVault: React.FC = () => {
       {activeTab === 'keys' && (
         <div className="space-y-4">
           <div className="relative max-w-sm">
-            <Search className="w-3.5 h-3.5 absolute left-2.5 top-1/2 -translate-y-1/2 text-slate-400" />
+            <Search className="w-3.5 h-3.5 absolute left-3 top-1/2 -translate-y-1/2 text-[#878278] dark:text-[#7d7970]" />
             <input
               type="text"
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
               placeholder="Filter keys by name, agent, or provider..."
-              className="w-full bg-white/90 dark:bg-[#131627] border border-yellow-300/60 dark:border-yellow-500/25 rounded-lg pl-8 pr-3 py-1.5 text-xs text-slate-950 dark:text-slate-100 placeholder-slate-400 focus:outline-none focus:border-yellow-500 focus:ring-2 focus:ring-yellow-400/20"
+              className="w-full bg-white dark:bg-[#211f1c] border border-[#e5e0d5] dark:border-[#33302b] rounded-xl pl-8 pr-3 py-1.5 text-xs text-[#1f1e1b] dark:text-[#f5f3ef] placeholder-[#878278] dark:placeholder-[#7d7970] focus:outline-hidden focus:border-[#d97706] shadow-xs"
             />
           </div>
 
@@ -363,23 +364,23 @@ export const VirtualKeyVault: React.FC = () => {
               return (
                 <div
                   key={k.id}
-                  className={`p-4 rounded-xl border bg-white/85 dark:bg-[#0c0e18]/85 backdrop-blur-md transition-all space-y-3 shadow-xs ${
+                  className={`p-4 rounded-2xl border bg-white dark:bg-[#211f1c] transition-all space-y-3 shadow-xs ${
                     k.isActive
-                      ? 'border-yellow-300/50 dark:border-yellow-500/20 hover:border-yellow-400/80 dark:hover:border-yellow-500/40'
-                      : 'border-yellow-300/30 dark:border-yellow-500/10 opacity-60'
+                      ? 'border-[#e5e0d5] dark:border-[#33302b] hover:border-[#d97706]/40 dark:hover:border-[#f59e0b]/40'
+                      : 'border-[#e5e0d5]/40 dark:border-[#33302b]/40 opacity-60'
                   }`}
                 >
                   <div className="flex items-start justify-between gap-2">
                     <div>
                       <div className="flex items-center gap-2 flex-wrap">
-                        <h4 className="font-bold text-xs text-slate-950 dark:text-white">
+                        <h4 className="font-bold text-xs text-[#1f1e1b] dark:text-[#f5f3ef]">
                           {k.name}
                         </h4>
                         <span className={`text-[10px] font-mono px-1.5 py-0.5 rounded border font-bold ${provider.badgeColor}`}>
                           {k.upstreamProvider}
                         </span>
                         <span
-                          className={`text-[10px] font-bold px-1.5 py-0.5 rounded ${
+                          className={`text-[10px] font-bold px-1.5 py-0.5 rounded-full ${
                             k.isActive
                               ? 'bg-emerald-500/10 text-emerald-700 dark:text-emerald-300 border border-emerald-500/30'
                               : 'bg-rose-500/10 text-rose-700 dark:text-rose-300 border border-rose-500/30'
@@ -388,8 +389,8 @@ export const VirtualKeyVault: React.FC = () => {
                           {k.isActive ? 'ACTIVE' : 'REVOKED'}
                         </span>
                       </div>
-                      <div className="text-[11px] text-slate-600 dark:text-slate-400 mt-1 font-medium">
-                        Bound to Agent: <span className="font-bold text-slate-900 dark:text-slate-200">{k.agentName}</span>
+                      <div className="text-[11px] text-[#5c5850] dark:text-[#b8b4aa] mt-1 font-medium">
+                        Bound to Agent: <span className="font-bold text-[#1f1e1b] dark:text-[#f5f3ef]">{k.agentName}</span>
                       </div>
                     </div>
 
@@ -397,7 +398,7 @@ export const VirtualKeyVault: React.FC = () => {
                     <div className="flex items-center gap-1">
                       <button
                         onClick={() => handleCopy(k.fullKeySecret || `${k.keyPrefix}_secret`, k.id)}
-                        className="p-1.5 rounded-md hover:bg-yellow-100 dark:hover:bg-yellow-950/40 text-slate-600 dark:text-yellow-300 hover:text-slate-950 transition-colors cursor-pointer"
+                        className="p-1.5 rounded-xl hover:bg-[#faf8f5] dark:hover:bg-[#181715] text-[#878278] hover:text-[#1f1e1b] dark:text-[#7d7970] dark:hover:text-[#f5f3ef] transition-colors cursor-pointer"
                         title="Copy Key"
                       >
                         {copiedKeyId === k.id ? <Check className="w-3.5 h-3.5 text-emerald-600" /> : <Copy className="w-3.5 h-3.5" />}
@@ -406,7 +407,7 @@ export const VirtualKeyVault: React.FC = () => {
                       {k.isActive ? (
                         <button
                           onClick={() => revokeVirtualKey(k.id)}
-                          className="p-1.5 rounded-md hover:bg-rose-50 dark:hover:bg-rose-950/30 text-slate-500 hover:text-rose-600 transition-colors cursor-pointer"
+                          className="p-1.5 rounded-xl hover:bg-rose-50 dark:hover:bg-rose-950/30 text-[#878278] hover:text-rose-600 transition-colors cursor-pointer"
                           title="Revoke Key"
                         >
                           <Lock className="w-3.5 h-3.5" />
@@ -414,7 +415,7 @@ export const VirtualKeyVault: React.FC = () => {
                       ) : (
                         <button
                           onClick={() => reactivateVirtualKey(k.id)}
-                          className="p-1.5 rounded-md hover:bg-emerald-50 dark:hover:bg-emerald-950/30 text-slate-500 hover:text-emerald-600 transition-colors cursor-pointer"
+                          className="p-1.5 rounded-xl hover:bg-emerald-50 dark:hover:bg-emerald-950/30 text-[#878278] hover:text-emerald-600 transition-colors cursor-pointer"
                           title="Reactivate Key"
                         >
                           <Play className="w-3.5 h-3.5" />
@@ -423,7 +424,7 @@ export const VirtualKeyVault: React.FC = () => {
 
                       <button
                         onClick={() => deleteVirtualKey(k.id)}
-                        className="p-1.5 rounded-md hover:bg-rose-50 dark:hover:bg-rose-950/30 text-slate-400 hover:text-rose-600 transition-colors cursor-pointer"
+                        className="p-1.5 rounded-xl hover:bg-rose-50 dark:hover:bg-rose-950/30 text-[#878278] hover:text-rose-600 transition-colors cursor-pointer"
                         title="Delete"
                       >
                         <Trash2 className="w-3.5 h-3.5" />
@@ -432,12 +433,12 @@ export const VirtualKeyVault: React.FC = () => {
                   </div>
 
                   {/* Virtual Token & Masked Upstream Box */}
-                  <div className="p-2 bg-yellow-50/60 dark:bg-yellow-950/30 rounded-lg border border-yellow-300/50 dark:border-yellow-500/20 font-mono text-[11px] space-y-0.5">
+                  <div className="p-2 bg-[#faf8f5] dark:bg-[#181715] rounded-xl border border-[#e5e0d5] dark:border-[#33302b] font-mono text-[11px] space-y-0.5">
                     <div className="flex items-center justify-between">
-                      <span className="text-slate-600 dark:text-slate-400 font-medium">Virtual Token:</span>
-                      <span className="text-amber-800 dark:text-yellow-300 font-bold">{k.keyPrefix}_••••••••</span>
+                      <span className="text-[#878278] dark:text-[#7d7970] font-medium">Virtual Token:</span>
+                      <span className="text-[#d97706] dark:text-[#f59e0b] font-bold">{k.keyPrefix}_••••••••</span>
                     </div>
-                    <div className="flex items-center justify-between text-[10px] text-slate-500 dark:text-slate-400 font-medium">
+                    <div className="flex items-center justify-between text-[10px] text-[#878278] dark:text-[#7d7970] font-medium">
                       <span>Upstream Master Key:</span>
                       <span>{k.upstreamKeyMasked}</span>
                     </div>
@@ -446,15 +447,15 @@ export const VirtualKeyVault: React.FC = () => {
                   {/* Daily Budget Progress */}
                   <div className="space-y-1">
                     <div className="flex items-center justify-between text-[11px]">
-                      <span className="text-slate-600 dark:text-slate-400 font-medium">Daily Credit Spend:</span>
-                      <span className="font-mono font-bold text-slate-950 dark:text-white">
+                      <span className="text-[#5c5850] dark:text-[#b8b4aa] font-medium">Daily Credit Spend:</span>
+                      <span className="font-mono font-bold text-[#1f1e1b] dark:text-[#f5f3ef]">
                         ${k.spendTodayUsd.toFixed(2)} / ${k.dailyBudgetUsd.toFixed(2)} USD ({percent}%)
                       </span>
                     </div>
-                    <div className="w-full h-1.5 rounded-full bg-yellow-100 dark:bg-yellow-950/50 overflow-hidden">
+                    <div className="w-full h-1.5 rounded-full bg-[#faf8f5] dark:bg-[#181715] border border-[#e5e0d5] dark:border-[#33302b] overflow-hidden">
                       <div
                         className={`h-full rounded-full transition-all ${
-                          percent > 85 ? 'bg-rose-500' : 'bg-yellow-400'
+                          percent > 85 ? 'bg-rose-500' : 'bg-[#d97706] dark:bg-[#f59e0b]'
                         }`}
                         style={{ width: `${percent}%` }}
                       />
@@ -462,14 +463,14 @@ export const VirtualKeyVault: React.FC = () => {
                   </div>
 
                   {/* Footer Stats & Test Trigger */}
-                  <div className="pt-1 flex items-center justify-between text-[10px] font-mono text-slate-500 dark:text-slate-400 font-medium">
+                  <div className="pt-1 flex items-center justify-between text-[10px] font-mono text-[#878278] dark:text-[#7d7970] font-medium">
                     <span>{k.totalRequests} reqs • {k.blockedRequests} blocked</span>
                     <button
                       onClick={() => {
                         setSelectedKeyForTesting(k.id);
                         setActiveTab('sandbox');
                       }}
-                      className="text-amber-800 dark:text-yellow-300 hover:underline font-bold cursor-pointer"
+                      className="text-[#d97706] dark:text-[#f59e0b] hover:underline font-bold cursor-pointer"
                     >
                       Test in Sandbox →
                     </button>
@@ -483,24 +484,24 @@ export const VirtualKeyVault: React.FC = () => {
 
       {/* TAB 2: Gateway Sandbox */}
       {activeTab === 'sandbox' && (
-        <div className="p-5 rounded-xl border border-yellow-300/40 dark:border-yellow-500/20 bg-white/85 dark:bg-[#0c0e18]/85 backdrop-blur-md shadow-xs space-y-4">
-          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 border-b border-yellow-300/40 dark:border-yellow-500/20 pb-3">
+        <div className="p-5 rounded-2xl border border-[#e5e0d5] dark:border-[#33302b] bg-white dark:bg-[#211f1c] shadow-xs space-y-4">
+          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 border-b border-[#e5e0d5] dark:border-[#33302b] pb-3">
             <div>
-              <h3 className="font-bold text-sm text-slate-950 dark:text-white flex items-center gap-1.5">
-                <Terminal className="w-4 h-4 text-amber-600 dark:text-yellow-400" />
+              <h3 className="font-bold text-sm text-[#1f1e1b] dark:text-[#f5f3ef] flex items-center gap-1.5">
+                <Terminal className="w-4 h-4 text-[#d97706] dark:text-[#f59e0b]" />
                 <span>Live Gateway Simulation & Threat Interceptor</span>
               </h3>
-              <p className="text-xs text-slate-600 dark:text-slate-400 mt-0.5 font-medium">
+              <p className="text-xs text-[#5c5850] dark:text-[#b8b4aa] mt-0.5 font-medium">
                 Execute prompts through the AgentLens proxy to observe credit metering and threat defense.
               </p>
             </div>
 
             <div className="flex items-center gap-2">
-              <span className="text-xs text-slate-600 dark:text-slate-400 font-mono font-bold">Test Key:</span>
+              <span className="text-xs text-[#878278] dark:text-[#7d7970] font-mono font-bold">Test Key:</span>
               <select
                 value={selectedKeyObj?.id || ''}
                 onChange={(e) => setSelectedKeyForTesting(e.target.value)}
-                className="bg-yellow-50/70 dark:bg-[#131627] border border-yellow-300/60 dark:border-yellow-500/30 rounded-lg px-2 py-1 text-xs font-bold text-slate-950 dark:text-yellow-300 font-mono"
+                className="bg-[#faf8f5] dark:bg-[#181715] border border-[#e5e0d5] dark:border-[#33302b] rounded-xl px-2.5 py-1 text-xs font-bold text-[#1f1e1b] dark:text-[#f5f3ef] font-mono shadow-xs"
               >
                 {virtualKeys.map((k) => (
                   <option key={k.id} value={k.id}>
@@ -513,7 +514,7 @@ export const VirtualKeyVault: React.FC = () => {
 
           {/* Test Presets */}
           <div className="space-y-1">
-            <span className="text-[10px] font-mono uppercase text-slate-500 dark:text-slate-400 font-bold">Quick Test Scenarios:</span>
+            <span className="text-[10px] font-mono uppercase text-[#878278] dark:text-[#7d7970] font-bold">Quick Test Scenarios:</span>
             <div className="flex flex-wrap gap-2">
               <button
                 onClick={() => {
@@ -521,7 +522,7 @@ export const VirtualKeyVault: React.FC = () => {
                   setTestPrompt(p);
                   handleRunSimulation(p);
                 }}
-                className="px-2.5 py-1 rounded-lg border border-emerald-500/30 bg-emerald-500/10 text-emerald-700 dark:text-emerald-300 text-xs font-bold hover:bg-emerald-500/20 transition-colors flex items-center gap-1.5 cursor-pointer"
+                className="px-2.5 py-1 rounded-xl border border-emerald-500/30 bg-emerald-500/10 text-emerald-700 dark:text-emerald-300 text-xs font-bold hover:bg-emerald-500/20 transition-colors flex items-center gap-1.5 cursor-pointer"
               >
                 <CheckCircle2 className="w-3.5 h-3.5" />
                 <span>Safe Prompt (Meters Credits)</span>
@@ -533,7 +534,7 @@ export const VirtualKeyVault: React.FC = () => {
                   setTestPrompt(p);
                   handleRunSimulation(p);
                 }}
-                className="px-2.5 py-1 rounded-lg border border-rose-500/30 bg-rose-500/10 text-rose-700 dark:text-rose-300 text-xs font-bold hover:bg-rose-500/20 transition-colors flex items-center gap-1.5 cursor-pointer"
+                className="px-2.5 py-1 rounded-xl border border-rose-500/30 bg-rose-500/10 text-rose-700 dark:text-rose-300 text-xs font-bold hover:bg-rose-500/20 transition-colors flex items-center gap-1.5 cursor-pointer"
               >
                 <ShieldAlert className="w-3.5 h-3.5" />
                 <span>Prompt Injection Attack</span>
@@ -545,7 +546,7 @@ export const VirtualKeyVault: React.FC = () => {
                   setTestPrompt(p);
                   handleRunSimulation(p);
                 }}
-                className="px-2.5 py-1 rounded-lg border border-amber-500/40 bg-amber-500/15 text-amber-900 dark:text-yellow-300 text-xs font-bold hover:bg-amber-500/25 transition-colors flex items-center gap-1.5 cursor-pointer"
+                className="px-2.5 py-1 rounded-xl border border-amber-500/30 bg-amber-500/10 text-[#b45309] dark:text-[#fbbf24] text-xs font-bold hover:bg-amber-500/20 transition-colors flex items-center gap-1.5 cursor-pointer"
               >
                 <AlertCircle className="w-3.5 h-3.5" />
                 <span>Jailbreak Attempt</span>
@@ -560,14 +561,14 @@ export const VirtualKeyVault: React.FC = () => {
               onChange={(e) => setTestPrompt(e.target.value)}
               rows={2}
               placeholder="Enter any prompt to test through the proxy..."
-              className="w-full bg-white/90 dark:bg-[#131627] border border-yellow-300/60 dark:border-yellow-500/30 rounded-xl p-3 pr-24 text-xs text-slate-950 dark:text-slate-100 placeholder-slate-400 focus:outline-none focus:border-yellow-500 focus:ring-2 focus:ring-yellow-400/20 resize-none font-sans"
+              className="w-full bg-[#faf8f5] dark:bg-[#181715] border border-[#e5e0d5] dark:border-[#33302b] rounded-xl p-3 pr-24 text-xs text-[#1f1e1b] dark:text-[#f5f3ef] placeholder-[#878278] dark:placeholder-[#7d7970] focus:outline-hidden focus:border-[#d97706] resize-none font-medium shadow-xs"
             />
             <button
               onClick={() => handleRunSimulation()}
               disabled={isSimulating || !testPrompt.trim()}
-              className="absolute right-2.5 bottom-2.5 px-3 py-1.5 bg-yellow-400 hover:bg-yellow-300 disabled:opacity-40 text-slate-950 font-bold text-xs rounded-lg flex items-center gap-1 transition-all border border-yellow-300 cursor-pointer"
+              className="absolute right-2.5 bottom-2.5 px-3 py-1.5 bg-[#d97706] hover:bg-[#b45309] dark:bg-[#f59e0b] dark:hover:bg-[#fbbf24] disabled:opacity-40 text-white dark:text-[#181715] font-bold text-xs rounded-xl flex items-center gap-1 transition-all cursor-pointer shadow-xs"
             >
-              <Send className="w-3.5 h-3.5 text-slate-950" />
+              <Send className="w-3.5 h-3.5" />
               <span>{isSimulating ? 'Routing...' : 'Execute'}</span>
             </button>
           </div>
@@ -575,10 +576,10 @@ export const VirtualKeyVault: React.FC = () => {
           {/* Simulation Output */}
           {simulationResult && (
             <div
-              className={`p-3.5 rounded-xl border text-xs space-y-2.5 ${
+              className={`p-3.5 rounded-2xl border text-xs space-y-2.5 ${
                 simulationResult.status === 'BLOCKED_PROMPT_INJECTION'
-                  ? 'border-rose-500/40 bg-rose-500/10 text-slate-950 dark:text-white'
-                  : 'border-emerald-500/40 bg-emerald-500/10 text-slate-950 dark:text-white'
+                  ? 'border-rose-500/40 bg-rose-500/10 text-[#1f1e1b] dark:text-[#f5f3ef]'
+                  : 'border-emerald-500/40 bg-emerald-500/10 text-[#1f1e1b] dark:text-[#f5f3ef]'
               }`}
             >
               <div className="flex items-center justify-between flex-wrap gap-2">
@@ -591,23 +592,23 @@ export const VirtualKeyVault: React.FC = () => {
                   <span>HTTP {simulationResult.statusCode} — {simulationResult.message}</span>
                 </div>
 
-                <div className="flex items-center gap-2 font-mono text-[11px] text-slate-600 dark:text-slate-400 font-medium">
+                <div className="flex items-center gap-2 font-mono text-[11px] text-[#5c5850] dark:text-[#b8b4aa] font-medium">
                   <span>Latency: {simulationResult.latencyMs}ms</span>
                   <span>•</span>
-                  <span>Credit: <strong className="text-amber-700 dark:text-yellow-400 font-bold">${simulationResult.costUsd.toFixed(5)}</strong></span>
+                  <span>Credit: <strong className="text-[#d97706] dark:text-[#f59e0b] font-bold">${simulationResult.costUsd.toFixed(5)}</strong></span>
                   <span>•</span>
                   <span>{simulationResult.tokenCount} tokens</span>
                 </div>
               </div>
 
               {simulationResult.blockedRule && (
-                <div className="p-2.5 bg-black/40 rounded-lg border border-rose-500/30 text-rose-300 font-mono text-[11px]">
+                <div className="p-2.5 bg-[#181715] rounded-xl border border-rose-500/30 text-rose-300 font-mono text-[11px]">
                   <strong>Firewall:</strong> {simulationResult.blockedRule} (Upstream key not called, 0 credits spent).
                 </div>
               )}
 
               {simulationResult.responseContent && (
-                <div className="p-2.5 bg-neutral-900 rounded-lg border border-neutral-800 text-neutral-200 font-mono text-[11px] whitespace-pre-wrap leading-relaxed">
+                <div className="p-2.5 bg-[#181715] rounded-xl border border-[#33302b] text-[#f5f3ef] font-mono text-[11px] whitespace-pre-wrap leading-relaxed">
                   {simulationResult.responseContent}
                 </div>
               )}
@@ -618,9 +619,9 @@ export const VirtualKeyVault: React.FC = () => {
 
       {/* TAB 3: Integration Code */}
       {activeTab === 'docs' && (
-        <div className="p-5 rounded-xl border border-yellow-300/40 dark:border-yellow-500/20 bg-white/85 dark:bg-[#0c0e18]/85 backdrop-blur-md shadow-xs space-y-3">
+        <div className="p-5 rounded-2xl border border-[#e5e0d5] dark:border-[#33302b] bg-white dark:bg-[#211f1c] shadow-xs space-y-3">
           <div className="flex items-center justify-between">
-            <h3 className="font-bold text-xs text-slate-950 dark:text-white">
+            <h3 className="font-bold text-xs text-[#1f1e1b] dark:text-[#f5f3ef]">
               Drop-in Proxy Base URL Configuration
             </h3>
 
@@ -629,10 +630,10 @@ export const VirtualKeyVault: React.FC = () => {
                 <button
                   key={snip}
                   onClick={() => setActiveCodeSnippet(snip)}
-                  className={`px-2.5 py-1 rounded text-[11px] font-mono font-bold transition-all cursor-pointer ${
+                  className={`px-2.5 py-1 rounded-xl text-[11px] font-mono font-bold transition-all cursor-pointer ${
                     activeCodeSnippet === snip
-                      ? 'bg-yellow-400 text-slate-950 border border-yellow-300'
-                      : 'text-slate-600 dark:text-slate-400 hover:text-slate-950 dark:hover:text-yellow-200'
+                      ? 'bg-[#1f1e1b] dark:bg-[#f5f3ef] text-white dark:text-[#181715] shadow-xs'
+                      : 'text-[#878278] dark:text-[#7d7970] hover:text-[#1f1e1b] dark:hover:text-[#f5f3ef]'
                   }`}
                 >
                   {snip.toUpperCase()}
@@ -641,7 +642,7 @@ export const VirtualKeyVault: React.FC = () => {
             </div>
           </div>
 
-          <pre className="p-3 bg-neutral-950 rounded-xl border border-neutral-800 text-[11px] font-mono text-neutral-300 overflow-x-auto leading-relaxed">
+          <pre className="p-3 bg-[#181715] rounded-2xl border border-[#33302b] text-[11px] font-mono text-[#f5f3ef] overflow-x-auto leading-relaxed">
             {activeCodeSnippet === 'python' &&
 `from openai import OpenAI
 
@@ -682,32 +683,32 @@ const res = await openai.chat.completions.create({
       {/* Modal: Register External Key */}
       {newKeyModalOpen && (
         <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-xs">
-          <div className="w-full max-w-md bg-white dark:bg-[#0c0e18] border border-yellow-400/80 dark:border-yellow-500/40 rounded-2xl p-5 shadow-2xl space-y-4">
-            <div className="flex items-center justify-between border-b border-yellow-200 dark:border-yellow-500/20 pb-3">
+          <div className="w-full max-w-md bg-white dark:bg-[#211f1c] border border-[#e5e0d5] dark:border-[#33302b] rounded-2xl p-5 shadow-2xl space-y-4">
+            <div className="flex items-center justify-between border-b border-[#e5e0d5] dark:border-[#33302b] pb-3">
               <div className="flex items-center gap-2">
-                <KeyRound className="w-4 h-4 text-amber-600 dark:text-yellow-400" />
-                <h3 className="font-bold text-sm text-slate-950 dark:text-white">
+                <KeyRound className="w-4 h-4 text-[#d97706] dark:text-[#f59e0b]" />
+                <h3 className="font-bold text-sm text-[#1f1e1b] dark:text-[#f5f3ef]">
                   Connect External AI API Key
                 </h3>
               </div>
               <button
                 onClick={() => setNewKeyModalOpen(false)}
-                className="text-slate-400 hover:text-slate-600 dark:hover:text-white cursor-pointer"
+                className="text-[#878278] hover:text-[#1f1e1b] dark:hover:text-[#f5f3ef] cursor-pointer"
               >
-                ✕
+                <X className="w-4 h-4" />
               </button>
             </div>
 
             <form onSubmit={handleCreateVirtualKey} className="space-y-3.5 text-xs">
               {/* Provider Selection */}
               <div>
-                <label className="block font-bold text-slate-800 dark:text-slate-200 mb-1">
+                <label className="block font-bold text-[#1f1e1b] dark:text-[#f5f3ef] mb-1">
                   AI Platform Provider
                 </label>
                 <select
                   value={upstreamProvider}
                   onChange={(e) => setUpstreamProvider(e.target.value as UpstreamAIProvider)}
-                  className="w-full bg-yellow-50/40 dark:bg-neutral-900 border border-yellow-300/60 dark:border-yellow-500/30 rounded-lg p-2 text-slate-950 dark:text-neutral-100 focus:outline-none focus:border-yellow-500"
+                  className="w-full bg-[#faf8f5] dark:bg-[#181715] border border-[#e5e0d5] dark:border-[#33302b] rounded-xl p-2 text-[#1f1e1b] dark:text-[#f5f3ef] focus:outline-hidden focus:border-[#d97706] font-medium"
                 >
                   {PROVIDER_OPTIONS.map((p) => (
                     <option key={p.id} value={p.id}>
@@ -719,7 +720,7 @@ const res = await openai.chat.completions.create({
 
               {/* Real API Key Input */}
               <div>
-                <label className="block font-bold text-slate-800 dark:text-slate-200 mb-1">
+                <label className="block font-bold text-[#1f1e1b] dark:text-[#f5f3ef] mb-1">
                   Your Platform Master API Key (Stored Encrypted)
                 </label>
                 <input
@@ -728,19 +729,19 @@ const res = await openai.chat.completions.create({
                   onChange={(e) => setUpstreamApiKey(e.target.value)}
                   placeholder={PROVIDER_OPTIONS.find((p) => p.id === upstreamProvider)?.placeholder}
                   required
-                  className="w-full bg-yellow-50/40 dark:bg-neutral-900 border border-yellow-300/60 dark:border-yellow-500/30 rounded-lg p-2 font-mono text-slate-950 dark:text-neutral-100 placeholder-slate-400 focus:outline-none focus:border-yellow-500"
+                  className="w-full bg-[#faf8f5] dark:bg-[#181715] border border-[#e5e0d5] dark:border-[#33302b] rounded-xl p-2 font-mono text-[#1f1e1b] dark:text-[#f5f3ef] placeholder-[#878278] focus:outline-hidden focus:border-[#d97706]"
                 />
               </div>
 
               {/* Connected Agent */}
               <div>
-                <label className="block font-bold text-slate-800 dark:text-slate-200 mb-1">
+                <label className="block font-bold text-[#1f1e1b] dark:text-[#f5f3ef] mb-1">
                   Bind to AI Agent
                 </label>
                 <select
                   value={selectedAgentId}
                   onChange={(e) => setSelectedAgentId(e.target.value)}
-                  className="w-full bg-yellow-50/40 dark:bg-neutral-900 border border-yellow-300/60 dark:border-yellow-500/30 rounded-lg p-2 text-slate-950 dark:text-neutral-100 focus:outline-none focus:border-yellow-500"
+                  className="w-full bg-[#faf8f5] dark:bg-[#181715] border border-[#e5e0d5] dark:border-[#33302b] rounded-xl p-2 text-[#1f1e1b] dark:text-[#f5f3ef] focus:outline-hidden focus:border-[#d97706] font-medium"
                 >
                   {agents.map((a) => (
                     <option key={a.id} value={a.id}>
@@ -752,7 +753,7 @@ const res = await openai.chat.completions.create({
 
               {/* Friendly Name */}
               <div>
-                <label className="block font-bold text-slate-800 dark:text-slate-200 mb-1">
+                <label className="block font-bold text-[#1f1e1b] dark:text-[#f5f3ef] mb-1">
                   Key Label / Purpose
                 </label>
                 <input
@@ -760,14 +761,14 @@ const res = await openai.chat.completions.create({
                   value={keyName}
                   onChange={(e) => setKeyName(e.target.value)}
                   placeholder="e.g., Production Customer Support Gateway"
-                  className="w-full bg-yellow-50/40 dark:bg-neutral-900 border border-yellow-300/60 dark:border-yellow-500/30 rounded-lg p-2 text-slate-950 dark:text-neutral-100 placeholder-slate-400 focus:outline-none focus:border-yellow-500"
+                  className="w-full bg-[#faf8f5] dark:bg-[#181715] border border-[#e5e0d5] dark:border-[#33302b] rounded-xl p-2 text-[#1f1e1b] dark:text-[#f5f3ef] placeholder-[#878278] focus:outline-hidden focus:border-[#d97706] font-medium"
                 />
               </div>
 
               {/* Daily Budget */}
               <div>
-                <label className="block font-bold text-slate-800 dark:text-slate-200 mb-1">
-                  Daily Credit Limit: <span className="text-amber-700 dark:text-yellow-400 font-mono font-bold">${dailyBudget}.00 USD</span>
+                <label className="block font-bold text-[#1f1e1b] dark:text-[#f5f3ef] mb-1">
+                  Daily Credit Limit: <span className="text-[#d97706] dark:text-[#f59e0b] font-mono font-bold">${dailyBudget}.00 USD</span>
                 </label>
                 <input
                   type="range"
@@ -776,28 +777,28 @@ const res = await openai.chat.completions.create({
                   step="5"
                   value={dailyBudget}
                   onChange={(e) => setDailyBudget(Number(e.target.value))}
-                  className="w-full accent-yellow-500 cursor-pointer"
+                  className="w-full accent-[#d97706] cursor-pointer"
                 />
               </div>
 
               {/* Security Toggles */}
-              <div className="pt-2 border-t border-yellow-200 dark:border-yellow-500/20 space-y-2">
+              <div className="pt-2 border-t border-[#e5e0d5] dark:border-[#33302b] space-y-2">
                 <label className="flex items-center justify-between cursor-pointer">
-                  <span className="font-bold text-slate-800 dark:text-slate-200">Prompt Injection Firewall</span>
+                  <span className="font-bold text-[#1f1e1b] dark:text-[#f5f3ef]">Prompt Injection Firewall</span>
                   <input
                     type="checkbox"
                     checked={promptDefense}
                     onChange={(e) => setPromptDefense(e.target.checked)}
-                    className="accent-yellow-500 rounded cursor-pointer"
+                    className="accent-[#d97706] rounded cursor-pointer"
                   />
                 </label>
                 <label className="flex items-center justify-between cursor-pointer">
-                  <span className="font-bold text-slate-800 dark:text-slate-200">Automatic PII Masking</span>
+                  <span className="font-bold text-[#1f1e1b] dark:text-[#f5f3ef]">Automatic PII Masking</span>
                   <input
                     type="checkbox"
                     checked={piiRedaction}
                     onChange={(e) => setPiiRedaction(e.target.checked)}
-                    className="accent-yellow-500 rounded cursor-pointer"
+                    className="accent-[#d97706] rounded cursor-pointer"
                   />
                 </label>
               </div>
@@ -806,13 +807,13 @@ const res = await openai.chat.completions.create({
                 <button
                   type="button"
                   onClick={() => setNewKeyModalOpen(false)}
-                  className="px-3 py-1.5 rounded-lg border border-yellow-300/60 dark:border-yellow-500/30 text-slate-700 dark:text-yellow-300 hover:bg-yellow-100/50 dark:hover:bg-yellow-950/30 font-semibold cursor-pointer"
+                  className="px-3 py-1.5 rounded-xl border border-[#e5e0d5] dark:border-[#33302b] text-[#5c5850] dark:text-[#b8b4aa] hover:bg-[#f4f1ea] dark:hover:bg-[#282622] font-semibold cursor-pointer"
                 >
                   Cancel
                 </button>
                 <button
                   type="submit"
-                  className="px-4 py-1.5 rounded-lg bg-yellow-400 hover:bg-yellow-300 text-slate-950 font-bold border border-yellow-300 shadow-sm cursor-pointer"
+                  className="px-4 py-1.5 rounded-xl bg-[#d97706] hover:bg-[#b45309] dark:bg-[#f59e0b] dark:hover:bg-[#fbbf24] text-white dark:text-[#181715] font-bold shadow-xs cursor-pointer"
                 >
                   Generate Governed Key
                 </button>

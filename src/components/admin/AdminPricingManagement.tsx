@@ -131,10 +131,10 @@ export const AdminPricingManagement: React.FC = () => {
   return (
     <div className="space-y-6 animate-in fade-in duration-200">
       {/* Top Header & Context Banner */}
-      <div className="p-6 rounded-2xl bg-white/85 dark:bg-[#0c0e18]/85 backdrop-blur-md border border-yellow-300/50 dark:border-yellow-500/20 shadow-xs flex flex-col md:flex-row md:items-center justify-between gap-4">
+      <div className="p-6 rounded-2xl bg-white dark:bg-[#211f1c] border border-[#e5e0d5] dark:border-[#33302b] shadow-xs flex flex-col md:flex-row md:items-center justify-between gap-4">
         <div>
           <div className="flex items-center gap-2 mb-1">
-            <span className="text-xs font-mono font-bold uppercase tracking-wider px-2 py-0.5 rounded bg-amber-500/10 text-amber-800 dark:text-yellow-400 border border-amber-500/20">
+            <span className="text-xs font-mono font-bold uppercase tracking-wider px-2 py-0.5 rounded bg-amber-500/10 text-[#b45309] dark:text-[#fbbf24] border border-amber-500/20">
               Live Website Control
             </span>
             <span className="flex items-center gap-1 text-[11px] font-mono text-emerald-600 dark:text-emerald-400">
@@ -142,10 +142,10 @@ export const AdminPricingManagement: React.FC = () => {
               Connected to Portfolio Landing Page
             </span>
           </div>
-          <h1 className="text-xl font-black text-slate-950 dark:text-white tracking-tight">
+          <h1 className="text-2xl font-serif font-normal text-[#1f1e1b] dark:text-[#f5f3ef] tracking-tight">
             Portfolio Package &amp; Price Management
           </h1>
-          <p className="text-xs text-slate-600 dark:text-slate-400 max-w-2xl mt-0.5">
+          <p className="text-xs text-[#5c5850] dark:text-[#b8b4aa] max-w-2xl mt-1 leading-relaxed">
             Configure subscription tiers, price points, billing cycles, quotas, and feature checklists. Any edits made here immediately synchronize with the live portfolio website and customer checkout modals.
           </p>
         </div>
@@ -154,7 +154,7 @@ export const AdminPricingManagement: React.FC = () => {
         <div className="flex flex-wrap items-center gap-2.5">
           <button
             onClick={() => setShowAddModal(true)}
-            className="px-3.5 py-2 rounded-xl bg-yellow-400 hover:bg-yellow-500 text-slate-950 font-bold text-xs flex items-center gap-1.5 transition-colors shadow-xs cursor-pointer"
+            className="px-3.5 py-2 rounded-xl bg-[#d97706] hover:bg-[#b45309] dark:bg-[#f59e0b] dark:hover:bg-[#fbbf24] text-white dark:text-[#181715] font-semibold text-xs flex items-center gap-1.5 transition-colors shadow-xs cursor-pointer"
           >
             <Plus className="w-3.5 h-3.5" />
             <span>Add New Tier</span>
@@ -162,7 +162,7 @@ export const AdminPricingManagement: React.FC = () => {
 
           <button
             onClick={resetPackagesToDefault}
-            className="px-3 py-2 rounded-xl border border-slate-300 dark:border-slate-700 hover:bg-slate-100 dark:hover:bg-slate-800 text-slate-700 dark:text-slate-300 text-xs font-medium flex items-center gap-1.5 transition-colors cursor-pointer"
+            className="px-3 py-2 rounded-xl border border-[#e5e0d5] dark:border-[#33302b] hover:bg-[#f4f1ea] dark:hover:bg-[#282622] text-[#5c5850] dark:text-[#b8b4aa] text-xs font-medium flex items-center gap-1.5 transition-colors cursor-pointer"
             title="Reset all prices to factory defaults"
           >
             <RotateCcw className="w-3.5 h-3.5" />
@@ -171,7 +171,7 @@ export const AdminPricingManagement: React.FC = () => {
 
           <button
             onClick={handleJumpToWebsite}
-            className="px-3 py-2 rounded-xl border border-yellow-400/60 dark:border-yellow-500/40 bg-yellow-50 dark:bg-yellow-950/40 hover:bg-yellow-100 text-amber-900 dark:text-yellow-300 text-xs font-medium flex items-center gap-1.5 transition-colors cursor-pointer"
+            className="px-3 py-2 rounded-xl border border-amber-500/30 bg-amber-500/10 hover:bg-amber-500/15 text-[#b45309] dark:text-[#fbbf24] text-xs font-semibold flex items-center gap-1.5 transition-colors cursor-pointer"
             title="Switch to website view and scroll to pricing"
           >
             <Globe className="w-3.5 h-3.5" />
@@ -183,58 +183,58 @@ export const AdminPricingManagement: React.FC = () => {
 
       {/* KPI Cards Row */}
       <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
-        <div className="p-4 rounded-xl bg-white/85 dark:bg-[#0c0e18]/85 border border-yellow-300/50 dark:border-yellow-500/20">
-          <div className="flex items-center justify-between text-xs text-slate-600 dark:text-slate-400 font-mono">
+        <div className="p-4 rounded-xl bg-white dark:bg-[#211f1c] border border-[#e5e0d5] dark:border-[#33302b] shadow-xs">
+          <div className="flex items-center justify-between text-xs text-[#5c5850] dark:text-[#b8b4aa] font-mono">
             <span>ACTIVE TIERS</span>
-            <Layers className="w-3.5 h-3.5 text-amber-500" />
+            <Layers className="w-3.5 h-3.5 text-[#d97706] dark:text-[#f59e0b]" />
           </div>
-          <div className="mt-2 text-2xl font-black text-slate-950 dark:text-white font-mono">
+          <div className="mt-2 text-2xl font-bold text-[#1f1e1b] dark:text-[#f5f3ef] font-mono">
             {activePackages.length}{' '}
-            <span className="text-xs font-normal text-slate-500">/ {pricingPackages.length} total</span>
+            <span className="text-xs font-normal text-[#878278] dark:text-[#7d7970]">/ {pricingPackages.length} total</span>
           </div>
-          <p className="mt-1 text-[11px] text-slate-600 dark:text-slate-400">
+          <p className="mt-1 text-[11px] text-[#5c5850] dark:text-[#b8b4aa]">
             Visible on the portfolio website
           </p>
         </div>
 
-        <div className="p-4 rounded-xl bg-white/85 dark:bg-[#0c0e18]/85 border border-yellow-300/50 dark:border-yellow-500/20">
-          <div className="flex items-center justify-between text-xs text-slate-600 dark:text-slate-400 font-mono">
+        <div className="p-4 rounded-xl bg-white dark:bg-[#211f1c] border border-[#e5e0d5] dark:border-[#33302b] shadow-xs">
+          <div className="flex items-center justify-between text-xs text-[#5c5850] dark:text-[#b8b4aa] font-mono">
             <span>STARTER BASELINE</span>
-            <Tag className="w-3.5 h-3.5 text-amber-500" />
+            <Tag className="w-3.5 h-3.5 text-[#d97706] dark:text-[#f59e0b]" />
           </div>
-          <div className="mt-2 text-2xl font-black text-slate-950 dark:text-white font-mono">
+          <div className="mt-2 text-2xl font-bold text-[#1f1e1b] dark:text-[#f5f3ef] font-mono">
             ${pricingPackages.find((p) => p.id === 'STARTER')?.monthlyPrice || 49}
-            <span className="text-xs font-normal text-slate-500"> / mo</span>
+            <span className="text-xs font-normal text-[#878278] dark:text-[#7d7970]"> / mo</span>
           </div>
-          <p className="mt-1 text-[11px] text-slate-600 dark:text-slate-400">
+          <p className="mt-1 text-[11px] text-[#5c5850] dark:text-[#b8b4aa]">
             Annual: ${pricingPackages.find((p) => p.id === 'STARTER')?.yearlyPrice || 39} / mo
           </p>
         </div>
 
-        <div className="p-4 rounded-xl bg-white/85 dark:bg-[#0c0e18]/85 border border-yellow-300/50 dark:border-yellow-500/20">
-          <div className="flex items-center justify-between text-xs text-slate-600 dark:text-slate-400 font-mono">
+        <div className="p-4 rounded-xl bg-white dark:bg-[#211f1c] border border-[#e5e0d5] dark:border-[#33302b] shadow-xs">
+          <div className="flex items-center justify-between text-xs text-[#5c5850] dark:text-[#b8b4aa] font-mono">
             <span>PRO FLEET (PRIMARY)</span>
-            <Sparkles className="w-3.5 h-3.5 text-amber-500" />
+            <Sparkles className="w-3.5 h-3.5 text-[#d97706] dark:text-[#f59e0b]" />
           </div>
-          <div className="mt-2 text-2xl font-black text-amber-800 dark:text-yellow-400 font-mono">
+          <div className="mt-2 text-2xl font-bold text-[#b45309] dark:text-[#fbbf24] font-mono">
             ${pricingPackages.find((p) => p.id === 'PRO_MONTHLY')?.monthlyPrice || 199}
-            <span className="text-xs font-normal text-slate-500"> / mo</span>
+            <span className="text-xs font-normal text-[#878278] dark:text-[#7d7970]"> / mo</span>
           </div>
-          <p className="mt-1 text-[11px] text-slate-600 dark:text-slate-400">
+          <p className="mt-1 text-[11px] text-[#5c5850] dark:text-[#b8b4aa]">
             Annual: ${pricingPackages.find((p) => p.id === 'PRO_MONTHLY')?.yearlyPrice || 159} / mo
           </p>
         </div>
 
-        <div className="p-4 rounded-xl bg-white/85 dark:bg-[#0c0e18]/85 border border-yellow-300/50 dark:border-yellow-500/20">
-          <div className="flex items-center justify-between text-xs text-slate-600 dark:text-slate-400 font-mono">
+        <div className="p-4 rounded-xl bg-white dark:bg-[#211f1c] border border-[#e5e0d5] dark:border-[#33302b] shadow-xs">
+          <div className="flex items-center justify-between text-xs text-[#5c5850] dark:text-[#b8b4aa] font-mono">
             <span>ENTERPRISE ENCLAVE</span>
-            <ShieldCheck className="w-3.5 h-3.5 text-amber-500" />
+            <ShieldCheck className="w-3.5 h-3.5 text-[#d97706] dark:text-[#f59e0b]" />
           </div>
-          <div className="mt-2 text-2xl font-black text-slate-950 dark:text-white font-mono">
+          <div className="mt-2 text-2xl font-bold text-[#1f1e1b] dark:text-[#f5f3ef] font-mono">
             ${pricingPackages.find((p) => p.id === 'ENTERPRISE')?.monthlyPrice || 599}
-            <span className="text-xs font-normal text-slate-500"> / mo</span>
+            <span className="text-xs font-normal text-[#878278] dark:text-[#7d7970]"> / mo</span>
           </div>
-          <p className="mt-1 text-[11px] text-slate-600 dark:text-slate-400">
+          <p className="mt-1 text-[11px] text-[#5c5850] dark:text-[#b8b4aa]">
             Dedicated Air-Gapped VPC SLA
           </p>
         </div>
@@ -243,14 +243,14 @@ export const AdminPricingManagement: React.FC = () => {
       {/* PACKAGES EDITOR LIST */}
       <div className="space-y-4">
         <div className="flex items-center justify-between">
-          <h2 className="text-sm font-bold text-slate-950 dark:text-white flex items-center gap-2">
+          <h2 className="text-sm font-bold text-[#1f1e1b] dark:text-[#f5f3ef] flex items-center gap-2">
             <span>Manage All Subscription Packages</span>
-            <span className="text-xs font-normal text-slate-600 dark:text-slate-400 font-mono">
+            <span className="text-xs font-normal text-[#878278] dark:text-[#7d7970] font-mono">
               ({pricingPackages.length} configured)
             </span>
           </h2>
 
-          <div className="text-xs text-slate-600 dark:text-slate-400 flex items-center gap-1 font-mono">
+          <div className="text-xs text-[#5c5850] dark:text-[#b8b4aa] flex items-center gap-1 font-mono">
             <span className="w-1.5 h-1.5 rounded-full bg-emerald-500" />
             <span>Changes save in real-time</span>
           </div>
@@ -267,20 +267,20 @@ export const AdminPricingManagement: React.FC = () => {
             return (
               <div
                 key={pkg.id}
-                className={`p-5 sm:p-6 rounded-2xl bg-white/90 dark:bg-[#0c0e18]/90 border transition-all duration-200 ${
+                className={`p-5 sm:p-6 rounded-2xl bg-white dark:bg-[#211f1c] border transition-all duration-200 ${
                   pkg.isPopular
-                    ? 'border-yellow-400 dark:border-yellow-500/50 shadow-md ring-1 ring-yellow-400/30'
-                    : 'border-yellow-300/50 dark:border-yellow-500/20 shadow-xs'
-                } ${!pkg.isActive ? 'opacity-60 bg-slate-100/50 dark:bg-slate-900/50' : ''}`}
+                    ? 'border-[#d97706] dark:border-[#f59e0b] shadow-md ring-1 ring-[#d97706]/30'
+                    : 'border-[#e5e0d5] dark:border-[#33302b] shadow-xs'
+                } ${!pkg.isActive ? 'opacity-60 bg-[#faf8f5]/60 dark:bg-[#181715]/60' : ''}`}
               >
                 {/* Header Row: Badge, Popular Switch, Visibility Switch */}
-                <div className="flex items-center justify-between pb-3 border-b border-yellow-200/50 dark:border-yellow-500/15 gap-2">
+                <div className="flex items-center justify-between pb-3 border-b border-[#e5e0d5] dark:border-[#33302b] gap-2">
                   <div className="flex items-center gap-2">
-                    <span className="text-[11px] font-mono font-bold uppercase px-2 py-0.5 rounded bg-yellow-100 dark:bg-yellow-950/60 text-amber-900 dark:text-yellow-300 border border-yellow-300/60 dark:border-yellow-500/30">
+                    <span className="text-[11px] font-mono font-bold uppercase px-2 py-0.5 rounded bg-amber-500/10 text-[#b45309] dark:text-[#fbbf24] border border-amber-500/20">
                       {pkg.badge}
                     </span>
                     {pkg.isPopular && (
-                      <span className="text-[10px] font-mono font-bold uppercase px-1.5 py-0.5 rounded bg-amber-500 text-slate-950">
+                      <span className="text-[10px] font-mono font-bold uppercase px-1.5 py-0.5 rounded bg-[#d97706] dark:bg-[#f59e0b] text-white dark:text-[#181715]">
                         ⭐ Recommended
                       </span>
                     )}
@@ -300,8 +300,8 @@ export const AdminPricingManagement: React.FC = () => {
                       }}
                       className={`px-2 py-1 rounded text-[11px] font-mono border transition-colors cursor-pointer ${
                         pkg.isPopular
-                          ? 'bg-yellow-400 text-slate-950 border-yellow-500 font-bold'
-                          : 'border-slate-300 dark:border-slate-700 text-slate-600 dark:text-slate-400 hover:text-slate-950'
+                          ? 'bg-[#d97706] text-white dark:bg-[#f59e0b] dark:text-[#181715] border-[#d97706] dark:border-[#f59e0b] font-bold'
+                          : 'border-[#e5e0d5] dark:border-[#33302b] text-[#5c5850] dark:text-[#b8b4aa] hover:text-[#1f1e1b]'
                       }`}
                       title="Set as Recommended on Website"
                     >
@@ -319,7 +319,7 @@ export const AdminPricingManagement: React.FC = () => {
                           type: 'info',
                         });
                       }}
-                      className="p-1.5 rounded-lg border border-slate-300 dark:border-slate-700 hover:bg-slate-100 dark:hover:bg-slate-800 text-slate-600 dark:text-slate-400 cursor-pointer"
+                      className="p-1.5 rounded-lg border border-[#e5e0d5] dark:border-[#33302b] hover:bg-[#f4f1ea] dark:hover:bg-[#282622] text-[#5c5850] dark:text-[#b8b4aa] cursor-pointer"
                       title={pkg.isActive ? 'Hide from website' : 'Show on website'}
                     >
                       {pkg.isActive ? <Eye className="w-3.5 h-3.5 text-emerald-600" /> : <EyeOff className="w-3.5 h-3.5 text-rose-500" />}
@@ -335,7 +335,7 @@ export const AdminPricingManagement: React.FC = () => {
                             addToast({ title: 'Package Deleted', description: `${pkg.name} removed.`, type: 'info' });
                           }
                         }}
-                        className="p-1.5 rounded-lg border border-rose-300 text-rose-600 hover:bg-rose-50 cursor-pointer"
+                        className="p-1.5 rounded-lg border border-rose-300 dark:border-rose-800 text-rose-600 hover:bg-rose-50 dark:hover:bg-rose-950/40 cursor-pointer"
                         title="Delete custom package"
                       >
                         <Trash2 className="w-3.5 h-3.5" />
@@ -351,39 +351,39 @@ export const AdminPricingManagement: React.FC = () => {
                       type="text"
                       value={pkg.name}
                       onChange={(e) => updatePackagePrice(pkg.id, { name: e.target.value })}
-                      className="font-bold text-base sm:text-lg text-slate-950 dark:text-white bg-transparent border-b border-transparent hover:border-yellow-300 focus:border-yellow-400 focus:outline-hidden w-full transition-colors"
+                      className="font-bold text-base sm:text-lg text-[#1f1e1b] dark:text-[#f5f3ef] bg-transparent border-b border-transparent hover:border-[#e5e0d5] dark:hover:border-[#33302b] focus:border-[#d97706] dark:focus:border-[#f59e0b] focus:outline-hidden w-full transition-colors"
                       placeholder="Package Name"
                     />
-                    <span className="text-[10px] font-mono text-slate-500 shrink-0">ID: {pkg.id}</span>
+                    <span className="text-[10px] font-mono text-[#878278] dark:text-[#7d7970] shrink-0">ID: {pkg.id}</span>
                   </div>
 
                   <input
                     type="text"
                     value={pkg.description}
                     onChange={(e) => updatePackagePrice(pkg.id, { description: e.target.value })}
-                    className="text-xs text-slate-600 dark:text-slate-400 bg-transparent border-b border-transparent hover:border-yellow-300 focus:border-yellow-400 focus:outline-hidden w-full transition-colors"
+                    className="text-xs text-[#5c5850] dark:text-[#b8b4aa] bg-transparent border-b border-transparent hover:border-[#e5e0d5] dark:hover:border-[#33302b] focus:border-[#d97706] dark:focus:border-[#f59e0b] focus:outline-hidden w-full transition-colors"
                     placeholder="Short description for customers..."
                   />
                 </div>
 
                 {/* PRICE CONTROLS BOX */}
-                <div className="p-3.5 rounded-xl bg-yellow-50/60 dark:bg-[#121524] border border-yellow-300/50 dark:border-yellow-500/20 my-3 space-y-3">
+                <div className="p-3.5 rounded-xl bg-[#faf8f5] dark:bg-[#181715] border border-[#e5e0d5] dark:border-[#33302b] my-3 space-y-3">
                   <div className="grid grid-cols-2 gap-3">
                     {/* Monthly Price */}
                     <div>
-                      <label className="block text-[10px] font-mono font-bold text-slate-700 dark:text-slate-300 uppercase mb-1">
+                      <label className="block text-[10px] font-mono font-bold text-[#5c5850] dark:text-[#b8b4aa] uppercase mb-1">
                         Monthly Price ($/mo)
                       </label>
                       <div className="flex items-center gap-1.5">
                         <div className="relative flex-1">
-                          <span className="absolute left-2.5 top-1/2 -translate-y-1/2 text-xs font-mono text-slate-500 font-bold">$</span>
+                          <span className="absolute left-2.5 top-1/2 -translate-y-1/2 text-xs font-mono text-[#878278] font-bold">$</span>
                           <input
                             type="number"
                             min="0"
                             step="1"
                             value={pkg.monthlyPrice}
                             onChange={(e) => handlePriceChange(pkg.id, 'monthlyPrice', parseInt(e.target.value) || 0)}
-                            className="w-full pl-6 pr-2 py-1.5 rounded-lg border border-yellow-300/60 dark:border-yellow-500/30 bg-white dark:bg-[#0c0e18] text-sm font-mono font-bold text-slate-950 dark:text-white focus:outline-hidden focus:border-yellow-400"
+                            className="w-full pl-6 pr-2 py-1.5 rounded-lg border border-[#e5e0d5] dark:border-[#33302b] bg-white dark:bg-[#211f1c] text-sm font-mono font-bold text-[#1f1e1b] dark:text-[#f5f3ef] focus:outline-hidden focus:border-[#d97706] dark:focus:border-[#f59e0b]"
                           />
                         </div>
                         {/* Quick increment buttons */}
@@ -391,14 +391,14 @@ export const AdminPricingManagement: React.FC = () => {
                           <button
                             type="button"
                             onClick={() => handlePriceChange(pkg.id, 'monthlyPrice', pkg.monthlyPrice + 10)}
-                            className="px-1 py-0.5 text-[9px] font-mono font-bold bg-yellow-200 dark:bg-yellow-900/50 text-slate-950 dark:text-yellow-300 rounded hover:bg-yellow-300 cursor-pointer"
+                            className="px-1 py-0.5 text-[9px] font-mono font-bold bg-[#f4f1ea] dark:bg-[#282622] text-[#1f1e1b] dark:text-[#f5f3ef] border border-[#e5e0d5] dark:border-[#33302b] rounded hover:bg-[#e5e0d5] cursor-pointer"
                           >
                             +10
                           </button>
                           <button
                             type="button"
                             onClick={() => handlePriceChange(pkg.id, 'monthlyPrice', Math.max(0, pkg.monthlyPrice - 10))}
-                            className="px-1 py-0.5 text-[9px] font-mono font-bold bg-yellow-200 dark:bg-yellow-900/50 text-slate-950 dark:text-yellow-300 rounded hover:bg-yellow-300 cursor-pointer"
+                            className="px-1 py-0.5 text-[9px] font-mono font-bold bg-[#f4f1ea] dark:bg-[#282622] text-[#1f1e1b] dark:text-[#f5f3ef] border border-[#e5e0d5] dark:border-[#33302b] rounded hover:bg-[#e5e0d5] cursor-pointer"
                           >
                             -10
                           </button>
@@ -409,14 +409,14 @@ export const AdminPricingManagement: React.FC = () => {
                     {/* Yearly Price */}
                     <div>
                       <div className="flex items-center justify-between mb-1">
-                        <label className="text-[10px] font-mono font-bold text-slate-700 dark:text-slate-300 uppercase">
+                        <label className="text-[10px] font-mono font-bold text-[#5c5850] dark:text-[#b8b4aa] uppercase">
                           Annual Price ($/mo)
                         </label>
                         {pkg.monthlyPrice > 0 && (
                           <button
                             type="button"
                             onClick={() => handleAutoCalcYearly(pkg)}
-                            className="text-[9px] font-mono text-amber-800 dark:text-yellow-400 underline hover:no-underline cursor-pointer"
+                            className="text-[9px] font-mono text-[#b45309] dark:text-[#fbbf24] underline hover:no-underline cursor-pointer"
                             title="Set to 20% discount of monthly"
                           >
                             Auto -20%
@@ -425,14 +425,14 @@ export const AdminPricingManagement: React.FC = () => {
                       </div>
                       <div className="flex items-center gap-1.5">
                         <div className="relative flex-1">
-                          <span className="absolute left-2.5 top-1/2 -translate-y-1/2 text-xs font-mono text-slate-500 font-bold">$</span>
+                          <span className="absolute left-2.5 top-1/2 -translate-y-1/2 text-xs font-mono text-[#878278] font-bold">$</span>
                           <input
                             type="number"
                             min="0"
                             step="1"
                             value={pkg.yearlyPrice}
                             onChange={(e) => handlePriceChange(pkg.id, 'yearlyPrice', parseInt(e.target.value) || 0)}
-                            className="w-full pl-6 pr-2 py-1.5 rounded-lg border border-yellow-300/60 dark:border-yellow-500/30 bg-white dark:bg-[#0c0e18] text-sm font-mono font-bold text-slate-950 dark:text-white focus:outline-hidden focus:border-yellow-400"
+                            className="w-full pl-6 pr-2 py-1.5 rounded-lg border border-[#e5e0d5] dark:border-[#33302b] bg-white dark:bg-[#211f1c] text-sm font-mono font-bold text-[#1f1e1b] dark:text-[#f5f3ef] focus:outline-hidden focus:border-[#d97706] dark:focus:border-[#f59e0b]"
                           />
                         </div>
                       </div>
@@ -440,7 +440,7 @@ export const AdminPricingManagement: React.FC = () => {
                   </div>
 
                   {/* Summary row */}
-                  <div className="flex items-center justify-between text-[11px] pt-1 text-slate-600 dark:text-slate-400 font-mono">
+                  <div className="flex items-center justify-between text-[11px] pt-1 text-[#5c5850] dark:text-[#b8b4aa] font-mono">
                     <span>
                       Annual Savings:{' '}
                       <span className="font-bold text-emerald-600 dark:text-emerald-400">
@@ -449,7 +449,7 @@ export const AdminPricingManagement: React.FC = () => {
                     </span>
                     <span>
                       Billed Annually:{' '}
-                      <span className="font-bold text-slate-950 dark:text-white">
+                      <span className="font-bold text-[#1f1e1b] dark:text-[#f5f3ef]">
                         ${pkg.yearlyPrice * 12}/yr
                       </span>
                     </span>
@@ -459,27 +459,27 @@ export const AdminPricingManagement: React.FC = () => {
                 {/* Quotas & Limits Inputs */}
                 <div className="grid grid-cols-2 gap-3 py-2">
                   <div>
-                    <label className="block text-[10px] font-mono text-slate-600 dark:text-slate-400 uppercase mb-0.5">
+                    <label className="block text-[10px] font-mono text-[#5c5850] dark:text-[#b8b4aa] uppercase mb-0.5">
                       Request Quota
                     </label>
                     <input
                       type="text"
                       value={pkg.requestsQuota}
                       onChange={(e) => updatePackagePrice(pkg.id, { requestsQuota: e.target.value })}
-                      className="w-full px-2.5 py-1 text-xs rounded border border-yellow-200 dark:border-yellow-500/20 bg-white dark:bg-[#0c0e18] text-slate-950 dark:text-white focus:outline-hidden"
+                      className="w-full px-2.5 py-1 text-xs rounded border border-[#e5e0d5] dark:border-[#33302b] bg-white dark:bg-[#211f1c] text-[#1f1e1b] dark:text-[#f5f3ef] focus:outline-hidden focus:border-[#d97706] dark:focus:border-[#f59e0b]"
                       placeholder="e.g. 50,000 / mo"
                     />
                   </div>
 
                   <div>
-                    <label className="block text-[10px] font-mono text-slate-600 dark:text-slate-400 uppercase mb-0.5">
+                    <label className="block text-[10px] font-mono text-[#5c5850] dark:text-[#b8b4aa] uppercase mb-0.5">
                       Agent Capacity
                     </label>
                     <input
                       type="text"
                       value={pkg.activeAgents}
                       onChange={(e) => updatePackagePrice(pkg.id, { activeAgents: e.target.value })}
-                      className="w-full px-2.5 py-1 text-xs rounded border border-yellow-200 dark:border-yellow-500/20 bg-white dark:bg-[#0c0e18] text-slate-950 dark:text-white focus:outline-hidden"
+                      className="w-full px-2.5 py-1 text-xs rounded border border-[#e5e0d5] dark:border-[#33302b] bg-white dark:bg-[#211f1c] text-[#1f1e1b] dark:text-[#f5f3ef] focus:outline-hidden focus:border-[#d97706] dark:focus:border-[#f59e0b]"
                       placeholder="e.g. Up to 5 agents"
                     />
                   </div>
@@ -487,37 +487,37 @@ export const AdminPricingManagement: React.FC = () => {
 
                 {/* CTA Button Text */}
                 <div className="py-2">
-                  <label className="block text-[10px] font-mono text-slate-600 dark:text-slate-400 uppercase mb-0.5">
+                  <label className="block text-[10px] font-mono text-[#5c5850] dark:text-[#b8b4aa] uppercase mb-0.5">
                     Button Label (Call to Action)
                   </label>
                   <input
                     type="text"
                     value={pkg.ctaText}
                     onChange={(e) => updatePackagePrice(pkg.id, { ctaText: e.target.value })}
-                    className="w-full px-2.5 py-1 text-xs rounded border border-yellow-200 dark:border-yellow-500/20 bg-white dark:bg-[#0c0e18] text-slate-950 dark:text-white focus:outline-hidden"
+                    className="w-full px-2.5 py-1 text-xs rounded border border-[#e5e0d5] dark:border-[#33302b] bg-white dark:bg-[#211f1c] text-[#1f1e1b] dark:text-[#f5f3ef] focus:outline-hidden focus:border-[#d97706] dark:focus:border-[#f59e0b]"
                     placeholder="e.g. Subscribe to Starter"
                   />
                 </div>
 
                 {/* Feature Bullet List Manager */}
                 <div className="pt-2">
-                  <label className="block text-[10px] font-mono font-bold text-slate-700 dark:text-slate-300 uppercase mb-1.5">
+                  <label className="block text-[10px] font-mono font-bold text-[#5c5850] dark:text-[#b8b4aa] uppercase mb-1.5">
                     Features Included ({pkg.features.length})
                   </label>
                   <div className="space-y-1.5 max-h-40 overflow-y-auto pr-1">
                     {pkg.features.map((feature, idx) => (
                       <div
                         key={idx}
-                        className="flex items-center justify-between text-xs py-1 px-2 rounded bg-yellow-50/40 dark:bg-yellow-950/20 border border-yellow-200/40 dark:border-yellow-500/10 gap-2 group"
+                        className="flex items-center justify-between text-xs py-1 px-2 rounded bg-[#faf8f5] dark:bg-[#181715] border border-[#e5e0d5] dark:border-[#33302b] gap-2 group"
                       >
-                        <span className="flex items-center gap-1.5 text-slate-800 dark:text-slate-200">
+                        <span className="flex items-center gap-1.5 text-[#1f1e1b] dark:text-[#f5f3ef]">
                           <Check className="w-3 h-3 text-emerald-600 shrink-0" />
                           <span className="truncate">{feature}</span>
                         </span>
                         <button
                           type="button"
                           onClick={() => handleRemoveFeature(pkg.id, idx)}
-                          className="text-slate-400 hover:text-rose-600 p-0.5 cursor-pointer opacity-0 group-hover:opacity-100 transition-opacity"
+                          className="text-[#878278] hover:text-rose-600 p-0.5 cursor-pointer opacity-0 group-hover:opacity-100 transition-opacity"
                           title="Remove feature bullet"
                         >
                           <Trash2 className="w-3 h-3" />
@@ -541,12 +541,12 @@ export const AdminPricingManagement: React.FC = () => {
                         }
                       }}
                       placeholder="Add new feature bullet..."
-                      className="flex-1 px-2 py-1 text-xs rounded border border-yellow-300/50 dark:border-yellow-500/20 bg-white dark:bg-[#0c0e18] text-slate-950 dark:text-white focus:outline-hidden"
+                      className="flex-1 px-2 py-1 text-xs rounded border border-[#e5e0d5] dark:border-[#33302b] bg-white dark:bg-[#211f1c] text-[#1f1e1b] dark:text-[#f5f3ef] focus:outline-hidden focus:border-[#d97706] dark:focus:border-[#f59e0b]"
                     />
                     <button
                       type="button"
                       onClick={() => handleAddFeature(pkg.id)}
-                      className="px-2 py-1 rounded bg-yellow-400 hover:bg-yellow-500 text-slate-950 text-xs font-bold transition-colors cursor-pointer"
+                      className="px-2.5 py-1 rounded-lg bg-[#d97706] hover:bg-[#b45309] dark:bg-[#f59e0b] dark:hover:bg-[#fbbf24] text-white dark:text-[#181715] text-xs font-semibold transition-colors cursor-pointer"
                     >
                       Add
                     </button>
@@ -554,7 +554,7 @@ export const AdminPricingManagement: React.FC = () => {
                 </div>
 
                 {/* Card Footer */}
-                <div className="mt-4 pt-3 border-t border-yellow-200/50 dark:border-yellow-500/15 flex items-center justify-between text-[11px] text-slate-600 dark:text-slate-400">
+                <div className="mt-4 pt-3 border-t border-[#e5e0d5] dark:border-[#33302b] flex items-center justify-between text-[11px] text-[#5c5850] dark:text-[#b8b4aa]">
                   <span className="font-mono">
                     Status: {pkg.isActive ? '🟢 Active on Website' : '⚪ Hidden'}
                   </span>
@@ -567,7 +567,7 @@ export const AdminPricingManagement: React.FC = () => {
                         type: 'success',
                       });
                     }}
-                    className="flex items-center gap-1 text-amber-800 dark:text-yellow-400 font-bold hover:underline cursor-pointer"
+                    className="flex items-center gap-1 text-[#b45309] dark:text-[#fbbf24] font-semibold hover:underline cursor-pointer"
                   >
                     <Save className="w-3 h-3" />
                     <span>Save &amp; Confirm</span>
@@ -580,40 +580,40 @@ export const AdminPricingManagement: React.FC = () => {
       </div>
 
       {/* LIVE PREVIEW SIMULATOR ON ADMIN PAGE */}
-      <div className="p-6 rounded-2xl bg-white/85 dark:bg-[#0c0e18]/85 backdrop-blur-md border border-yellow-300/50 dark:border-yellow-500/20 shadow-xs space-y-4">
-        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 pb-3 border-b border-yellow-200/50 dark:border-yellow-500/15">
+      <div className="p-6 rounded-2xl bg-white dark:bg-[#211f1c] border border-[#e5e0d5] dark:border-[#33302b] shadow-xs space-y-4">
+        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 pb-3 border-b border-[#e5e0d5] dark:border-[#33302b]">
           <div>
-            <h2 className="text-sm font-bold text-slate-950 dark:text-white flex items-center gap-2">
-              <Eye className="w-4 h-4 text-amber-500" />
+            <h2 className="text-sm font-bold text-[#1f1e1b] dark:text-[#f5f3ef] flex items-center gap-2">
+              <Eye className="w-4 h-4 text-[#d97706] dark:text-[#f59e0b]" />
               <span>Real-Time Website Pricing Preview</span>
             </h2>
-            <p className="text-xs text-slate-600 dark:text-slate-400 mt-0.5">
+            <p className="text-xs text-[#5c5850] dark:text-[#b8b4aa] mt-0.5">
               This preview shows how visitors see your prices right now on the portfolio landing page.
             </p>
           </div>
 
           {/* Billing Cycle Toggle */}
-          <div className="inline-flex items-center p-1 rounded-xl bg-yellow-100 dark:bg-yellow-950/60 border border-yellow-300/60 dark:border-yellow-500/30">
+          <div className="inline-flex items-center p-1 rounded-xl bg-[#faf8f5] dark:bg-[#181715] border border-[#e5e0d5] dark:border-[#33302b]">
             <button
               onClick={() => setPreviewBillingCycle('MONTHLY')}
-              className={`px-3 py-1 rounded-lg text-xs font-mono font-bold transition-all cursor-pointer ${
+              className={`px-3 py-1 rounded-lg text-xs font-mono font-semibold transition-all cursor-pointer ${
                 previewBillingCycle === 'MONTHLY'
-                  ? 'bg-yellow-400 text-slate-950 shadow-xs'
-                  : 'text-slate-700 dark:text-slate-300 hover:text-slate-950 dark:hover:text-white'
+                  ? 'bg-white dark:bg-[#211f1c] text-[#1f1e1b] dark:text-[#f5f3ef] shadow-xs border border-[#e5e0d5] dark:border-[#33302b]'
+                  : 'text-[#5c5850] dark:text-[#b8b4aa] hover:text-[#1f1e1b] dark:hover:text-[#f5f3ef]'
               }`}
             >
               Monthly Billing
             </button>
             <button
               onClick={() => setPreviewBillingCycle('YEARLY')}
-              className={`px-3 py-1 rounded-lg text-xs font-mono font-bold transition-all cursor-pointer flex items-center gap-1 ${
+              className={`px-3 py-1 rounded-lg text-xs font-mono font-semibold transition-all cursor-pointer flex items-center gap-1 ${
                 previewBillingCycle === 'YEARLY'
-                  ? 'bg-yellow-400 text-slate-950 shadow-xs'
-                  : 'text-slate-700 dark:text-slate-300 hover:text-slate-950 dark:hover:text-white'
+                  ? 'bg-white dark:bg-[#211f1c] text-[#1f1e1b] dark:text-[#f5f3ef] shadow-xs border border-[#e5e0d5] dark:border-[#33302b]'
+                  : 'text-[#5c5850] dark:text-[#b8b4aa] hover:text-[#1f1e1b] dark:hover:text-[#f5f3ef]'
               }`}
             >
               <span>Annual Billing</span>
-              <span className="text-[10px] px-1 py-0.2 rounded bg-emerald-500 text-white font-bold">
+              <span className="text-[10px] px-1 py-0.2 rounded bg-emerald-500/15 text-emerald-700 dark:text-emerald-400 font-bold border border-emerald-500/20">
                 SAVE 20%
               </span>
             </button>
@@ -629,34 +629,34 @@ export const AdminPricingManagement: React.FC = () => {
                 key={pkg.id}
                 className={`p-4 rounded-xl border flex flex-col justify-between ${
                   pkg.isPopular
-                    ? 'bg-amber-50/40 dark:bg-[#151726] border-yellow-400 dark:border-yellow-500 shadow-sm'
-                    : 'bg-white dark:bg-[#0c0e18] border-yellow-300/40 dark:border-yellow-500/20'
+                    ? 'bg-white dark:bg-[#211f1c] border-[#d97706] dark:border-[#f59e0b] shadow-xs ring-1 ring-[#d97706]/20'
+                    : 'bg-[#faf8f5] dark:bg-[#181715] border-[#e5e0d5] dark:border-[#33302b]'
                 }`}
               >
                 <div>
                   <div className="flex items-center justify-between mb-1">
-                    <span className="text-[10px] font-mono font-bold uppercase text-amber-800 dark:text-yellow-400">
+                    <span className="text-[10px] font-mono font-bold uppercase text-[#b45309] dark:text-[#fbbf24]">
                       {pkg.badge}
                     </span>
                     {pkg.isPopular && (
-                      <span className="text-[9px] font-mono font-bold px-1.5 py-0.2 rounded bg-yellow-400 text-slate-950">
+                      <span className="text-[9px] font-mono font-bold px-1.5 py-0.2 rounded bg-amber-500/10 text-[#b45309] dark:text-[#fbbf24] border border-amber-500/20">
                         Popular
                       </span>
                     )}
                   </div>
-                  <h3 className="font-bold text-sm text-slate-950 dark:text-white">{pkg.name}</h3>
+                  <h3 className="font-bold text-sm text-[#1f1e1b] dark:text-[#f5f3ef]">{pkg.name}</h3>
                   <div className="mt-2 mb-3">
-                    <span className="text-2xl font-black text-slate-950 dark:text-white font-mono">
+                    <span className="text-2xl font-black text-[#1f1e1b] dark:text-[#f5f3ef] font-mono">
                       ${price}
                     </span>
-                    <span className="text-xs text-slate-500 font-mono">
+                    <span className="text-xs text-[#878278] dark:text-[#7d7970] font-mono">
                       {pkg.monthlyPrice === 0 ? ' forever' : ' / mo'}
                     </span>
                   </div>
-                  <p className="text-[11px] text-slate-600 dark:text-slate-400 mb-3 line-clamp-2">
+                  <p className="text-[11px] text-[#5c5850] dark:text-[#b8b4aa] mb-3 line-clamp-2 leading-relaxed">
                     {pkg.description}
                   </p>
-                  <ul className="space-y-1 text-[11px] text-slate-700 dark:text-slate-300 mb-4">
+                  <ul className="space-y-1 text-[11px] text-[#5c5850] dark:text-[#b8b4aa] mb-4">
                     {pkg.features.slice(0, 4).map((f, i) => (
                       <li key={i} className="flex items-center gap-1 truncate">
                         <Check className="w-3 h-3 text-emerald-600 shrink-0" />
@@ -668,10 +668,10 @@ export const AdminPricingManagement: React.FC = () => {
                 <button
                   type="button"
                   onClick={handleJumpToWebsite}
-                  className={`w-full py-1.5 rounded-lg text-xs font-bold transition-colors cursor-pointer ${
+                  className={`w-full py-1.5 rounded-lg text-xs font-semibold transition-colors cursor-pointer ${
                     pkg.isPopular
-                      ? 'bg-yellow-400 hover:bg-yellow-500 text-slate-950'
-                      : 'border border-slate-300 dark:border-slate-700 text-slate-800 dark:text-slate-200'
+                      ? 'bg-[#d97706] hover:bg-[#b45309] dark:bg-[#f59e0b] dark:hover:bg-[#fbbf24] text-white dark:text-[#181715]'
+                      : 'border border-[#e5e0d5] dark:border-[#33302b] bg-white dark:bg-[#211f1c] text-[#1f1e1b] dark:text-[#f5f3ef] hover:bg-[#f4f1ea]'
                   }`}
                 >
                   {pkg.ctaText}
@@ -684,18 +684,18 @@ export const AdminPricingManagement: React.FC = () => {
 
       {/* CREATE NEW PACKAGE MODAL */}
       {showAddModal && (
-        <div className="fixed inset-0 z-50 bg-black/60 backdrop-blur-xs flex items-center justify-center p-4">
-          <div className="bg-white dark:bg-[#0c0e18] rounded-2xl border border-yellow-300 dark:border-yellow-500/30 p-6 max-w-lg w-full shadow-2xl space-y-4 max-h-[90vh] overflow-y-auto animate-in zoom-in-95 duration-150">
-            <div className="flex items-center justify-between pb-3 border-b border-yellow-200 dark:border-yellow-500/20">
+        <div className="fixed inset-0 z-50 bg-black/40 backdrop-blur-xs flex items-center justify-center p-4">
+          <div className="bg-white dark:bg-[#211f1c] rounded-2xl border border-[#e5e0d5] dark:border-[#33302b] p-6 max-w-lg w-full shadow-2xl space-y-4 max-h-[90vh] overflow-y-auto animate-in zoom-in-95 duration-150">
+            <div className="flex items-center justify-between pb-3 border-b border-[#e5e0d5] dark:border-[#33302b]">
               <div className="flex items-center gap-2">
-                <Plus className="w-4 h-4 text-yellow-500" />
-                <h3 className="font-bold text-base text-slate-950 dark:text-white">
+                <Plus className="w-4 h-4 text-[#d97706] dark:text-[#f59e0b]" />
+                <h3 className="font-serif font-normal text-lg text-[#1f1e1b] dark:text-[#f5f3ef]">
                   Add New Subscription Tier
                 </h3>
               </div>
               <button
                 onClick={() => setShowAddModal(false)}
-                className="text-slate-400 hover:text-slate-600 cursor-pointer"
+                className="text-[#878278] hover:text-[#1f1e1b] dark:hover:text-[#f5f3ef] cursor-pointer"
               >
                 ✕
               </button>
@@ -703,7 +703,7 @@ export const AdminPricingManagement: React.FC = () => {
 
             <form onSubmit={handleCreatePackageSubmit} className="space-y-3">
               <div>
-                <label className="block text-xs font-mono font-bold text-slate-700 dark:text-slate-300 uppercase mb-1">
+                <label className="block text-xs font-mono font-bold text-[#5c5850] dark:text-[#b8b4aa] uppercase mb-1">
                   Package Name
                 </label>
                 <input
@@ -711,13 +711,13 @@ export const AdminPricingManagement: React.FC = () => {
                   required
                   value={newPackageForm.name}
                   onChange={(e) => setNewPackageForm({ ...newPackageForm, name: e.target.value })}
-                  className="w-full px-3 py-2 text-xs rounded-lg border border-yellow-300/60 dark:border-yellow-500/30 bg-white dark:bg-[#121524] text-slate-950 dark:text-white"
+                  className="w-full px-3 py-2 text-xs rounded-lg border border-[#e5e0d5] dark:border-[#33302b] bg-[#faf8f5] dark:bg-[#181715] text-[#1f1e1b] dark:text-[#f5f3ef] focus:outline-hidden focus:border-[#d97706] dark:focus:border-[#f59e0b]"
                   placeholder="e.g. Growth Team Gate"
                 />
               </div>
 
               <div>
-                <label className="block text-xs font-mono font-bold text-slate-700 dark:text-slate-300 uppercase mb-1">
+                <label className="block text-xs font-mono font-bold text-[#5c5850] dark:text-[#b8b4aa] uppercase mb-1">
                   Badge Tag
                 </label>
                 <input
@@ -725,14 +725,14 @@ export const AdminPricingManagement: React.FC = () => {
                   required
                   value={newPackageForm.badge}
                   onChange={(e) => setNewPackageForm({ ...newPackageForm, badge: e.target.value })}
-                  className="w-full px-3 py-2 text-xs rounded-lg border border-yellow-300/60 dark:border-yellow-500/30 bg-white dark:bg-[#121524] text-slate-950 dark:text-white"
+                  className="w-full px-3 py-2 text-xs rounded-lg border border-[#e5e0d5] dark:border-[#33302b] bg-[#faf8f5] dark:bg-[#181715] text-[#1f1e1b] dark:text-[#f5f3ef] focus:outline-hidden focus:border-[#d97706] dark:focus:border-[#f59e0b]"
                   placeholder="e.g. Growth"
                 />
               </div>
 
               <div className="grid grid-cols-2 gap-3">
                 <div>
-                  <label className="block text-xs font-mono font-bold text-slate-700 dark:text-slate-300 uppercase mb-1">
+                  <label className="block text-xs font-mono font-bold text-[#5c5850] dark:text-[#b8b4aa] uppercase mb-1">
                     Monthly Price ($/mo)
                   </label>
                   <input
@@ -747,12 +747,12 @@ export const AdminPricingManagement: React.FC = () => {
                         yearlyPrice: Math.round((parseInt(e.target.value) || 0) * 0.8),
                       })
                     }
-                    className="w-full px-3 py-2 text-xs rounded-lg border border-yellow-300/60 dark:border-yellow-500/30 bg-white dark:bg-[#121524] text-slate-950 dark:text-white font-mono font-bold"
+                    className="w-full px-3 py-2 text-xs rounded-lg border border-[#e5e0d5] dark:border-[#33302b] bg-[#faf8f5] dark:bg-[#181715] text-[#1f1e1b] dark:text-[#f5f3ef] font-mono font-bold focus:outline-hidden focus:border-[#d97706] dark:focus:border-[#f59e0b]"
                   />
                 </div>
 
                 <div>
-                  <label className="block text-xs font-mono font-bold text-slate-700 dark:text-slate-300 uppercase mb-1">
+                  <label className="block text-xs font-mono font-bold text-[#5c5850] dark:text-[#b8b4aa] uppercase mb-1">
                     Annual Price ($/mo)
                   </label>
                   <input
@@ -766,58 +766,58 @@ export const AdminPricingManagement: React.FC = () => {
                         yearlyPrice: parseInt(e.target.value) || 0,
                       })
                     }
-                    className="w-full px-3 py-2 text-xs rounded-lg border border-yellow-300/60 dark:border-yellow-500/30 bg-white dark:bg-[#121524] text-slate-950 dark:text-white font-mono font-bold"
+                    className="w-full px-3 py-2 text-xs rounded-lg border border-[#e5e0d5] dark:border-[#33302b] bg-[#faf8f5] dark:bg-[#181715] text-[#1f1e1b] dark:text-[#f5f3ef] font-mono font-bold focus:outline-hidden focus:border-[#d97706] dark:focus:border-[#f59e0b]"
                   />
                 </div>
               </div>
 
               <div>
-                <label className="block text-xs font-mono font-bold text-slate-700 dark:text-slate-300 uppercase mb-1">
+                <label className="block text-xs font-mono font-bold text-[#5c5850] dark:text-[#b8b4aa] uppercase mb-1">
                   Description
                 </label>
                 <textarea
                   rows={2}
                   value={newPackageForm.description}
                   onChange={(e) => setNewPackageForm({ ...newPackageForm, description: e.target.value })}
-                  className="w-full px-3 py-2 text-xs rounded-lg border border-yellow-300/60 dark:border-yellow-500/30 bg-white dark:bg-[#121524] text-slate-950 dark:text-white"
+                  className="w-full px-3 py-2 text-xs rounded-lg border border-[#e5e0d5] dark:border-[#33302b] bg-[#faf8f5] dark:bg-[#181715] text-[#1f1e1b] dark:text-[#f5f3ef] focus:outline-hidden focus:border-[#d97706] dark:focus:border-[#f59e0b]"
                 />
               </div>
 
               <div className="grid grid-cols-2 gap-3">
                 <div>
-                  <label className="block text-xs font-mono font-bold text-slate-700 dark:text-slate-300 uppercase mb-1">
+                  <label className="block text-xs font-mono font-bold text-[#5c5850] dark:text-[#b8b4aa] uppercase mb-1">
                     Request Quota
                   </label>
                   <input
                     type="text"
                     value={newPackageForm.requestsQuota}
                     onChange={(e) => setNewPackageForm({ ...newPackageForm, requestsQuota: e.target.value })}
-                    className="w-full px-3 py-2 text-xs rounded-lg border border-yellow-300/60 dark:border-yellow-500/30 bg-white dark:bg-[#121524] text-slate-950 dark:text-white"
+                    className="w-full px-3 py-2 text-xs rounded-lg border border-[#e5e0d5] dark:border-[#33302b] bg-[#faf8f5] dark:bg-[#181715] text-[#1f1e1b] dark:text-[#f5f3ef] focus:outline-hidden focus:border-[#d97706] dark:focus:border-[#f59e0b]"
                   />
                 </div>
 
                 <div>
-                  <label className="block text-xs font-mono font-bold text-slate-700 dark:text-slate-300 uppercase mb-1">
+                  <label className="block text-xs font-mono font-bold text-[#5c5850] dark:text-[#b8b4aa] uppercase mb-1">
                     Agent Capacity
                   </label>
                   <input
                     type="text"
                     value={newPackageForm.activeAgents}
                     onChange={(e) => setNewPackageForm({ ...newPackageForm, activeAgents: e.target.value })}
-                    className="w-full px-3 py-2 text-xs rounded-lg border border-yellow-300/60 dark:border-yellow-500/30 bg-white dark:bg-[#121524] text-slate-950 dark:text-white"
+                    className="w-full px-3 py-2 text-xs rounded-lg border border-[#e5e0d5] dark:border-[#33302b] bg-[#faf8f5] dark:bg-[#181715] text-[#1f1e1b] dark:text-[#f5f3ef] focus:outline-hidden focus:border-[#d97706] dark:focus:border-[#f59e0b]"
                   />
                 </div>
               </div>
 
               <div>
-                <label className="block text-xs font-mono font-bold text-slate-700 dark:text-slate-300 uppercase mb-1">
+                <label className="block text-xs font-mono font-bold text-[#5c5850] dark:text-[#b8b4aa] uppercase mb-1">
                   CTA Button Text
                 </label>
                 <input
                   type="text"
                   value={newPackageForm.ctaText}
                   onChange={(e) => setNewPackageForm({ ...newPackageForm, ctaText: e.target.value })}
-                  className="w-full px-3 py-2 text-xs rounded-lg border border-yellow-300/60 dark:border-yellow-500/30 bg-white dark:bg-[#121524] text-slate-950 dark:text-white"
+                  className="w-full px-3 py-2 text-xs rounded-lg border border-[#e5e0d5] dark:border-[#33302b] bg-[#faf8f5] dark:bg-[#181715] text-[#1f1e1b] dark:text-[#f5f3ef] focus:outline-hidden focus:border-[#d97706] dark:focus:border-[#f59e0b]"
                 />
               </div>
 
@@ -827,24 +827,24 @@ export const AdminPricingManagement: React.FC = () => {
                   id="isPopularCheck"
                   checked={newPackageForm.isPopular}
                   onChange={(e) => setNewPackageForm({ ...newPackageForm, isPopular: e.target.checked })}
-                  className="rounded text-yellow-500"
+                  className="rounded text-[#d97706] focus:ring-[#d97706]"
                 />
-                <label htmlFor="isPopularCheck" className="text-xs text-slate-700 dark:text-slate-300 font-medium cursor-pointer">
+                <label htmlFor="isPopularCheck" className="text-xs text-[#5c5850] dark:text-[#b8b4aa] font-medium cursor-pointer">
                   Mark as "Recommended" popular choice on website
                 </label>
               </div>
 
-              <div className="flex items-center justify-end gap-2 pt-4 border-t border-yellow-200 dark:border-yellow-500/20">
+              <div className="flex items-center justify-end gap-2 pt-4 border-t border-[#e5e0d5] dark:border-[#33302b]">
                 <button
                   type="button"
                   onClick={() => setShowAddModal(false)}
-                  className="px-4 py-2 rounded-xl border border-slate-300 dark:border-slate-700 text-xs font-medium cursor-pointer"
+                  className="px-4 py-2 rounded-xl border border-[#e5e0d5] dark:border-[#33302b] text-[#5c5850] dark:text-[#b8b4aa] hover:bg-[#f4f1ea] dark:hover:bg-[#282622] text-xs font-medium cursor-pointer"
                 >
                   Cancel
                 </button>
                 <button
                   type="submit"
-                  className="px-4 py-2 rounded-xl bg-yellow-400 hover:bg-yellow-500 text-slate-950 text-xs font-bold transition-colors cursor-pointer shadow-xs"
+                  className="px-4 py-2 rounded-xl bg-[#d97706] hover:bg-[#b45309] dark:bg-[#f59e0b] dark:hover:bg-[#fbbf24] text-white dark:text-[#181715] text-xs font-semibold transition-colors cursor-pointer shadow-xs"
                 >
                   Publish to Website
                 </button>

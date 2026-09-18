@@ -99,20 +99,20 @@ export const AgentRegistry: React.FC = () => {
       {/* Header */}
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
         <div>
-          <h2 className="text-lg font-bold text-slate-950 dark:text-white flex items-center gap-2">
-            <Bot className="w-5 h-5 text-amber-600 dark:text-yellow-400" />
+          <h2 className="text-lg font-bold text-[#1f1e1b] dark:text-[#f5f3ef] flex items-center gap-2">
+            <Bot className="w-5 h-5 text-[#d97706] dark:text-[#f59e0b]" />
             <span>AI Agents Fleet</span>
           </h2>
-          <p className="text-xs text-slate-600 dark:text-slate-400 mt-0.5 font-medium">
+          <p className="text-xs text-[#5c5850] dark:text-[#b8b4aa] mt-0.5 font-medium">
             Manage your autonomous agents, configure safety boundaries, and initiate secure interactive sessions.
           </p>
         </div>
 
         <button
           onClick={() => setActiveNav('studio')}
-          className="px-3.5 py-2 rounded-xl bg-yellow-400 hover:bg-yellow-300 text-slate-950 font-bold text-xs flex items-center justify-center gap-1.5 shadow-sm border border-yellow-300 transition-all cursor-pointer"
+          className="px-4 py-2 rounded-xl bg-[#d97706] hover:bg-[#b45309] dark:bg-[#f59e0b] dark:hover:bg-[#fbbf24] text-white dark:text-[#181715] font-bold text-xs flex items-center justify-center gap-1.5 shadow-xs transition-all cursor-pointer"
         >
-          <Sparkles className="w-3.5 h-3.5 text-slate-950" />
+          <Sparkles className="w-3.5 h-3.5" />
           <span>Build Agent with Prompt</span>
         </button>
       </div>
@@ -121,14 +121,14 @@ export const AgentRegistry: React.FC = () => {
       <div className="flex flex-col sm:flex-row items-stretch sm:items-center justify-between gap-3">
         {/* Search */}
         <div className="relative w-full sm:w-72">
-          <Search className="w-3.5 h-3.5 absolute left-2.5 top-1/2 -translate-y-1/2 text-slate-400" />
+          <Search className="w-3.5 h-3.5 absolute left-3 top-1/2 -translate-y-1/2 text-[#878278] dark:text-[#7d7970]" />
           <input
             id="agent-search-input"
             type="text"
             value={searchFilter}
             onChange={(e) => setSearchFilter(e.target.value)}
             placeholder="Filter agents..."
-            className="w-full bg-white/90 dark:bg-[#131627] border border-yellow-300/60 dark:border-yellow-500/25 rounded-lg pl-8 pr-3 py-1.5 text-xs text-slate-950 dark:text-slate-100 placeholder-slate-400 dark:placeholder-slate-500 focus:outline-none focus:border-yellow-500 focus:ring-2 focus:ring-yellow-400/20 transition-colors"
+            className="w-full bg-white dark:bg-[#211f1c] border border-[#e5e0d5] dark:border-[#33302b] rounded-xl pl-8 pr-3 py-1.5 text-xs text-[#1f1e1b] dark:text-[#f5f3ef] placeholder-[#878278] dark:placeholder-[#7d7970] focus:outline-hidden focus:border-[#d97706] transition-colors shadow-xs"
           />
         </div>
 
@@ -136,10 +136,10 @@ export const AgentRegistry: React.FC = () => {
         <div className="flex items-center gap-1.5 overflow-x-auto pb-0.5">
           <button
             onClick={() => setAutonomyFilter('ALL')}
-            className={`px-3 py-1.5 rounded-lg text-xs font-bold transition-all cursor-pointer ${
+            className={`px-3 py-1.5 rounded-xl text-xs font-bold transition-all cursor-pointer ${
               autonomyFilter === 'ALL'
-                ? 'bg-yellow-400 text-slate-950 shadow-sm border border-yellow-300'
-                : 'text-slate-700 dark:text-slate-400 hover:bg-yellow-100/50 dark:hover:bg-yellow-950/30'
+                ? 'bg-[#1f1e1b] dark:bg-[#f5f3ef] text-white dark:text-[#181715] shadow-xs'
+                : 'bg-white dark:bg-[#211f1c] text-[#5c5850] dark:text-[#b8b4aa] border border-[#e5e0d5] dark:border-[#33302b] hover:bg-[#f4f1ea] dark:hover:bg-[#282622]'
             }`}
           >
             All ({agents.length})
@@ -148,10 +148,10 @@ export const AgentRegistry: React.FC = () => {
             <button
               key={tier.id}
               onClick={() => setAutonomyFilter(tier.id)}
-              className={`px-2.5 py-1.5 rounded-lg text-xs font-bold transition-all whitespace-nowrap cursor-pointer ${
+              className={`px-2.5 py-1.5 rounded-xl text-xs font-bold transition-all whitespace-nowrap cursor-pointer ${
                 autonomyFilter === tier.id
-                  ? 'bg-yellow-400 text-slate-950 shadow-sm border border-yellow-300'
-                  : 'text-slate-700 dark:text-slate-400 hover:bg-yellow-100/50 dark:hover:bg-yellow-950/30'
+                  ? 'bg-[#1f1e1b] dark:bg-[#f5f3ef] text-white dark:text-[#181715] shadow-xs'
+                  : 'bg-white dark:bg-[#211f1c] text-[#5c5850] dark:text-[#b8b4aa] border border-[#e5e0d5] dark:border-[#33302b] hover:bg-[#f4f1ea] dark:hover:bg-[#282622]'
               }`}
             >
               {tier.label}
@@ -170,35 +170,35 @@ export const AgentRegistry: React.FC = () => {
           return (
             <div
               key={agent.id}
-              className={`p-4 rounded-xl bg-white/85 dark:bg-[#0c0e18]/85 backdrop-blur-md border transition-all ${
+              className={`p-4 rounded-2xl bg-white dark:bg-[#211f1c] border transition-all ${
                 isPaused
                   ? 'border-rose-500/40 bg-rose-500/[0.04]'
-                  : 'border-yellow-300/50 dark:border-yellow-500/20 hover:border-yellow-400/80 dark:hover:border-yellow-500/40'
+                  : 'border-[#e5e0d5] dark:border-[#33302b] hover:border-[#d97706]/40 dark:hover:border-[#f59e0b]/40'
               } shadow-xs space-y-3.5`}
             >
               <div className="flex flex-col md:flex-row md:items-center justify-between gap-3">
                 {/* Agent Identity */}
                 <div className="flex items-start gap-3">
                   <div
-                    className={`p-2 rounded-lg flex-shrink-0 mt-0.5 ${
-                      isPaused ? 'bg-rose-500/10 text-rose-600' : 'bg-yellow-400/20 text-amber-700 dark:text-yellow-300 border border-yellow-400/30'
+                    className={`p-2 rounded-xl flex-shrink-0 mt-0.5 ${
+                      isPaused ? 'bg-rose-500/10 text-rose-600' : 'bg-amber-500/10 text-[#d97706] dark:text-[#f59e0b] border border-amber-500/20'
                     }`}
                   >
                     <Icon className="w-5 h-5" />
                   </div>
                   <div>
                     <div className="flex items-center gap-2 flex-wrap">
-                      <h3 className="font-bold text-xs sm:text-sm text-slate-950 dark:text-white">
+                      <h3 className="font-bold text-xs sm:text-sm text-[#1f1e1b] dark:text-[#f5f3ef]">
                         {agent.name}
                       </h3>
-                      <span className="text-[10px] font-mono font-bold px-1.5 py-0.5 rounded bg-yellow-100/70 dark:bg-yellow-950/40 text-slate-800 dark:text-yellow-300 border border-yellow-300/60 dark:border-yellow-500/20">
+                      <span className="text-[10px] font-mono font-bold px-1.5 py-0.5 rounded bg-amber-500/10 text-[#b45309] dark:text-[#fbbf24] border border-amber-500/20">
                         {agent.framework}
                       </span>
-                      <span className="text-[10px] font-mono font-bold px-1.5 py-0.5 rounded bg-amber-100/70 dark:bg-yellow-950/60 text-amber-900 dark:text-yellow-300 border border-amber-300/60 dark:border-yellow-500/30">
+                      <span className="text-[10px] font-mono font-bold px-1.5 py-0.5 rounded bg-amber-500/10 text-[#b45309] dark:text-[#fbbf24] border border-amber-500/20">
                         {agent.model}
                       </span>
                       <span
-                        className={`text-[10px] font-bold px-1.5 py-0.5 rounded ${
+                        className={`text-[10px] font-bold px-1.5 py-0.5 rounded-full ${
                           isPaused
                             ? 'bg-rose-500/10 text-rose-700 dark:text-rose-300 border border-rose-500/30'
                             : 'bg-emerald-500/10 text-emerald-700 dark:text-emerald-300 border border-emerald-500/30'
@@ -207,7 +207,7 @@ export const AgentRegistry: React.FC = () => {
                         {isPaused ? 'HALTED' : 'ONLINE'}
                       </span>
                     </div>
-                    <p className="text-xs text-slate-600 dark:text-slate-400 mt-1 max-w-2xl line-clamp-1 font-medium">
+                    <p className="text-xs text-[#5c5850] dark:text-[#b8b4aa] mt-1 max-w-2xl line-clamp-1 font-medium">
                       {agent.description}
                     </p>
                   </div>
@@ -218,9 +218,9 @@ export const AgentRegistry: React.FC = () => {
                   {/* Chat button */}
                   <button
                     onClick={() => startChatWithAgent(agent.id)}
-                    className="px-3 py-1.5 bg-yellow-400 hover:bg-yellow-300 text-slate-950 font-bold text-xs rounded-lg flex items-center gap-1.5 shadow-sm border border-yellow-300 transition-all cursor-pointer"
+                    className="px-3 py-1.5 bg-[#d97706] hover:bg-[#b45309] dark:bg-[#f59e0b] dark:hover:bg-[#fbbf24] text-white dark:text-[#181715] font-bold text-xs rounded-xl flex items-center gap-1.5 shadow-xs transition-all cursor-pointer"
                   >
-                    <MessageSquare className="w-3.5 h-3.5 text-slate-950" />
+                    <MessageSquare className="w-3.5 h-3.5" />
                     <span>Chat</span>
                   </button>
 
@@ -228,7 +228,7 @@ export const AgentRegistry: React.FC = () => {
                   <select
                     value={agent.autonomyMode}
                     onChange={(e) => setAutonomyMode(agent.id, e.target.value as AutonomyMode)}
-                    className="bg-yellow-50/70 dark:bg-[#131627] border border-yellow-300/60 dark:border-yellow-500/30 rounded-lg px-2 py-1 text-xs font-bold text-slate-900 dark:text-yellow-300 focus:outline-none focus:border-yellow-500 font-mono"
+                    className="bg-white dark:bg-[#211f1c] border border-[#e5e0d5] dark:border-[#33302b] rounded-xl px-2.5 py-1 text-xs font-bold text-[#1f1e1b] dark:text-[#f5f3ef] focus:outline-hidden focus:border-[#d97706] font-mono shadow-xs"
                   >
                     {TIERS.map((t) => (
                       <option key={t.id} value={t.id}>
@@ -240,7 +240,7 @@ export const AgentRegistry: React.FC = () => {
                   {/* Kill Switch */}
                   <button
                     onClick={() => toggleKillSwitch(agent.id)}
-                    className={`p-1.5 rounded-lg border text-xs font-bold transition-all cursor-pointer ${
+                    className={`p-1.5 rounded-xl border text-xs font-bold transition-all cursor-pointer ${
                       isPaused
                         ? 'bg-emerald-600 text-white border-emerald-600'
                         : 'border-rose-300 dark:border-rose-900/60 text-rose-600 dark:text-rose-400 hover:bg-rose-50 dark:hover:bg-rose-950/30'
@@ -253,7 +253,7 @@ export const AgentRegistry: React.FC = () => {
                   {/* Settings */}
                   <button
                     onClick={() => openTuning(agent)}
-                    className="p-1.5 rounded-lg border border-yellow-300/60 dark:border-yellow-500/30 hover:bg-yellow-100/50 dark:hover:bg-yellow-950/40 text-slate-700 dark:text-yellow-300 transition-colors cursor-pointer"
+                    className="p-1.5 rounded-xl border border-[#e5e0d5] dark:border-[#33302b] bg-white dark:bg-[#211f1c] hover:bg-[#faf8f5] dark:hover:bg-[#181715] text-[#5c5850] dark:text-[#b8b4aa] transition-colors cursor-pointer shadow-xs"
                     title="Agent Configuration"
                   >
                     <Sliders className="w-3.5 h-3.5" />
@@ -262,7 +262,7 @@ export const AgentRegistry: React.FC = () => {
                   {agents.length > 1 && (
                     <button
                       onClick={() => handleDeleteAgent(agent)}
-                      className="p-1.5 rounded-lg border border-slate-200 dark:border-slate-800 hover:bg-rose-50 dark:hover:bg-rose-950/30 text-slate-400 hover:text-rose-600 transition-colors cursor-pointer"
+                      className="p-1.5 rounded-xl border border-[#e5e0d5] dark:border-[#33302b] hover:bg-rose-50 dark:hover:bg-rose-950/30 text-[#878278] hover:text-rose-600 transition-colors cursor-pointer"
                       title="Remove Agent"
                     >
                       <Trash2 className="w-3.5 h-3.5" />
@@ -272,33 +272,33 @@ export const AgentRegistry: React.FC = () => {
               </div>
 
               {/* Bottom details: Authorized tools & Daily budget */}
-              <div className="pt-2 border-t border-yellow-200/50 dark:border-yellow-500/10 flex flex-col sm:flex-row sm:items-center justify-between gap-2 text-xs">
+              <div className="pt-2 border-t border-[#e5e0d5]/60 dark:border-[#33302b]/60 flex flex-col sm:flex-row sm:items-center justify-between gap-2 text-xs">
                 {/* Tools */}
                 <div className="flex items-center gap-1.5 flex-wrap">
-                  <span className="text-slate-500 dark:text-slate-400 text-[10px] font-mono font-bold">Tools:</span>
+                  <span className="text-[#878278] dark:text-[#7d7970] text-[10px] font-mono font-bold">Tools:</span>
                   {agent.tools && agent.tools.length > 0 ? (
                     agent.tools.map((tool) => (
                       <span
                         key={tool}
-                        className="px-1.5 py-0.2 rounded bg-yellow-100/70 dark:bg-yellow-950/40 text-slate-900 dark:text-yellow-300 border border-yellow-300/50 dark:border-yellow-500/20 font-mono font-bold text-[10px]"
+                        className="px-1.5 py-0.2 rounded bg-[#faf8f5] dark:bg-[#181715] text-[#5c5850] dark:text-[#b8b4aa] border border-[#e5e0d5] dark:border-[#33302b] font-mono font-bold text-[10px]"
                       >
                         {tool}()
                       </span>
                     ))
                   ) : (
-                    <span className="text-slate-400 text-[10px]">None</span>
+                    <span className="text-[#878278] dark:text-[#7d7970] text-[10px]">None</span>
                   )}
                 </div>
 
                 {/* Budget */}
-                <div className="flex items-center gap-2 font-mono text-[11px] text-slate-600 dark:text-slate-400 font-medium">
+                <div className="flex items-center gap-2 font-mono text-[11px] text-[#5c5850] dark:text-[#b8b4aa] font-medium">
                   <span>Spend:</span>
-                  <span className="font-bold text-slate-950 dark:text-white">
+                  <span className="font-bold text-[#1f1e1b] dark:text-[#f5f3ef]">
                     ${agent.spendTodayUsd.toFixed(2)} / ${agent.dailyBudgetUsd.toFixed(2)} USD
                   </span>
-                  <div className="w-16 h-1.5 rounded-full bg-yellow-100 dark:bg-[#1a2035] overflow-hidden">
+                  <div className="w-16 h-1.5 rounded-full bg-[#faf8f5] dark:bg-[#181715] border border-[#e5e0d5] dark:border-[#33302b] overflow-hidden">
                     <div
-                      className={`h-full rounded-full ${spendPercent > 80 ? 'bg-amber-500' : 'bg-yellow-400'}`}
+                      className={`h-full rounded-full ${spendPercent > 80 ? 'bg-amber-500' : 'bg-[#d97706] dark:bg-[#f59e0b]'}`}
                       style={{ width: `${spendPercent}%` }}
                     />
                   </div>
@@ -309,12 +309,12 @@ export const AgentRegistry: React.FC = () => {
         })}
 
         {filteredAgents.length === 0 && (
-          <div className="p-8 text-center bg-white/85 dark:bg-[#0e111e]/85 rounded-xl border border-yellow-300/40 dark:border-yellow-500/20 space-y-2">
-            <Bot className="w-8 h-8 mx-auto text-amber-500" />
-            <p className="text-xs text-slate-600 dark:text-slate-400 font-medium">No agents match your filter criteria.</p>
+          <div className="p-8 text-center bg-white dark:bg-[#211f1c] rounded-2xl border border-[#e5e0d5] dark:border-[#33302b] space-y-2">
+            <Bot className="w-8 h-8 mx-auto text-[#d97706] dark:text-[#f59e0b]" />
+            <p className="text-xs text-[#5c5850] dark:text-[#b8b4aa] font-medium">No agents match your filter criteria.</p>
             <button
               onClick={() => setActiveNav('studio')}
-              className="px-3.5 py-1.5 bg-yellow-400 hover:bg-yellow-300 text-slate-950 rounded-lg text-xs font-bold cursor-pointer border border-yellow-300"
+              className="px-3.5 py-1.5 bg-[#d97706] hover:bg-[#b45309] dark:bg-[#f59e0b] dark:hover:bg-[#fbbf24] text-white dark:text-[#181715] rounded-xl text-xs font-bold cursor-pointer"
             >
               Build New Agent
             </button>
@@ -325,17 +325,17 @@ export const AgentRegistry: React.FC = () => {
       {/* Remote Prompt Tuning Modal */}
       {tuningAgent && (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 backdrop-blur-xs p-4">
-          <div className="bg-white dark:bg-[#0c0e18] border border-yellow-400/80 dark:border-yellow-500/40 rounded-2xl max-w-lg w-full p-5 shadow-2xl space-y-4">
-            <div className="flex items-center justify-between border-b border-yellow-200 dark:border-yellow-500/20 pb-3">
+          <div className="bg-white dark:bg-[#211f1c] border border-[#e5e0d5] dark:border-[#33302b] rounded-2xl max-w-lg w-full p-5 shadow-2xl space-y-4">
+            <div className="flex items-center justify-between border-b border-[#e5e0d5] dark:border-[#33302b] pb-3">
               <div className="flex items-center gap-2">
-                <Sliders className="w-4 h-4 text-amber-600 dark:text-yellow-400" />
-                <h3 className="font-bold text-sm text-slate-950 dark:text-white">
+                <Sliders className="w-4 h-4 text-[#d97706] dark:text-[#f59e0b]" />
+                <h3 className="font-bold text-sm text-[#1f1e1b] dark:text-[#f5f3ef]">
                   Configure: {tuningAgent.name}
                 </h3>
               </div>
               <button
                 onClick={() => setTuningAgent(null)}
-                className="text-slate-400 hover:text-slate-600 dark:hover:text-white cursor-pointer"
+                className="text-[#878278] hover:text-[#1f1e1b] dark:hover:text-[#f5f3ef] cursor-pointer"
               >
                 <X className="w-4 h-4" />
               </button>
@@ -343,25 +343,25 @@ export const AgentRegistry: React.FC = () => {
 
             <div className="space-y-3 text-xs">
               <div>
-                <label className="font-bold text-slate-800 dark:text-slate-200 block mb-1">
+                <label className="font-bold text-[#1f1e1b] dark:text-[#f5f3ef] block mb-1">
                   System Prompt
                 </label>
                 <textarea
                   value={editedPrompt}
                   onChange={(e) => setEditedPrompt(e.target.value)}
                   rows={4}
-                  className="w-full bg-yellow-50/30 dark:bg-[#131627] border border-yellow-300/60 dark:border-yellow-500/30 rounded-lg p-2.5 text-xs text-slate-950 dark:text-slate-100 focus:outline-none focus:border-yellow-500 font-mono"
+                  className="w-full bg-[#faf8f5] dark:bg-[#181715] border border-[#e5e0d5] dark:border-[#33302b] rounded-xl p-2.5 text-xs text-[#1f1e1b] dark:text-[#f5f3ef] focus:outline-hidden focus:border-[#d97706] font-mono font-medium"
                 />
               </div>
 
               <div>
-                <label className="font-bold text-slate-800 dark:text-slate-200 block mb-1">
+                <label className="font-bold text-[#1f1e1b] dark:text-[#f5f3ef] block mb-1">
                   Model
                 </label>
                 <select
                   value={editedModel}
                   onChange={(e) => setEditedModel(e.target.value)}
-                  className="w-full bg-yellow-50/30 dark:bg-[#131627] border border-yellow-300/60 dark:border-yellow-500/30 rounded-lg p-2 text-xs text-slate-950 dark:text-slate-100 focus:outline-none focus:border-yellow-500 font-mono"
+                  className="w-full bg-[#faf8f5] dark:bg-[#181715] border border-[#e5e0d5] dark:border-[#33302b] rounded-xl p-2 text-xs text-[#1f1e1b] dark:text-[#f5f3ef] focus:outline-hidden focus:border-[#d97706] font-mono font-medium"
                 >
                   <option value="gpt-4o-mini">OpenAI gpt-4o-mini</option>
                   <option value="gpt-4o">OpenAI gpt-4o</option>
@@ -373,10 +373,10 @@ export const AgentRegistry: React.FC = () => {
 
               <div>
                 <div className="flex items-center justify-between mb-1">
-                  <label className="font-bold text-slate-800 dark:text-slate-200">
+                  <label className="font-bold text-[#1f1e1b] dark:text-[#f5f3ef]">
                     Daily Budget Cap
                   </label>
-                  <span className="font-mono font-bold text-amber-700 dark:text-yellow-400">
+                  <span className="font-mono font-bold text-[#d97706] dark:text-[#f59e0b]">
                     ${editedBudget}.00 / day
                   </span>
                 </div>
@@ -387,21 +387,21 @@ export const AgentRegistry: React.FC = () => {
                   step={5}
                   value={editedBudget}
                   onChange={(e) => setEditedBudget(Number(e.target.value))}
-                  className="w-full accent-yellow-500 cursor-pointer"
+                  className="w-full accent-[#d97706] cursor-pointer"
                 />
               </div>
             </div>
 
-            <div className="flex items-center justify-end gap-2 pt-2 border-t border-yellow-200 dark:border-yellow-500/20">
+            <div className="flex items-center justify-end gap-2 pt-2 border-t border-[#e5e0d5] dark:border-[#33302b]">
               <button
                 onClick={() => setTuningAgent(null)}
-                className="px-3 py-1.5 text-xs font-semibold text-slate-600 hover:text-slate-950 dark:hover:text-white cursor-pointer"
+                className="px-3 py-1.5 text-xs font-semibold text-[#5c5850] hover:text-[#1f1e1b] dark:hover:text-[#f5f3ef] cursor-pointer"
               >
                 Cancel
               </button>
               <button
                 onClick={handleSaveTuning}
-                className="px-4 py-1.5 bg-yellow-400 hover:bg-yellow-300 text-slate-950 font-bold text-xs rounded-lg transition-all border border-yellow-300 cursor-pointer"
+                className="px-4 py-1.5 bg-[#d97706] hover:bg-[#b45309] dark:bg-[#f59e0b] dark:hover:bg-[#fbbf24] text-white dark:text-[#181715] font-bold text-xs rounded-xl transition-all shadow-xs cursor-pointer"
               >
                 Save
               </button>

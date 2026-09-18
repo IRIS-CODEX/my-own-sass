@@ -1,0 +1,111 @@
+import { Request, Response } from 'express';
+import { UsersService } from '../services/users.service.ts';
+
+export class UsersController {
+  /**
+   * GET /api/cloudsql/users
+   * Returns list of all registered users and their subscriptions
+   */
+  static async getUsers(req: Request, res: Response) {
+    try {
+      await UsersService.seedInitialUsersIfEmpty();
+      const users = await UsersService.getAllUsersWithSubscriptions();
+
+      res.json({
+        success: true,
+        count: users.length,
+        users,
+      });
+    } catch (error: any) {
+      console.error('UsersController.getUsers error:', error);
+      res.status(500).json({
+        success: false,
+        error: error.message || 'Failed to fetch users from Cloud SQL',
+      });
+    }
+  }
+
+  /**
+   * POST /api/cloudsql/users
+   * Upsert a user and their selected subscription plan
+   */
+  static async upsertUser(req: Request, res: Response) {
+    try {
+      const payload = req.body;
+      if (!payload || !payload.email) {
+        return res.status(400).json({
+          success: false,
+          error: 'Email is required',
+        });
+      }
+
+      const uid = payload.uid || `user-${Date.now()}`;
+      const result = await UsersService.upsertUserAndSubscription({
+        ...payload,
+        uid,
+      });
+
+      res.status(200).json({
+        success: true,
+        data: result,
+      });
+    } catch (error: any) {
+      console.error('UsersController.upsertUser error:', error);
+      res.status(500).json({
+        success: false,
+        error: error.message || 'Failed to upsert user into Cloud SQL',
+      });
+    }
+  }
+
+  /**
+   * POST /api/cloudsql/sync
+   * Batch synchronize users from Admin Portal to Cloud SQL
+   */
+  static async syncUsers(req: Request, res: Response) {
+    try {
+      const { users: userList } = req.body;
+      if (!Array.isArray(userList)) {
+        return res.status(400).json({
+          success: false,
+          error: 'users array is required in request payload',
+        });
+      }
+
+      const results = [];
+      for (const u of userList) {
+        const synced = await UsersService.upsertUserAndSubscription({
+          uid: u.uid || u.id || `uid-${Date.now()}`,
+          email: u.email,
+          displayName: u.displayName || u.name,
+          organizationName: u.organizationName,
+          role: u.role || 'owner',
+          authProvider: u.authProvider || (u.email?.endsWith('@gmail.com') ? 'google' : 'email'),
+          planTier: u.planTier || u.subscription?.planTier || 'PRO_MONTHLY',
+          monthlyPriceUsd: u.monthlyPriceUsd ?? u.subscription?.monthlyPriceUsd,
+          billingInterval: u.billingInterval || 'monthly',
+          status: u.status || 'ACTIVE',
+          requestLimit: u.requestLimit,
+          requestsUsed: u.requestsUsed,
+          activeAgentsCount: u.activeAgentsCount,
+          virtualKeysCount: u.virtualKeysCount,
+        });
+        results.push(synced);
+      }
+
+      const allUsers = await UsersService.getAllUsersWithSubscriptions();
+      res.json({
+        success: true,
+        syncedCount: results.length,
+        totalInDatabase: allUsers.length,
+        users: allUsers,
+      });
+    } catch (error: any) {
+      console.error('UsersController.syncUsers error:', error);
+      res.status(500).json({
+        success: false,
+        error: error.message || 'Failed to sync users to Cloud SQL',
+      });
+    }
+  }
+}

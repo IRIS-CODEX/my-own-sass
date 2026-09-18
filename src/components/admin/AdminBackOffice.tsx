@@ -189,7 +189,7 @@ export const AdminBackOffice: React.FC = () => {
     <div className="space-y-8 pb-16 px-4 md:px-8 max-w-7xl mx-auto">
       {/* Global Emergency Kill Switch Alert Bar (If Triggered) */}
       {globalKillSwitchActive && (
-        <div className="p-4 rounded-xl bg-rose-600 text-white font-bold flex items-center justify-between shadow-xl animate-pulse">
+        <div className="p-4 rounded-2xl bg-rose-600 text-white font-bold flex items-center justify-between shadow-xl animate-pulse">
           <div className="flex items-center gap-3">
             <OctagonAlert className="w-6 h-6 shrink-0" />
             <div>
@@ -203,7 +203,7 @@ export const AdminBackOffice: React.FC = () => {
           </div>
           <button
             onClick={toggleGlobalKillSwitch}
-            className="px-4 py-2 bg-white text-rose-600 hover:bg-neutral-100 font-bold text-xs rounded-lg transition-all cursor-pointer"
+            className="px-4 py-2 bg-white text-rose-600 hover:bg-neutral-100 font-bold text-xs rounded-xl transition-all cursor-pointer"
           >
             Disengage Global Kill-Switch
           </button>
@@ -211,25 +211,25 @@ export const AdminBackOffice: React.FC = () => {
       )}
 
       {/* Admin Top Master Header & Navigation Deck */}
-      <div className="rounded-2xl bg-white/85 dark:bg-[#0c0e18]/85 backdrop-blur-md border border-yellow-300/40 dark:border-yellow-500/20 p-5 shadow-sm space-y-4">
-        <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 border-b border-yellow-200/50 dark:border-yellow-500/15 pb-4">
+      <div className="rounded-2xl bg-white dark:bg-[#211f1c] border border-[#e5e0d5] dark:border-[#33302b] p-6 shadow-xs space-y-4">
+        <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 border-b border-[#e5e0d5] dark:border-[#33302b] pb-4">
           <div className="flex items-center gap-3">
-            <div className="w-10 h-10 rounded-xl bg-yellow-400 text-slate-950 flex items-center justify-center font-black text-base shadow-sm">
+            <div className="w-10 h-10 rounded-2xl bg-amber-500/10 text-[#d97706] dark:text-[#f59e0b] border border-amber-500/20 flex items-center justify-center font-bold text-base shrink-0 shadow-xs">
               👑
             </div>
             <div>
-              <div className="flex items-center gap-2">
-                <h1 className="text-lg font-black tracking-tight text-slate-950 dark:text-white">
+              <div className="flex items-center gap-2 flex-wrap">
+                <h1 className="text-lg font-bold tracking-tight text-[#1f1e1b] dark:text-[#f5f3ef]">
                   SaaS Master Admin Panel
                 </h1>
-                <span className="text-[10px] font-mono font-bold uppercase px-2 py-0.5 rounded bg-yellow-100 dark:bg-yellow-950/60 text-amber-900 dark:text-yellow-300 border border-yellow-300 dark:border-yellow-500/30">
+                <span className="text-[10px] font-mono font-bold uppercase px-2.5 py-0.5 rounded-full bg-amber-500/10 text-[#d97706] dark:text-[#f59e0b] border border-amber-500/20">
                   Root SaaS Controls
                 </span>
-                <span className="text-[10px] font-mono px-2 py-0.5 rounded bg-emerald-100 dark:bg-emerald-950/50 text-emerald-800 dark:text-emerald-300 border border-emerald-300 dark:border-emerald-500/30">
+                <span className="text-[10px] font-mono px-2.5 py-0.5 rounded-full bg-emerald-500/15 text-emerald-800 dark:text-emerald-300 border border-emerald-500/30 font-bold">
                   Production Mode
                 </span>
               </div>
-              <p className="text-xs text-slate-700 dark:text-slate-300 font-medium">
+              <p className="text-xs text-[#5c5850] dark:text-[#b8b4aa] font-medium mt-0.5">
                 Manage registered user tenants, subscription revenue, unpaid customer accounts, and global SaaS configuration.
               </p>
             </div>
@@ -245,7 +245,7 @@ export const AdminBackOffice: React.FC = () => {
                 type: 'info'
               });
             }}
-            className="flex items-center gap-2 px-4 py-2 rounded-xl border border-yellow-300/70 dark:border-yellow-500/30 bg-yellow-50 hover:bg-yellow-100/80 dark:bg-yellow-950/30 dark:hover:bg-yellow-900/40 text-xs font-bold text-slate-950 dark:text-yellow-300 transition-all shadow-xs cursor-pointer"
+            className="flex items-center gap-2 px-4 py-2 rounded-xl border border-[#e5e0d5] dark:border-[#33302b] bg-[#faf8f5] hover:bg-amber-500/10 dark:bg-[#181715] dark:hover:bg-[#282622] text-xs font-bold text-[#1f1e1b] dark:text-[#f5f3ef] transition-all shadow-xs cursor-pointer"
           >
             <ArrowLeft className="w-4 h-4" />
             <span>Return to Workspace</span>
@@ -267,19 +267,19 @@ export const AdminBackOffice: React.FC = () => {
                 onClick={() => setActiveAdminTab(id as any)}
                 className={`px-3.5 py-2 rounded-xl text-xs font-bold flex items-center gap-2 transition-all cursor-pointer ${
                   activeAdminTab === id
-                    ? 'bg-yellow-400 text-slate-950 shadow-sm border border-yellow-300'
-                    : 'text-slate-700 dark:text-slate-300 hover:bg-yellow-400/20 dark:hover:bg-yellow-950/30'
+                    ? 'bg-[#1f1e1b] dark:bg-[#f5f3ef] text-white dark:text-[#181715] shadow-xs'
+                    : 'text-[#5c5850] hover:text-[#1f1e1b] dark:text-[#b8b4aa] dark:hover:text-[#f5f3ef] bg-[#faf8f5] dark:bg-[#181715] border border-[#e5e0d5] dark:border-[#33302b]'
                 }`}
               >
                 <Icon className={`w-4 h-4 ${alert ? 'text-rose-600 dark:text-rose-400 animate-pulse' : ''}`} />
                 <span>{label}</span>
                 {badge && (
-                  <span className={`text-[10px] font-mono px-1.5 py-0.2 rounded-md ${
+                  <span className={`text-[10px] font-mono px-2 py-0.5 rounded-full ${
                     alert
                       ? 'bg-rose-600 text-white font-black'
                       : activeAdminTab === id
-                        ? 'bg-yellow-200 text-slate-950'
-                        : 'bg-yellow-100 dark:bg-yellow-950/60 text-slate-800 dark:text-yellow-300'
+                        ? 'bg-white/20 text-white dark:bg-black/20 dark:text-[#181715]'
+                        : 'bg-amber-500/10 text-[#d97706] dark:text-[#f59e0b]'
                   }`}>
                     {badge}
                   </span>
@@ -288,7 +288,7 @@ export const AdminBackOffice: React.FC = () => {
             ))}
           </div>
 
-          <div className="text-[11px] font-mono text-slate-600 dark:text-slate-400 hidden lg:block">
+          <div className="text-[11px] font-mono text-[#878278] dark:text-[#7d7970] hidden lg:block">
             SaaS Gateway: <span className="font-bold text-emerald-600 dark:text-emerald-400">99.99% Uptime</span>
           </div>
         </div>
@@ -299,74 +299,74 @@ export const AdminBackOffice: React.FC = () => {
         <div className="space-y-6">
           {/* Key SaaS Financial Metrics */}
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-            <div className="p-5 rounded-2xl bg-white/85 dark:bg-[#0c0e18]/85 backdrop-blur-md border border-yellow-300/50 dark:border-yellow-500/20 shadow-xs">
-              <span className="text-xs font-bold text-slate-600 dark:text-slate-400 uppercase tracking-wider font-mono flex items-center gap-1.5">
+            <div className="p-6 rounded-2xl bg-white dark:bg-[#211f1c] border border-[#e5e0d5] dark:border-[#33302b] shadow-xs">
+              <span className="text-xs font-bold text-[#878278] dark:text-[#7d7970] uppercase tracking-wider font-mono flex items-center gap-1.5">
                 <DollarSign className="w-4 h-4 text-emerald-600 dark:text-emerald-400" />
-                Monthly Recurring Revenue (MRR)
+                Monthly Recurring Revenue
               </span>
-              <div className="mt-2 text-2xl font-black text-slate-950 dark:text-white flex items-baseline gap-2">
+              <div className="mt-2 text-2xl font-bold text-[#1f1e1b] dark:text-[#f5f3ef] flex items-baseline gap-2">
                 ${totalMRR.toLocaleString()}
-                <span className="text-xs text-emerald-600 dark:text-emerald-400 font-bold bg-emerald-500/10 px-2 py-0.5 rounded border border-emerald-500/20">
+                <span className="text-xs text-emerald-600 dark:text-emerald-400 font-bold bg-emerald-500/10 px-2 py-0.5 rounded-full border border-emerald-500/20">
                   +22.4% MoM
                 </span>
               </div>
-              <p className="mt-2 text-xs text-slate-700 dark:text-slate-300 font-medium">
-                Annual Run Rate: <span className="font-bold text-slate-950 dark:text-white font-mono">${totalARR.toLocaleString()} ARR</span>
+              <p className="mt-2 text-xs text-[#5c5850] dark:text-[#b8b4aa] font-medium">
+                Annual Run Rate: <span className="font-bold text-[#1f1e1b] dark:text-[#f5f3ef] font-mono">${totalARR.toLocaleString()} ARR</span>
               </p>
             </div>
 
-            <div className="p-5 rounded-2xl bg-white/85 dark:bg-[#0c0e18]/85 backdrop-blur-md border border-yellow-300/50 dark:border-yellow-500/20 shadow-xs">
-              <span className="text-xs font-bold text-slate-600 dark:text-slate-400 uppercase tracking-wider font-mono flex items-center gap-1.5">
-                <Users className="w-4 h-4 text-amber-600 dark:text-yellow-400" />
-                Active Paying Subscribers
+            <div className="p-6 rounded-2xl bg-white dark:bg-[#211f1c] border border-[#e5e0d5] dark:border-[#33302b] shadow-xs">
+              <span className="text-xs font-bold text-[#878278] dark:text-[#7d7970] uppercase tracking-wider font-mono flex items-center gap-1.5">
+                <Users className="w-4 h-4 text-[#d97706] dark:text-[#f59e0b]" />
+                Paying Subscribers
               </span>
-              <div className="mt-2 text-2xl font-black text-slate-950 dark:text-white flex items-baseline gap-2">
+              <div className="mt-2 text-2xl font-bold text-[#1f1e1b] dark:text-[#f5f3ef] flex items-baseline gap-2">
                 {activePaidCount}
-                <span className="text-xs text-slate-600 dark:text-slate-400 font-normal">
+                <span className="text-xs text-[#878278] dark:text-[#7d7970] font-normal">
                   / {tenants.length} total tenants
                 </span>
               </div>
-              <p className="mt-2 text-xs text-slate-700 dark:text-slate-300 font-medium">
-                ARPU: <span className="font-bold text-slate-950 dark:text-white font-mono">${activePaidCount > 0 ? Math.round(totalMRR / activePaidCount) : 0}/mo</span>
+              <p className="mt-2 text-xs text-[#5c5850] dark:text-[#b8b4aa] font-medium">
+                ARPU: <span className="font-bold text-[#1f1e1b] dark:text-[#f5f3ef] font-mono">${activePaidCount > 0 ? Math.round(totalMRR / activePaidCount) : 0}/mo</span>
               </p>
             </div>
 
-            <div className="p-5 rounded-2xl bg-white/85 dark:bg-[#0c0e18]/85 backdrop-blur-md border border-yellow-300/50 dark:border-yellow-500/20 shadow-xs">
-              <span className="text-xs font-bold text-slate-600 dark:text-slate-400 uppercase tracking-wider font-mono flex items-center gap-1.5">
+            <div className="p-6 rounded-2xl bg-white dark:bg-[#211f1c] border border-[#e5e0d5] dark:border-[#33302b] shadow-xs">
+              <span className="text-xs font-bold text-[#878278] dark:text-[#7d7970] uppercase tracking-wider font-mono flex items-center gap-1.5">
                 <AlertTriangle className="w-4 h-4 text-rose-600 dark:text-rose-400" />
-                Unpaid / Overdue Revenue
+                Overdue Revenue
               </span>
-              <div className="mt-2 text-2xl font-black text-rose-600 dark:text-rose-400 flex items-baseline gap-2">
+              <div className="mt-2 text-2xl font-bold text-rose-600 dark:text-rose-400 flex items-baseline gap-2">
                 ${totalOverdueDebt.toLocaleString()}
-                <span className="text-xs text-rose-600 dark:text-rose-400 font-bold bg-rose-500/10 px-2 py-0.5 rounded border border-rose-500/20">
+                <span className="text-xs text-rose-600 dark:text-rose-400 font-bold bg-rose-500/10 px-2 py-0.5 rounded-full border border-rose-500/20">
                   {unpaidTenants.length} Accounts
                 </span>
               </div>
-              <p className="mt-2 text-xs text-slate-700 dark:text-slate-300 font-medium">
+              <p className="mt-2 text-xs text-[#5c5850] dark:text-[#b8b4aa] font-medium">
                 Recovery Pipeline Active with Dunning
               </p>
             </div>
 
-            <div className="p-5 rounded-2xl bg-white/85 dark:bg-[#0c0e18]/85 backdrop-blur-md border border-yellow-300/50 dark:border-yellow-500/20 shadow-xs">
-              <span className="text-xs font-bold text-slate-600 dark:text-slate-400 uppercase tracking-wider font-mono flex items-center gap-1.5">
+            <div className="p-6 rounded-2xl bg-white dark:bg-[#211f1c] border border-[#e5e0d5] dark:border-[#33302b] shadow-xs">
+              <span className="text-xs font-bold text-[#878278] dark:text-[#7d7970] uppercase tracking-wider font-mono flex items-center gap-1.5">
                 <Activity className="w-4 h-4 text-sky-600 dark:text-sky-400" />
                 Platform Churn & Retention
               </span>
-              <div className="mt-2 text-2xl font-black text-slate-950 dark:text-white flex items-baseline gap-2">
+              <div className="mt-2 text-2xl font-bold text-[#1f1e1b] dark:text-[#f5f3ef] flex items-baseline gap-2">
                 1.1%
-                <span className="text-xs text-emerald-600 dark:text-emerald-400 font-bold bg-emerald-500/10 px-2 py-0.5 rounded border border-emerald-500/20">
+                <span className="text-xs text-emerald-600 dark:text-emerald-400 font-bold bg-emerald-500/10 px-2 py-0.5 rounded-full border border-emerald-500/20">
                   Sub-2% Target
                 </span>
               </div>
-              <p className="mt-2 text-xs text-slate-700 dark:text-slate-300 font-medium">
-                Suspended Accounts: <span className="font-bold text-slate-950 dark:text-white font-mono">{suspendedCount}</span>
+              <p className="mt-2 text-xs text-[#5c5850] dark:text-[#b8b4aa] font-medium">
+                Suspended Accounts: <span className="font-bold text-[#1f1e1b] dark:text-[#f5f3ef] font-mono">{suspendedCount}</span>
               </p>
             </div>
           </div>
 
           {/* SaaS Pricing Tier Distribution */}
-          <div className="p-6 rounded-2xl bg-white/85 dark:bg-[#0c0e18]/85 backdrop-blur-md border border-yellow-300/50 dark:border-yellow-500/20 shadow-xs space-y-4">
-            <h2 className="text-sm font-bold text-slate-950 dark:text-white">
+          <div className="p-6 rounded-2xl bg-white dark:bg-[#211f1c] border border-[#e5e0d5] dark:border-[#33302b] shadow-xs space-y-4">
+            <h2 className="text-sm font-bold text-[#1f1e1b] dark:text-[#f5f3ef]">
               SaaS Subscription Plan Breakdown
             </h2>
             <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
@@ -376,15 +376,15 @@ export const AdminBackOffice: React.FC = () => {
                 { plan: 'PRO (MONTHLY / YEARLY)', price: '$199 / mo', users: tenants.filter(t => t.planTier === 'PRO_MONTHLY' || t.planTier === 'PRO_YEARLY').length, desc: '500,000 requests, unlimited agents, virtual keys' },
                 { plan: 'ENTERPRISE FLEET', price: '$799 / mo', users: tenants.filter(t => t.planTier === 'ENTERPRISE').length, desc: '2,000,000 requests, dedicated gateway, SLA' },
               ].map((tier) => (
-                <div key={tier.plan} className="p-4 rounded-xl bg-yellow-50/50 dark:bg-[#121524] border border-yellow-300/50 dark:border-yellow-500/20 space-y-2">
+                <div key={tier.plan} className="p-4 rounded-2xl bg-[#faf8f5] dark:bg-[#181715] border border-[#e5e0d5] dark:border-[#33302b] space-y-2">
                   <div className="flex items-center justify-between">
-                    <span className="text-xs font-mono font-bold text-amber-900 dark:text-yellow-400">{tier.plan}</span>
-                    <span className="text-xs font-bold text-slate-950 dark:text-white font-mono">{tier.price}</span>
+                    <span className="text-xs font-mono font-bold text-[#d97706] dark:text-[#f59e0b]">{tier.plan}</span>
+                    <span className="text-xs font-bold text-[#1f1e1b] dark:text-[#f5f3ef] font-mono">{tier.price}</span>
                   </div>
-                  <div className="text-xl font-black text-slate-950 dark:text-white font-mono">
-                    {tier.users} <span className="text-xs font-normal text-slate-600 dark:text-slate-400">active tenants</span>
+                  <div className="text-xl font-bold text-[#1f1e1b] dark:text-[#f5f3ef] font-mono">
+                    {tier.users} <span className="text-xs font-normal text-[#878278] dark:text-[#7d7970]">active tenants</span>
                   </div>
-                  <p className="text-[11px] text-slate-700 dark:text-slate-300 font-medium">
+                  <p className="text-[11px] text-[#5c5850] dark:text-[#b8b4aa] font-medium">
                     {tier.desc}
                   </p>
                 </div>
@@ -393,60 +393,60 @@ export const AdminBackOffice: React.FC = () => {
           </div>
 
           {/* Recent Billing & Payment Processor Transactions */}
-          <div className="p-6 rounded-2xl bg-white/85 dark:bg-[#0c0e18]/85 backdrop-blur-md border border-yellow-300/50 dark:border-yellow-500/20 shadow-xs space-y-4">
+          <div className="p-6 rounded-2xl bg-white dark:bg-[#211f1c] border border-[#e5e0d5] dark:border-[#33302b] shadow-xs space-y-4">
             <div className="flex items-center justify-between">
               <div>
-                <h2 className="text-sm font-bold text-slate-950 dark:text-white">
+                <h2 className="text-sm font-bold text-[#1f1e1b] dark:text-[#f5f3ef]">
                   Live Payment Gateway Transactions (Stripe &amp; PayPal Webhooks)
                 </h2>
-                <p className="text-xs text-slate-700 dark:text-slate-300 font-medium">
+                <p className="text-xs text-[#5c5850] dark:text-[#b8b4aa] font-medium mt-0.5">
                   Real-time subscription billing charges, card settlements, and failed collection attempts.
                 </p>
               </div>
-              <span className="text-xs font-mono font-bold text-emerald-600 dark:text-emerald-400 bg-emerald-500/10 px-2 py-1 rounded border border-emerald-500/20">
+              <span className="text-xs font-mono font-bold text-emerald-600 dark:text-emerald-400 bg-emerald-500/10 px-2.5 py-1 rounded-full border border-emerald-500/20">
                 Webhooks Synced
               </span>
             </div>
 
             <div className="overflow-x-auto">
-              <table className="w-full text-left text-xs text-slate-950 dark:text-slate-100">
-                <thead className="bg-yellow-100/60 dark:bg-[#121524] font-mono text-[11px] text-slate-800 dark:text-yellow-300 uppercase border-b border-yellow-300/50 dark:border-yellow-500/25">
+              <table className="w-full text-left text-xs text-[#1f1e1b] dark:text-[#f5f3ef]">
+                <thead className="bg-[#faf8f5] dark:bg-[#181715] font-mono text-[11px] text-[#1f1e1b] dark:text-[#f5f3ef] uppercase border-b border-[#e5e0d5] dark:border-[#33302b]">
                   <tr>
-                    <th className="p-3">Customer Tenant</th>
-                    <th className="p-3">Amount</th>
-                    <th className="p-3">Charge Type</th>
-                    <th className="p-3">Payment Method</th>
-                    <th className="p-3">Status</th>
-                    <th className="p-3">Timestamp</th>
+                    <th className="p-3.5">Customer Tenant</th>
+                    <th className="p-3.5">Amount</th>
+                    <th className="p-3.5">Charge Type</th>
+                    <th className="p-3.5">Payment Method</th>
+                    <th className="p-3.5">Status</th>
+                    <th className="p-3.5">Timestamp</th>
                   </tr>
                 </thead>
-                <tbody className="divide-y divide-yellow-200/40 dark:divide-yellow-500/15 font-sans">
+                <tbody className="divide-y divide-[#e5e0d5] dark:divide-[#33302b] font-sans">
                   {recentTransactions.map((tx) => (
-                    <tr key={tx.id} className="hover:bg-yellow-50/50 dark:hover:bg-[#121626] transition-colors">
-                      <td className="p-3 font-bold text-slate-950 dark:text-white">
+                    <tr key={tx.id} className="hover:bg-[#faf8f5]/60 dark:hover:bg-[#181715]/60 transition-colors">
+                      <td className="p-3.5 font-bold text-[#1f1e1b] dark:text-[#f5f3ef]">
                         {tx.tenantName}
                       </td>
-                      <td className="p-3 font-mono font-bold text-slate-950 dark:text-white">
+                      <td className="p-3.5 font-mono font-bold text-[#1f1e1b] dark:text-[#f5f3ef]">
                         ${tx.amountUsd}.00
                       </td>
-                      <td className="p-3 font-mono text-[11px] text-slate-700 dark:text-slate-300">
+                      <td className="p-3.5 font-mono text-[11px] text-[#5c5850] dark:text-[#b8b4aa]">
                         {tx.type}
                       </td>
-                      <td className="p-3 text-slate-800 dark:text-slate-300">
+                      <td className="p-3.5 text-[#5c5850] dark:text-[#b8b4aa]">
                         {tx.paymentMethod}
                       </td>
-                      <td className="p-3">
+                      <td className="p-3.5">
                         {tx.status === 'SETTLED' ? (
-                          <span className="px-2 py-0.5 rounded text-[10px] font-bold bg-emerald-500/15 text-emerald-800 dark:text-emerald-300 border border-emerald-500/30">
+                          <span className="px-2.5 py-0.5 rounded-full text-[10px] font-bold bg-emerald-500/15 text-emerald-800 dark:text-emerald-300 border border-emerald-500/30">
                             SETTLED
                           </span>
                         ) : (
-                          <span className="px-2 py-0.5 rounded text-[10px] font-bold bg-rose-500/15 text-rose-800 dark:text-rose-300 border border-rose-500/30">
+                          <span className="px-2.5 py-0.5 rounded-full text-[10px] font-bold bg-rose-500/15 text-rose-800 dark:text-rose-300 border border-rose-500/30">
                             FAILED: {tx.errorNote || 'DECLINED'}
                           </span>
                         )}
                       </td>
-                      <td className="p-3 font-mono text-[11px] text-slate-600 dark:text-slate-400">
+                      <td className="p-3.5 font-mono text-[11px] text-[#878278] dark:text-[#7d7970]">
                         {tx.timestamp}
                       </td>
                     </tr>
@@ -462,7 +462,7 @@ export const AdminBackOffice: React.FC = () => {
       {activeAdminTab === 'users' && (
         <div className="space-y-6">
           {/* Filter Bar & Search */}
-          <div className="p-4 rounded-2xl bg-white/85 dark:bg-[#0c0e18]/85 backdrop-blur-md border border-yellow-300/50 dark:border-yellow-500/20 shadow-xs flex flex-col md:flex-row md:items-center justify-between gap-4">
+          <div className="p-4 rounded-2xl bg-white dark:bg-[#211f1c] border border-[#e5e0d5] dark:border-[#33302b] shadow-xs flex flex-col md:flex-row md:items-center justify-between gap-4">
             <div className="flex flex-wrap items-center gap-2">
               {[
                 { id: 'ALL', label: 'All Users', count: tenants.length },
@@ -474,14 +474,14 @@ export const AdminBackOffice: React.FC = () => {
                 <button
                   key={id}
                   onClick={() => setUserFilterStatus(id as any)}
-                  className={`px-3 py-1.5 rounded-lg text-xs font-bold transition-all cursor-pointer flex items-center gap-1.5 ${
+                  className={`px-3 py-1.5 rounded-xl text-xs font-bold transition-all cursor-pointer flex items-center gap-1.5 ${
                     userFilterStatus === id
-                      ? 'bg-yellow-400 text-slate-950 border border-yellow-300'
-                      : 'bg-yellow-50 hover:bg-yellow-100 dark:bg-[#121524] text-slate-700 dark:text-slate-300 border border-yellow-200 dark:border-yellow-500/20'
+                      ? 'bg-[#1f1e1b] dark:bg-[#f5f3ef] text-white dark:text-[#181715] shadow-xs'
+                      : 'bg-[#faf8f5] hover:bg-amber-500/10 dark:bg-[#181715] text-[#5c5850] dark:text-[#b8b4aa] border border-[#e5e0d5] dark:border-[#33302b]'
                   }`}
                 >
                   <span>{label}</span>
-                  <span className="px-1.5 py-0.2 rounded-full text-[10px] font-mono bg-white/80 dark:bg-black/40 text-slate-950 dark:text-white">
+                  <span className="px-1.5 py-0.2 rounded-full text-[10px] font-mono bg-black/10 dark:bg-white/10">
                     {count}
                   </span>
                 </button>
@@ -489,82 +489,82 @@ export const AdminBackOffice: React.FC = () => {
             </div>
 
             <div className="relative w-full md:w-64">
-              <Search className="w-3.5 h-3.5 absolute left-3 top-1/2 -translate-y-1/2 text-slate-500" />
+              <Search className="w-3.5 h-3.5 absolute left-3 top-1/2 -translate-y-1/2 text-[#878278]" />
               <input
                 type="text"
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
                 placeholder="Filter users or emails..."
-                className="w-full bg-white dark:bg-[#121524] border border-yellow-300/60 dark:border-yellow-500/30 rounded-lg pl-8 pr-3 py-1.5 text-xs text-slate-950 dark:text-slate-100 placeholder-slate-500 focus:outline-hidden focus:border-yellow-500"
+                className="w-full bg-[#faf8f5] dark:bg-[#181715] border border-[#e5e0d5] dark:border-[#33302b] rounded-xl pl-8 pr-3 py-1.5 text-xs text-[#1f1e1b] dark:text-[#f5f3ef] placeholder-[#878278] focus:outline-hidden focus:border-[#d97706]"
               />
             </div>
           </div>
 
           {/* Tenants Table */}
-          <div className="p-6 rounded-2xl bg-white/85 dark:bg-[#0c0e18]/85 backdrop-blur-md border border-yellow-300/50 dark:border-yellow-500/20 shadow-xs space-y-4">
+          <div className="p-6 rounded-2xl bg-white dark:bg-[#211f1c] border border-[#e5e0d5] dark:border-[#33302b] shadow-xs space-y-4">
             <div className="flex items-center justify-between">
-              <h2 className="text-sm font-bold text-slate-950 dark:text-white">
+              <h2 className="text-sm font-bold text-[#1f1e1b] dark:text-[#f5f3ef]">
                 Customer Tenant Database ({filteredTenants.length} matching)
               </h2>
-              <span className="text-xs text-slate-600 dark:text-slate-400 font-medium">
+              <span className="text-xs text-[#878278] dark:text-[#7d7970] font-medium">
                 Click any tenant to adjust subscription plan or manage billing state
               </span>
             </div>
 
             <div className="overflow-x-auto">
-              <table className="w-full text-left text-xs text-slate-950 dark:text-slate-100">
-                <thead className="bg-yellow-100/60 dark:bg-[#121524] font-mono text-[11px] text-slate-800 dark:text-yellow-300 uppercase border-b border-yellow-300/50 dark:border-yellow-500/25">
+              <table className="w-full text-left text-xs text-[#1f1e1b] dark:text-[#f5f3ef]">
+                <thead className="bg-[#faf8f5] dark:bg-[#181715] font-mono text-[11px] text-[#1f1e1b] dark:text-[#f5f3ef] uppercase border-b border-[#e5e0d5] dark:border-[#33302b]">
                   <tr>
-                    <th className="p-3">User &amp; Organization</th>
-                    <th className="p-3">Subscription Tier</th>
-                    <th className="p-3">Monthly Billing</th>
-                    <th className="p-3">Status</th>
-                    <th className="p-3">Requests Usage</th>
-                    <th className="p-3">Agents</th>
-                    <th className="p-3 text-right">Admin Actions</th>
+                    <th className="p-3.5">User &amp; Organization</th>
+                    <th className="p-3.5">Subscription Tier</th>
+                    <th className="p-3.5">Monthly Billing</th>
+                    <th className="p-3.5">Status</th>
+                    <th className="p-3.5">Requests Usage</th>
+                    <th className="p-3.5">Agents</th>
+                    <th className="p-3.5 text-right">Admin Actions</th>
                   </tr>
                 </thead>
-                <tbody className="divide-y divide-yellow-200/40 dark:divide-yellow-500/15 font-sans">
+                <tbody className="divide-y divide-[#e5e0d5] dark:divide-[#33302b] font-sans">
                   {filteredTenants.map((t) => {
                     const usagePercent = Math.min(100, Math.round((t.requestsUsed / t.requestLimit) * 100));
                     return (
-                      <tr key={t.id} className="hover:bg-yellow-50/50 dark:hover:bg-[#121626] transition-colors">
-                        <td className="p-3">
-                          <div className="font-bold text-slate-950 dark:text-white">
+                      <tr key={t.id} className="hover:bg-[#faf8f5]/60 dark:hover:bg-[#181715]/60 transition-colors">
+                        <td className="p-3.5">
+                          <div className="font-bold text-[#1f1e1b] dark:text-[#f5f3ef]">
                             {t.name}
                           </div>
-                          <div className="text-[11px] text-slate-700 dark:text-slate-400 font-medium">
+                          <div className="text-[11px] text-[#5c5850] dark:text-[#b8b4aa] font-medium">
                             {t.ownerName ? `${t.ownerName} • ` : ''}{t.ownerEmail}
                           </div>
-                          <div className="text-[10px] font-mono text-slate-500 dark:text-slate-400">
+                          <div className="text-[10px] font-mono text-[#878278] dark:text-[#7d7970]">
                             ID: {t.id}
                           </div>
                         </td>
 
-                        <td className="p-3">
-                          <span className="px-2 py-0.5 rounded font-mono text-[11px] font-bold bg-yellow-100 dark:bg-yellow-950/60 text-slate-950 dark:text-yellow-300 border border-yellow-300/70 dark:border-yellow-500/30">
+                        <td className="p-3.5">
+                          <span className="px-2.5 py-0.5 rounded-full font-mono text-[11px] font-bold bg-amber-500/10 text-[#d97706] dark:text-[#f59e0b] border border-amber-500/20">
                             {t.planTier}
                           </span>
                         </td>
 
-                        <td className="p-3">
-                          <div className="font-mono font-bold text-slate-950 dark:text-white">
+                        <td className="p-3.5">
+                          <div className="font-mono font-bold text-[#1f1e1b] dark:text-[#f5f3ef]">
                             ${t.monthlySpendUsd}/mo
                           </div>
-                          <div className="text-[10px] text-slate-600 dark:text-slate-400">
+                          <div className="text-[10px] text-[#878278] dark:text-[#7d7970]">
                             LTV: ${t.totalPaidLtvUsd.toLocaleString()}
                           </div>
                         </td>
 
-                        <td className="p-3">
+                        <td className="p-3.5">
                           {t.status === 'ACTIVE' && (
-                            <span className="px-2 py-0.5 rounded text-[10px] font-bold bg-emerald-500/15 text-emerald-800 dark:text-emerald-300 border border-emerald-500/30">
+                            <span className="px-2.5 py-0.5 rounded-full text-[10px] font-bold bg-emerald-500/15 text-emerald-800 dark:text-emerald-300 border border-emerald-500/30">
                               ACTIVE
                             </span>
                           )}
                           {t.status === 'PAST_DUE' && (
                             <div className="space-y-0.5">
-                              <span className="px-2 py-0.5 rounded text-[10px] font-bold bg-amber-500/20 text-amber-900 dark:text-amber-300 border border-amber-500/40 flex items-center gap-1 w-fit">
+                              <span className="px-2.5 py-0.5 rounded-full text-[10px] font-bold bg-amber-500/20 text-amber-900 dark:text-amber-300 border border-amber-500/40 flex items-center gap-1 w-fit">
                                 <AlertTriangle className="w-3 h-3" />
                                 PAST DUE ({t.daysPastDue}d)
                               </span>
@@ -574,22 +574,22 @@ export const AdminBackOffice: React.FC = () => {
                             </div>
                           )}
                           {t.status === 'SUSPENDED' && (
-                            <span className="px-2 py-0.5 rounded text-[10px] font-bold bg-rose-500/20 text-rose-800 dark:text-rose-300 border border-rose-500/40">
+                            <span className="px-2.5 py-0.5 rounded-full text-[10px] font-bold bg-rose-500/20 text-rose-800 dark:text-rose-300 border border-rose-500/40">
                               SUSPENDED
                             </span>
                           )}
                         </td>
 
-                        <td className="p-3">
+                        <td className="p-3.5">
                           <div className="w-32 space-y-1">
-                            <div className="flex justify-between text-[10px] font-mono text-slate-700 dark:text-slate-300">
+                            <div className="flex justify-between text-[10px] font-mono text-[#5c5850] dark:text-[#b8b4aa]">
                               <span>{t.requestsUsed.toLocaleString()}</span>
                               <span>{t.requestLimit.toLocaleString()}</span>
                             </div>
-                            <div className="w-full h-1.5 bg-yellow-200/50 dark:bg-neutral-800 rounded-full overflow-hidden">
+                            <div className="w-full h-1.5 bg-[#e5e0d5] dark:bg-[#33302b] rounded-full overflow-hidden">
                               <div
                                 className={`h-full rounded-full ${
-                                  usagePercent > 90 ? 'bg-rose-500' : 'bg-yellow-400'
+                                  usagePercent > 90 ? 'bg-rose-500' : 'bg-[#d97706] dark:bg-[#f59e0b]'
                                 }`}
                                 style={{ width: `${usagePercent}%` }}
                               />
@@ -597,11 +597,11 @@ export const AdminBackOffice: React.FC = () => {
                           </div>
                         </td>
 
-                        <td className="p-3 font-mono font-bold text-slate-950 dark:text-white">
+                        <td className="p-3.5 font-mono font-bold text-[#1f1e1b] dark:text-[#f5f3ef]">
                           {t.activeAgentsCount}
                         </td>
 
-                        <td className="p-3 text-right">
+                        <td className="p-3.5 text-right">
                           <div className="flex items-center justify-end gap-1.5">
                             {/* Change Plan */}
                             <button
@@ -610,7 +610,7 @@ export const AdminBackOffice: React.FC = () => {
                                 setTargetPlan(t.planTier);
                               }}
                               title="Change Plan Tier"
-                              className="px-2 py-1 rounded bg-yellow-100 hover:bg-yellow-200 dark:bg-yellow-950/40 dark:hover:bg-yellow-900/50 text-slate-900 dark:text-yellow-300 font-bold text-[11px] transition-all cursor-pointer border border-yellow-300 dark:border-yellow-500/30"
+                              className="px-2.5 py-1 rounded-lg bg-[#faf8f5] hover:bg-amber-500/10 dark:bg-[#181715] text-[#1f1e1b] dark:text-[#f5f3ef] font-bold text-[11px] transition-all cursor-pointer border border-[#e5e0d5] dark:border-[#33302b]"
                             >
                               Change Plan
                             </button>
@@ -619,7 +619,7 @@ export const AdminBackOffice: React.FC = () => {
                             <button
                               onClick={() => openQuotaOverride(t)}
                               title="Override Quota"
-                              className="px-2 py-1 rounded bg-yellow-50 hover:bg-yellow-100 dark:bg-[#15192c] text-slate-800 dark:text-slate-300 text-[11px] font-medium transition-all cursor-pointer border border-yellow-200 dark:border-[#262c47]"
+                              className="px-2.5 py-1 rounded-lg bg-[#faf8f5] hover:bg-amber-500/10 dark:bg-[#181715] text-[#5c5850] dark:text-[#b8b4aa] text-[11px] font-medium transition-all cursor-pointer border border-[#e5e0d5] dark:border-[#33302b]"
                             >
                               Quota
                             </button>
@@ -629,7 +629,7 @@ export const AdminBackOffice: React.FC = () => {
                               <button
                                 onClick={() => handleRetryPayment(t)}
                                 title="Retry Card Charge"
-                                className="px-2 py-1 rounded bg-emerald-600 hover:bg-emerald-500 text-white font-bold text-[11px] transition-all cursor-pointer flex items-center gap-1 shadow-xs"
+                                className="px-2.5 py-1 rounded-lg bg-emerald-600 hover:bg-emerald-500 text-white font-bold text-[11px] transition-all cursor-pointer flex items-center gap-1 shadow-xs"
                               >
                                 <RefreshCw className="w-3 h-3" />
                                 <span>Retry</span>
@@ -645,7 +645,7 @@ export const AdminBackOffice: React.FC = () => {
                                   });
                                 }}
                                 title="Suspend Account"
-                                className="px-2 py-1 rounded hover:bg-rose-500/15 text-rose-600 dark:text-rose-400 font-bold text-[11px] transition-all cursor-pointer"
+                                className="px-2.5 py-1 rounded-lg hover:bg-rose-500/15 text-rose-600 dark:text-rose-400 font-bold text-[11px] transition-all cursor-pointer"
                               >
                                 Suspend
                               </button>
@@ -660,7 +660,7 @@ export const AdminBackOffice: React.FC = () => {
                                   });
                                 }}
                                 title="Reactivate Account"
-                                className="px-2 py-1 rounded bg-emerald-600 hover:bg-emerald-500 text-white font-bold text-[11px] transition-all cursor-pointer"
+                                className="px-2.5 py-1 rounded-lg bg-emerald-600 hover:bg-emerald-500 text-white font-bold text-[11px] transition-all cursor-pointer"
                               >
                                 Reactivate
                               </button>
@@ -681,18 +681,18 @@ export const AdminBackOffice: React.FC = () => {
       {activeAdminTab === 'unpaid' && (
         <div className="space-y-6">
           {/* Overdue Overview Card */}
-          <div className="p-6 rounded-2xl bg-white/85 dark:bg-[#0c0e18]/85 backdrop-blur-md border border-rose-300/50 dark:border-rose-500/30 shadow-xs space-y-4">
+          <div className="p-6 rounded-2xl bg-white dark:bg-[#211f1c] border border-rose-300/50 dark:border-rose-500/30 shadow-xs space-y-4">
             <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
               <div>
                 <div className="flex items-center gap-2">
-                  <h2 className="text-base font-black text-slate-950 dark:text-white">
+                  <h2 className="text-base font-bold text-[#1f1e1b] dark:text-[#f5f3ef]">
                     Unpaid &amp; Delinquent Accounts Radar
                   </h2>
-                  <span className="px-2 py-0.5 rounded text-xs font-mono font-black bg-rose-600 text-white">
+                  <span className="px-2.5 py-0.5 rounded-full text-xs font-mono font-bold bg-rose-600 text-white">
                     {unpaidTenants.length} AT-RISK ACCOUNTS
                   </span>
                 </div>
-                <p className="text-xs text-slate-700 dark:text-slate-300 font-medium mt-1">
+                <p className="text-xs text-[#5c5850] dark:text-[#b8b4aa] font-medium mt-1">
                   Manage users with failed credit cards, expired PayPal agreements, or overdue enterprise PO invoices.
                 </p>
               </div>
@@ -700,7 +700,7 @@ export const AdminBackOffice: React.FC = () => {
               <div className="flex items-center gap-2">
                 <button
                   onClick={handleBulkDunning}
-                  className="px-3.5 py-2 rounded-xl text-xs font-bold bg-yellow-400 hover:bg-yellow-300 text-slate-950 flex items-center gap-2 transition-all shadow-xs cursor-pointer border border-yellow-300"
+                  className="px-3.5 py-2 rounded-xl text-xs font-bold bg-[#d97706] hover:bg-[#b45309] text-white flex items-center gap-2 transition-all shadow-xs cursor-pointer"
                 >
                   <Send className="w-3.5 h-3.5" />
                   <span>Send Dunning Notices to All ({unpaidTenants.length})</span>
@@ -718,38 +718,38 @@ export const AdminBackOffice: React.FC = () => {
 
             {/* Metrics Row */}
             <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 pt-2">
-              <div className="p-4 rounded-xl bg-rose-50/50 dark:bg-rose-950/20 border border-rose-200 dark:border-rose-900/40">
+              <div className="p-4 rounded-2xl bg-rose-50/50 dark:bg-rose-950/20 border border-rose-200 dark:border-rose-900/40">
                 <span className="text-[11px] font-mono uppercase font-bold text-rose-800 dark:text-rose-400">
                   Total Outstanding Debt
                 </span>
-                <div className="text-2xl font-black text-rose-600 dark:text-rose-400 font-mono mt-1">
+                <div className="text-2xl font-bold text-rose-600 dark:text-rose-400 font-mono mt-1">
                   ${totalOverdueDebt.toLocaleString()}.00
                 </div>
-                <p className="text-[10px] text-slate-600 dark:text-slate-400 mt-1">
+                <p className="text-[10px] text-[#878278] dark:text-[#7d7970] mt-1">
                   Awaiting payment collection
                 </p>
               </div>
 
-              <div className="p-4 rounded-xl bg-amber-50/50 dark:bg-amber-950/20 border border-amber-200 dark:border-amber-900/40">
+              <div className="p-4 rounded-2xl bg-amber-50/50 dark:bg-amber-950/20 border border-amber-200 dark:border-amber-900/40">
                 <span className="text-[11px] font-mono uppercase font-bold text-amber-800 dark:text-amber-400">
                   Platform Grace Period
                 </span>
-                <div className="text-2xl font-black text-slate-950 dark:text-white font-mono mt-1">
+                <div className="text-2xl font-bold text-[#1f1e1b] dark:text-[#f5f3ef] font-mono mt-1">
                   {saasConfig.gracePeriodDays} Days
                 </div>
-                <p className="text-[10px] text-slate-600 dark:text-slate-400 mt-1">
+                <p className="text-[10px] text-[#878278] dark:text-[#7d7970] mt-1">
                   Before automatic gateway kill-switch activates
                 </p>
               </div>
 
-              <div className="p-4 rounded-xl bg-yellow-50/50 dark:bg-yellow-950/20 border border-yellow-200 dark:border-yellow-900/40">
-                <span className="text-[11px] font-mono uppercase font-bold text-amber-900 dark:text-yellow-400">
+              <div className="p-4 rounded-2xl bg-amber-500/10 border border-amber-500/20">
+                <span className="text-[11px] font-mono uppercase font-bold text-[#d97706] dark:text-[#f59e0b]">
                   Automated Card Retry Engine
                 </span>
-                <div className="text-2xl font-black text-emerald-600 dark:text-emerald-400 font-mono mt-1">
+                <div className="text-2xl font-bold text-emerald-600 dark:text-emerald-400 font-mono mt-1">
                   Enabled (Smart Retry)
                 </div>
-                <p className="text-[10px] text-slate-600 dark:text-slate-400 mt-1">
+                <p className="text-[10px] text-[#878278] dark:text-[#7d7970] mt-1">
                   Attempts retries at optimal bank clearing hours
                 </p>
               </div>
@@ -757,42 +757,42 @@ export const AdminBackOffice: React.FC = () => {
           </div>
 
           {/* Overdue Accounts Table */}
-          <div className="p-6 rounded-2xl bg-white/85 dark:bg-[#0c0e18]/85 backdrop-blur-md border border-yellow-300/50 dark:border-yellow-500/20 shadow-xs space-y-4">
-            <h3 className="text-sm font-bold text-slate-950 dark:text-white">
+          <div className="p-6 rounded-2xl bg-white dark:bg-[#211f1c] border border-[#e5e0d5] dark:border-[#33302b] shadow-xs space-y-4">
+            <h3 className="text-sm font-bold text-[#1f1e1b] dark:text-[#f5f3ef]">
               Detailed Unpaid Account Roster
             </h3>
 
             {unpaidTenants.length === 0 ? (
               <div className="py-12 text-center space-y-2">
                 <CheckCircle2 className="w-10 h-10 text-emerald-500 mx-auto" />
-                <h4 className="text-sm font-bold text-slate-950 dark:text-white">All Accounts In Good Standing</h4>
-                <p className="text-xs text-slate-600 dark:text-slate-400">There are currently no overdue or unpaid customer subscriptions.</p>
+                <h4 className="text-sm font-bold text-[#1f1e1b] dark:text-[#f5f3ef]">All Accounts In Good Standing</h4>
+                <p className="text-xs text-[#878278] dark:text-[#7d7970]">There are currently no overdue or unpaid customer subscriptions.</p>
               </div>
             ) : (
               <div className="space-y-3">
                 {unpaidTenants.map((t) => (
                   <div
                     key={t.id}
-                    className="p-4 rounded-xl border border-rose-300/60 dark:border-rose-500/30 bg-rose-50/25 dark:bg-rose-950/10 flex flex-col md:flex-row md:items-center justify-between gap-4"
+                    className="p-4 rounded-2xl border border-rose-300/60 dark:border-rose-500/30 bg-rose-50/25 dark:bg-rose-950/10 flex flex-col md:flex-row md:items-center justify-between gap-4"
                   >
                     <div className="space-y-1.5">
-                      <div className="flex items-center gap-2">
-                        <span className="font-bold text-sm text-slate-950 dark:text-white">{t.name}</span>
-                        <span className="text-[10px] font-mono font-bold px-2 py-0.5 rounded bg-rose-600 text-white">
+                      <div className="flex items-center gap-2 flex-wrap">
+                        <span className="font-bold text-sm text-[#1f1e1b] dark:text-[#f5f3ef]">{t.name}</span>
+                        <span className="text-[10px] font-mono font-bold px-2.5 py-0.5 rounded-full bg-rose-600 text-white">
                           ${t.unpaidBalanceUsd} OVERDUE
                         </span>
-                        <span className="text-[10px] font-mono px-2 py-0.5 rounded bg-amber-100 dark:bg-amber-950/60 text-amber-900 dark:text-amber-300 font-bold border border-amber-300 dark:border-amber-600/40">
+                        <span className="text-[10px] font-mono px-2.5 py-0.5 rounded-full bg-amber-100 dark:bg-amber-950/60 text-amber-900 dark:text-amber-300 font-bold border border-amber-300 dark:border-amber-600/40">
                           {t.daysPastDue} DAYS LATE
                         </span>
                       </div>
-                      <div className="text-xs text-slate-700 dark:text-slate-300">
+                      <div className="text-xs text-[#5c5850] dark:text-[#b8b4aa]">
                         {t.ownerName ? `${t.ownerName} • ` : ''}<span className="font-mono">{t.ownerEmail}</span>
                       </div>
                       <div className="text-[11px] font-mono text-rose-700 dark:text-rose-400 flex items-center gap-1">
                         <AlertOctagon className="w-3.5 h-3.5" />
                         Failure Cause: <span className="font-bold">{t.failureReason || 'Card issuer authorization declined'}</span>
                       </div>
-                      <div className="text-[10px] text-slate-600 dark:text-slate-400">
+                      <div className="text-[10px] text-[#878278] dark:text-[#7d7970]">
                         Payment Method: {t.paymentMethod} {t.cardLast4 ? `(ending in ${t.cardLast4})` : ''} • Dunning Notices Sent: {t.dunningSentCount || 0}
                       </div>
                     </div>
@@ -800,7 +800,7 @@ export const AdminBackOffice: React.FC = () => {
                     <div className="flex flex-wrap items-center gap-2">
                       <button
                         onClick={() => handleRetryPayment(t)}
-                        className="px-3 py-1.5 rounded-lg text-xs font-bold bg-emerald-600 hover:bg-emerald-500 text-white flex items-center gap-1.5 transition-all shadow-xs cursor-pointer"
+                        className="px-3 py-1.5 rounded-xl text-xs font-bold bg-emerald-600 hover:bg-emerald-500 text-white flex items-center gap-1.5 transition-all shadow-xs cursor-pointer"
                       >
                         <RefreshCw className="w-3.5 h-3.5" />
                         <span>Retry Charge</span>
@@ -808,7 +808,7 @@ export const AdminBackOffice: React.FC = () => {
 
                       <button
                         onClick={() => handleSendDunningNotice(t)}
-                        className="px-3 py-1.5 rounded-lg text-xs font-bold bg-yellow-400 hover:bg-yellow-300 text-slate-950 flex items-center gap-1.5 transition-all shadow-xs cursor-pointer border border-yellow-300"
+                        className="px-3 py-1.5 rounded-xl text-xs font-bold bg-[#d97706] hover:bg-[#b45309] text-white flex items-center gap-1.5 transition-all shadow-xs cursor-pointer"
                       >
                         <Mail className="w-3.5 h-3.5" />
                         <span>Send Notice</span>
@@ -823,7 +823,7 @@ export const AdminBackOffice: React.FC = () => {
                             type: 'info'
                           });
                         }}
-                        className="px-3 py-1.5 rounded-lg text-xs font-bold bg-white dark:bg-[#121524] text-slate-800 dark:text-slate-200 border border-yellow-300/80 dark:border-yellow-500/30 hover:bg-yellow-50 transition-all cursor-pointer"
+                        className="px-3 py-1.5 rounded-xl text-xs font-bold bg-[#faf8f5] dark:bg-[#181715] text-[#1f1e1b] dark:text-[#f5f3ef] border border-[#e5e0d5] dark:border-[#33302b] hover:bg-amber-500/10 transition-all cursor-pointer"
                       >
                         +7 Days Grace
                       </button>
@@ -837,7 +837,7 @@ export const AdminBackOffice: React.FC = () => {
                             type: 'success'
                           });
                         }}
-                        className="px-3 py-1.5 rounded-lg text-xs font-bold bg-white dark:bg-[#121524] text-slate-800 dark:text-slate-200 border border-yellow-300/80 dark:border-yellow-500/30 hover:bg-yellow-50 transition-all cursor-pointer"
+                        className="px-3 py-1.5 rounded-xl text-xs font-bold bg-[#faf8f5] dark:bg-[#181715] text-[#1f1e1b] dark:text-[#f5f3ef] border border-[#e5e0d5] dark:border-[#33302b] hover:bg-amber-500/10 transition-all cursor-pointer"
                       >
                         Forgive / Mark Paid
                       </button>
@@ -851,7 +851,7 @@ export const AdminBackOffice: React.FC = () => {
                             type: 'warning'
                           });
                         }}
-                        className="px-3 py-1.5 rounded-lg text-xs font-bold bg-rose-600 hover:bg-rose-500 text-white transition-all cursor-pointer"
+                        className="px-3 py-1.5 rounded-xl text-xs font-bold bg-rose-600 hover:bg-rose-500 text-white transition-all cursor-pointer"
                       >
                         Suspend Access
                       </button>
@@ -868,65 +868,65 @@ export const AdminBackOffice: React.FC = () => {
       {activeAdminTab === 'platform' && (
         <div className="space-y-6">
           {/* SaaS Global Configuration Toggles */}
-          <div className="p-6 rounded-2xl bg-white/85 dark:bg-[#0c0e18]/85 backdrop-blur-md border border-yellow-300/50 dark:border-yellow-500/20 shadow-xs space-y-4">
-            <h2 className="text-sm font-bold text-slate-950 dark:text-white">
+          <div className="p-6 rounded-2xl bg-white dark:bg-[#211f1c] border border-[#e5e0d5] dark:border-[#33302b] shadow-xs space-y-4">
+            <h2 className="text-sm font-bold text-[#1f1e1b] dark:text-[#f5f3ef]">
               SaaS Business &amp; Registration Switches
             </h2>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-              <div className="p-4 rounded-xl bg-yellow-50/50 dark:bg-[#121524] border border-yellow-300/50 dark:border-yellow-500/20 flex items-center justify-between">
+              <div className="p-4 rounded-2xl bg-[#faf8f5] dark:bg-[#181715] border border-[#e5e0d5] dark:border-[#33302b] flex items-center justify-between">
                 <div>
-                  <div className="font-bold text-xs text-slate-950 dark:text-white">Public Customer Signups</div>
-                  <div className="text-[11px] text-slate-600 dark:text-slate-400">Allow new users to create accounts and select plans</div>
+                  <div className="font-bold text-xs text-[#1f1e1b] dark:text-[#f5f3ef]">Public Customer Signups</div>
+                  <div className="text-[11px] text-[#5c5850] dark:text-[#b8b4aa]">Allow new users to create accounts and select plans</div>
                 </div>
                 <button
                   onClick={() => updateSaaSConfig({ publicSignupsEnabled: !saasConfig.publicSignupsEnabled })}
-                  className={`px-3 py-1.5 rounded-lg text-xs font-bold transition-all cursor-pointer ${
-                    saasConfig.publicSignupsEnabled ? 'bg-emerald-600 text-white' : 'bg-slate-300 text-slate-700'
+                  className={`px-3 py-1.5 rounded-xl text-xs font-bold transition-all cursor-pointer ${
+                    saasConfig.publicSignupsEnabled ? 'bg-emerald-600 text-white' : 'bg-neutral-300 dark:bg-neutral-700 text-neutral-700 dark:text-neutral-300'
                   }`}
                 >
                   {saasConfig.publicSignupsEnabled ? 'ENABLED' : 'DISABLED'}
                 </button>
               </div>
 
-              <div className="p-4 rounded-xl bg-yellow-50/50 dark:bg-[#121524] border border-yellow-300/50 dark:border-yellow-500/20 flex items-center justify-between">
+              <div className="p-4 rounded-2xl bg-[#faf8f5] dark:bg-[#181715] border border-[#e5e0d5] dark:border-[#33302b] flex items-center justify-between">
                 <div>
-                  <div className="font-bold text-xs text-slate-950 dark:text-white">Auto-Freeze Non-Paying Accounts</div>
-                  <div className="text-[11px] text-slate-600 dark:text-slate-400">Cut off API gateway access once grace period expires</div>
+                  <div className="font-bold text-xs text-[#1f1e1b] dark:text-[#f5f3ef]">Auto-Freeze Non-Paying Accounts</div>
+                  <div className="text-[11px] text-[#5c5850] dark:text-[#b8b4aa]">Cut off API gateway access once grace period expires</div>
                 </div>
                 <button
                   onClick={() => updateSaaSConfig({ autoFreezeUnpaidAccounts: !saasConfig.autoFreezeUnpaidAccounts })}
-                  className={`px-3 py-1.5 rounded-lg text-xs font-bold transition-all cursor-pointer ${
-                    saasConfig.autoFreezeUnpaidAccounts ? 'bg-emerald-600 text-white' : 'bg-slate-300 text-slate-700'
+                  className={`px-3 py-1.5 rounded-xl text-xs font-bold transition-all cursor-pointer ${
+                    saasConfig.autoFreezeUnpaidAccounts ? 'bg-emerald-600 text-white' : 'bg-neutral-300 dark:bg-neutral-700 text-neutral-700 dark:text-neutral-300'
                   }`}
                 >
                   {saasConfig.autoFreezeUnpaidAccounts ? 'ENFORCED' : 'OFF'}
                 </button>
               </div>
 
-              <div className="p-4 rounded-xl bg-yellow-50/50 dark:bg-[#121524] border border-yellow-300/50 dark:border-yellow-500/20 flex items-center justify-between">
+              <div className="p-4 rounded-2xl bg-[#faf8f5] dark:bg-[#181715] border border-[#e5e0d5] dark:border-[#33302b] flex items-center justify-between">
                 <div>
-                  <div className="font-bold text-xs text-slate-950 dark:text-white">Strict AI Model Firewall</div>
-                  <div className="text-[11px] text-slate-600 dark:text-slate-400">Block unauthorized jailbreak payloads across all tenants</div>
+                  <div className="font-bold text-xs text-[#1f1e1b] dark:text-[#f5f3ef]">Strict AI Model Firewall</div>
+                  <div className="text-[11px] text-[#5c5850] dark:text-[#b8b4aa]">Block unauthorized jailbreak payloads across all tenants</div>
                 </div>
                 <button
                   onClick={() => updateSaaSConfig({ strictModelFirewall: !saasConfig.strictModelFirewall })}
-                  className={`px-3 py-1.5 rounded-lg text-xs font-bold transition-all cursor-pointer ${
-                    saasConfig.strictModelFirewall ? 'bg-emerald-600 text-white' : 'bg-slate-300 text-slate-700'
+                  className={`px-3 py-1.5 rounded-xl text-xs font-bold transition-all cursor-pointer ${
+                    saasConfig.strictModelFirewall ? 'bg-emerald-600 text-white' : 'bg-neutral-300 dark:bg-neutral-700 text-neutral-700 dark:text-neutral-300'
                   }`}
                 >
                   {saasConfig.strictModelFirewall ? 'ACTIVE' : 'OFF'}
                 </button>
               </div>
 
-              <div className="p-4 rounded-xl bg-yellow-50/50 dark:bg-[#121524] border border-yellow-300/50 dark:border-yellow-500/20 flex items-center justify-between">
+              <div className="p-4 rounded-2xl bg-[#faf8f5] dark:bg-[#181715] border border-[#e5e0d5] dark:border-[#33302b] flex items-center justify-between">
                 <div>
-                  <div className="font-bold text-xs text-slate-950 dark:text-white">Maintenance Mode</div>
-                  <div className="text-[11px] text-slate-600 dark:text-slate-400">Put workspace in read-only mode for scheduled upgrades</div>
+                  <div className="font-bold text-xs text-[#1f1e1b] dark:text-[#f5f3ef]">Maintenance Mode</div>
+                  <div className="text-[11px] text-[#5c5850] dark:text-[#b8b4aa]">Put workspace in read-only mode for scheduled upgrades</div>
                 </div>
                 <button
                   onClick={() => updateSaaSConfig({ maintenanceMode: !saasConfig.maintenanceMode })}
-                  className={`px-3 py-1.5 rounded-lg text-xs font-bold transition-all cursor-pointer ${
-                    saasConfig.maintenanceMode ? 'bg-rose-600 text-white' : 'bg-slate-300 text-slate-700'
+                  className={`px-3 py-1.5 rounded-xl text-xs font-bold transition-all cursor-pointer ${
+                    saasConfig.maintenanceMode ? 'bg-rose-600 text-white' : 'bg-neutral-300 dark:bg-neutral-700 text-neutral-700 dark:text-neutral-300'
                   }`}
                 >
                   {saasConfig.maintenanceMode ? 'MAINTENANCE ON' : 'NORMAL'}
@@ -936,12 +936,12 @@ export const AdminBackOffice: React.FC = () => {
           </div>
 
           {/* Global Broadcast Announcement */}
-          <div className="p-6 rounded-2xl bg-white/85 dark:bg-[#0c0e18]/85 backdrop-blur-md border border-yellow-300/50 dark:border-yellow-500/20 shadow-xs space-y-4">
-            <h2 className="text-sm font-bold text-slate-950 dark:text-white flex items-center gap-2">
-              <BellRing className="w-4 h-4 text-amber-600 dark:text-yellow-400" />
+          <div className="p-6 rounded-2xl bg-white dark:bg-[#211f1c] border border-[#e5e0d5] dark:border-[#33302b] shadow-xs space-y-4">
+            <h2 className="text-sm font-bold text-[#1f1e1b] dark:text-[#f5f3ef] flex items-center gap-2">
+              <BellRing className="w-4 h-4 text-[#d97706] dark:text-[#f59e0b]" />
               Global Tenant Broadcast Announcement
             </h2>
-            <p className="text-xs text-slate-700 dark:text-slate-300 font-medium">
+            <p className="text-xs text-[#5c5850] dark:text-[#b8b4aa] font-medium">
               Publish an alert banner displayed at the top of every customer's workspace console (e.g. maintenance window, new agent models).
             </p>
 
@@ -951,7 +951,7 @@ export const AdminBackOffice: React.FC = () => {
                 value={announcementText}
                 onChange={(e) => setAnnouncementText(e.target.value)}
                 placeholder="e.g., Scheduled maintenance on Sunday 02:00 UTC. Upstream Gemini 2.5 Pro added."
-                className="flex-1 bg-white dark:bg-[#121524] border border-yellow-300/70 dark:border-yellow-500/30 rounded-xl px-4 py-2 text-xs text-slate-950 dark:text-slate-100 placeholder-slate-500 focus:outline-hidden focus:border-yellow-500"
+                className="flex-1 bg-[#faf8f5] dark:bg-[#181715] border border-[#e5e0d5] dark:border-[#33302b] rounded-xl px-4 py-2 text-xs text-[#1f1e1b] dark:text-[#f5f3ef] placeholder-[#878278] focus:outline-hidden focus:border-[#d97706]"
               />
               <button
                 onClick={() => {
@@ -962,7 +962,7 @@ export const AdminBackOffice: React.FC = () => {
                     type: 'success'
                   });
                 }}
-                className="px-4 py-2 rounded-xl text-xs font-bold bg-yellow-400 hover:bg-yellow-300 text-slate-950 transition-all cursor-pointer border border-yellow-300"
+                className="px-4 py-2 rounded-xl text-xs font-bold bg-[#d97706] hover:bg-[#b45309] text-white transition-all cursor-pointer shadow-xs"
               >
                 Broadcast
               </button>
@@ -970,14 +970,14 @@ export const AdminBackOffice: React.FC = () => {
           </div>
 
           {/* Emergency Platform Circuit Breaker / Kill-Switch */}
-          <div className="p-6 rounded-2xl bg-white/85 dark:bg-[#0c0e18]/85 backdrop-blur-md border border-rose-400/50 dark:border-rose-500/30 shadow-xs space-y-4">
+          <div className="p-6 rounded-2xl bg-white dark:bg-[#211f1c] border border-rose-400/50 dark:border-rose-500/30 shadow-xs space-y-4">
             <div className="flex items-center justify-between">
               <div>
                 <h2 className="text-sm font-bold text-rose-600 dark:text-rose-400 flex items-center gap-2">
                   <OctagonAlert className="w-4 h-4" />
                   Global Gateway Emergency Circuit Breaker
                 </h2>
-                <p className="text-xs text-slate-700 dark:text-slate-300 font-medium mt-1">
+                <p className="text-xs text-[#5c5850] dark:text-[#b8b4aa] font-medium mt-1">
                   Instantly severs all incoming proxy requests from every tenant. Use exclusively in case of zero-day exploits or credential compromise.
                 </p>
               </div>
@@ -987,7 +987,7 @@ export const AdminBackOffice: React.FC = () => {
                 className={`px-4 py-2 rounded-xl text-xs font-bold transition-all cursor-pointer ${
                   globalKillSwitchActive
                     ? 'bg-emerald-600 hover:bg-emerald-500 text-white'
-                    : 'bg-rose-600 hover:bg-rose-500 text-white shadow-sm'
+                    : 'bg-rose-600 hover:bg-rose-500 text-white shadow-xs'
                 }`}
               >
                 {globalKillSwitchActive ? 'Disengage Circuit Breaker' : 'Engage Emergency Kill-Switch'}
@@ -1000,22 +1000,22 @@ export const AdminBackOffice: React.FC = () => {
       {/* Plan Change Modal */}
       {planModalTenant && (
         <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-900/60 dark:bg-black/80 backdrop-blur-xs">
-          <div className="w-full max-w-md p-6 rounded-2xl bg-white dark:bg-[#0e111e] border border-yellow-400/60 dark:border-yellow-500/40 shadow-2xl space-y-4">
-            <div className="flex items-center justify-between border-b border-yellow-200 dark:border-yellow-500/20 pb-3">
-              <h3 className="text-sm font-bold text-slate-950 dark:text-white">
+          <div className="w-full max-w-md p-6 rounded-2xl bg-white dark:bg-[#211f1c] border border-[#e5e0d5] dark:border-[#33302b] shadow-2xl space-y-4">
+            <div className="flex items-center justify-between border-b border-[#e5e0d5] dark:border-[#33302b] pb-3">
+              <h3 className="text-sm font-bold text-[#1f1e1b] dark:text-[#f5f3ef]">
                 Change Subscription Plan
               </h3>
               <button
                 onClick={() => setPlanModalTenant(null)}
-                className="p-1 rounded hover:bg-neutral-100 dark:hover:bg-neutral-800 text-slate-600 cursor-pointer"
+                className="p-1 rounded-lg hover:bg-neutral-100 dark:hover:bg-neutral-800 text-[#5c5850] cursor-pointer"
               >
                 <X className="w-4 h-4" />
               </button>
             </div>
 
             <div className="space-y-3">
-              <p className="text-xs text-slate-700 dark:text-slate-300 font-medium">
-                Modifying subscription plan for <span className="font-bold text-slate-950 dark:text-white">{planModalTenant.name}</span>.
+              <p className="text-xs text-[#5c5850] dark:text-[#b8b4aa] font-medium">
+                Modifying subscription plan for <span className="font-bold text-[#1f1e1b] dark:text-[#f5f3ef]">{planModalTenant.name}</span>.
               </p>
 
               <div className="space-y-2">
@@ -1031,15 +1031,15 @@ export const AdminBackOffice: React.FC = () => {
                     onClick={() => setTargetPlan(p.id as any)}
                     className={`flex items-center justify-between p-3 rounded-xl border cursor-pointer transition-all ${
                       targetPlan === p.id
-                        ? 'bg-yellow-100/70 dark:bg-yellow-950/40 border-yellow-400 text-slate-950 dark:text-white font-bold'
-                        : 'border-yellow-200/60 dark:border-yellow-500/20 text-slate-700 dark:text-slate-300'
+                        ? 'bg-amber-500/10 border-[#d97706] text-[#1f1e1b] dark:text-[#f5f3ef] font-bold'
+                        : 'border-[#e5e0d5] dark:border-[#33302b] text-[#5c5850] dark:text-[#b8b4aa] hover:border-amber-500/30'
                     }`}
                   >
                     <div>
                       <div className="text-xs">{p.name}</div>
-                      <div className="text-[10px] font-mono text-slate-500 dark:text-slate-400">{p.quota}</div>
+                      <div className="text-[10px] font-mono text-[#878278] dark:text-[#7d7970]">{p.quota}</div>
                     </div>
-                    <span className="text-xs font-mono font-bold text-amber-900 dark:text-yellow-400">{p.price}</span>
+                    <span className="text-xs font-mono font-bold text-[#d97706] dark:text-[#f59e0b]">{p.price}</span>
                   </label>
                 ))}
               </div>
@@ -1048,13 +1048,13 @@ export const AdminBackOffice: React.FC = () => {
             <div className="flex justify-end gap-2 pt-2">
               <button
                 onClick={() => setPlanModalTenant(null)}
-                className="px-3 py-1.5 rounded-lg border border-yellow-200 dark:border-yellow-500/20 text-xs font-medium text-slate-700 dark:text-slate-300 cursor-pointer"
+                className="px-3.5 py-1.5 rounded-xl border border-[#e5e0d5] dark:border-[#33302b] text-xs font-medium text-[#5c5850] dark:text-[#b8b4aa] cursor-pointer"
               >
                 Cancel
               </button>
               <button
                 onClick={handleChangePlanSubmit}
-                className="px-4 py-1.5 rounded-lg bg-yellow-400 hover:bg-yellow-300 text-slate-950 font-bold text-xs transition-all cursor-pointer border border-yellow-300"
+                className="px-4 py-1.5 rounded-xl bg-[#d97706] hover:bg-[#b45309] text-white font-bold text-xs transition-all cursor-pointer shadow-xs"
               >
                 Apply Plan Change
               </button>
@@ -1066,45 +1066,45 @@ export const AdminBackOffice: React.FC = () => {
       {/* Quota Override Modal */}
       {quotaModalOpen && selectedTenant && (
         <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-900/60 dark:bg-black/80 backdrop-blur-xs">
-          <div className="w-full max-w-md p-6 rounded-2xl bg-white dark:bg-[#0e111e] border border-yellow-400/60 dark:border-yellow-500/40 shadow-2xl space-y-4">
-            <div className="flex items-center justify-between border-b border-yellow-200 dark:border-yellow-500/20 pb-3">
-              <h3 className="text-sm font-bold text-slate-950 dark:text-white">
+          <div className="w-full max-w-md p-6 rounded-2xl bg-white dark:bg-[#211f1c] border border-[#e5e0d5] dark:border-[#33302b] shadow-2xl space-y-4">
+            <div className="flex items-center justify-between border-b border-[#e5e0d5] dark:border-[#33302b] pb-3">
+              <h3 className="text-sm font-bold text-[#1f1e1b] dark:text-[#f5f3ef]">
                 Override Quota Limit
               </h3>
               <button
                 onClick={() => setQuotaModalOpen(false)}
-                className="p-1 rounded hover:bg-neutral-100 dark:hover:bg-neutral-800 text-slate-600 cursor-pointer"
+                className="p-1 rounded-lg hover:bg-neutral-100 dark:hover:bg-neutral-800 text-[#5c5850] cursor-pointer"
               >
                 <X className="w-4 h-4" />
               </button>
             </div>
 
             <div className="space-y-3">
-              <p className="text-xs text-slate-700 dark:text-slate-300 font-medium">
-                Adjust request limit and billing grace period for <span className="font-bold text-slate-950 dark:text-white">{selectedTenant.name}</span>.
+              <p className="text-xs text-[#5c5850] dark:text-[#b8b4aa] font-medium">
+                Adjust request limit and billing grace period for <span className="font-bold text-[#1f1e1b] dark:text-[#f5f3ef]">{selectedTenant.name}</span>.
               </p>
 
               <div>
-                <label className="block text-[11px] font-mono text-slate-700 dark:text-slate-300 font-bold mb-1">
+                <label className="block text-[11px] font-mono text-[#5c5850] dark:text-[#b8b4aa] font-bold mb-1">
                   Monthly Request Ceiling
                 </label>
                 <input
                   type="number"
                   value={newQuotaLimit}
                   onChange={(e) => setNewQuotaLimit(Number(e.target.value))}
-                  className="w-full bg-white dark:bg-[#121524] border border-yellow-300/80 dark:border-yellow-500/30 rounded-lg p-2 text-xs font-mono text-slate-950 dark:text-white"
+                  className="w-full bg-[#faf8f5] dark:bg-[#181715] border border-[#e5e0d5] dark:border-[#33302b] rounded-xl p-2.5 text-xs font-mono text-[#1f1e1b] dark:text-[#f5f3ef] focus:outline-hidden focus:border-[#d97706]"
                 />
               </div>
 
               <div>
-                <label className="block text-[11px] font-mono text-slate-700 dark:text-slate-300 font-bold mb-1">
+                <label className="block text-[11px] font-mono text-[#5c5850] dark:text-[#b8b4aa] font-bold mb-1">
                   Extension Days
                 </label>
                 <input
                   type="number"
                   value={extraDays}
                   onChange={(e) => setExtraDays(Number(e.target.value))}
-                  className="w-full bg-white dark:bg-[#121524] border border-yellow-300/80 dark:border-yellow-500/30 rounded-lg p-2 text-xs font-mono text-slate-950 dark:text-white"
+                  className="w-full bg-[#faf8f5] dark:bg-[#181715] border border-[#e5e0d5] dark:border-[#33302b] rounded-xl p-2.5 text-xs font-mono text-[#1f1e1b] dark:text-[#f5f3ef] focus:outline-hidden focus:border-[#d97706]"
                 />
               </div>
             </div>
@@ -1112,13 +1112,13 @@ export const AdminBackOffice: React.FC = () => {
             <div className="flex justify-end gap-2 pt-2">
               <button
                 onClick={() => setQuotaModalOpen(false)}
-                className="px-3 py-1.5 rounded-lg border border-yellow-200 dark:border-yellow-500/20 text-xs font-medium text-slate-700 dark:text-slate-300 cursor-pointer"
+                className="px-3.5 py-1.5 rounded-xl border border-[#e5e0d5] dark:border-[#33302b] text-xs font-medium text-[#5c5850] dark:text-[#b8b4aa] cursor-pointer"
               >
                 Cancel
               </button>
               <button
                 onClick={handleSaveQuota}
-                className="px-4 py-1.5 rounded-lg bg-yellow-400 hover:bg-yellow-300 text-slate-950 font-bold text-xs transition-all cursor-pointer border border-yellow-300"
+                className="px-4 py-1.5 rounded-xl bg-[#d97706] hover:bg-[#b45309] text-white font-bold text-xs transition-all cursor-pointer shadow-xs"
               >
                 Update Quota
               </button>

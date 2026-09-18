@@ -135,12 +135,12 @@ export const Topbar: React.FC = () => {
   const quotaPercent = Math.round((currentOrg.monthlyRequestsUsed / currentOrg.monthlyRequestLimit) * 100);
 
   return (
-    <header className="h-16 border-b border-yellow-300/40 dark:border-yellow-500/20 bg-white/85 dark:bg-[#090b12]/85 backdrop-blur-md px-6 flex items-center justify-between z-20 transition-colors duration-200">
+    <header className="h-16 border-b border-[#e5e0d5] dark:border-[#33302b] bg-[#faf8f5]/85 dark:bg-[#181715]/85 backdrop-blur-md px-6 flex items-center justify-between z-20 transition-colors duration-200">
       {/* Title & Context */}
       <div className="flex items-center gap-4">
         <div>
           <div className="flex items-center gap-2">
-            <h1 className="text-sm md:text-base font-bold text-slate-950 dark:text-white tracking-tight">
+            <h1 className="text-sm md:text-base font-bold text-[#1f1e1b] dark:text-[#f5f3ef] tracking-tight">
               {title}
             </h1>
             {isAdminView && (
@@ -149,7 +149,7 @@ export const Topbar: React.FC = () => {
               </span>
             )}
           </div>
-          <p className="text-xs font-medium text-slate-700 dark:text-slate-300 hidden md:block">
+          <p className="text-xs font-medium text-[#5c5850] dark:text-[#b8b4aa] hidden md:block">
             {subtitle}
           </p>
         </div>
@@ -159,7 +159,7 @@ export const Topbar: React.FC = () => {
       <div className="flex items-center gap-2.5">
         {/* Global Search & Command Center */}
         <div ref={searchContainerRef} className="relative w-48 sm:w-60 lg:w-72">
-          <Search className="w-3.5 h-3.5 absolute left-3 top-1/2 -translate-y-1/2 text-slate-600 dark:text-yellow-400/80 pointer-events-none" />
+          <Search className="w-3.5 h-3.5 absolute left-3 top-1/2 -translate-y-1/2 text-[#878278] dark:text-[#7d7970] pointer-events-none" />
           <input
             ref={searchInputRef}
             id="global-search-input"
@@ -176,21 +176,21 @@ export const Topbar: React.FC = () => {
             }}
             onKeyDown={handleSearchKeyDown}
             placeholder="Type /main-admin or search..."
-            className="w-full bg-white/90 dark:bg-[#121524] border border-yellow-300/70 dark:border-yellow-500/30 rounded-lg pl-8 pr-8 py-1.5 text-xs text-slate-950 dark:text-slate-100 placeholder-slate-500 dark:placeholder-slate-400 focus:outline-hidden focus:border-yellow-500 focus:ring-2 focus:ring-yellow-400/25 transition-colors font-sans shadow-2xs font-medium"
+            className="w-full bg-white dark:bg-[#211f1c] border border-[#e5e0d5] dark:border-[#33302b] rounded-xl pl-8 pr-8 py-1.5 text-xs text-[#1f1e1b] dark:text-[#f5f3ef] placeholder-[#878278] dark:placeholder-[#7d7970] focus:outline-hidden focus:border-[#d97706] dark:focus:border-[#f59e0b] transition-colors font-sans shadow-xs font-medium"
           />
-          <kbd className="absolute right-2.5 top-1/2 -translate-y-1/2 text-[10px] font-mono font-bold text-slate-700 dark:text-yellow-400/90 bg-yellow-100/80 dark:bg-yellow-950/50 px-1.5 py-0.5 rounded border border-yellow-300/80 dark:border-yellow-500/40">
+          <kbd className="absolute right-2.5 top-1/2 -translate-y-1/2 text-[10px] font-mono font-bold text-[#5c5850] dark:text-[#b8b4aa] bg-[#f4f1ea] dark:bg-[#282622] px-1.5 py-0.5 rounded border border-[#e5e0d5] dark:border-[#33302b]">
             /
           </kbd>
 
           {/* Autocomplete / Command Popup for /main-admin */}
           {(searchFocused && (isCommandQuery || searchQuery.trim().length > 0)) && (
-            <div className="absolute left-0 right-0 top-full mt-1.5 bg-white dark:bg-[#0e111e] rounded-xl border border-yellow-400/70 dark:border-yellow-500/40 shadow-xl backdrop-blur-xl p-2 z-50 animate-in fade-in slide-in-from-top-2 duration-150">
-              <div className="px-2 py-1 text-[10px] font-mono font-bold uppercase tracking-wider text-slate-700 dark:text-yellow-400/80 flex items-center justify-between border-b border-yellow-200/60 dark:border-[#1e2338] pb-1.5 mb-1.5">
+            <div className="absolute left-0 right-0 top-full mt-1.5 bg-white dark:bg-[#211f1c] rounded-2xl border border-[#e5e0d5] dark:border-[#33302b] shadow-xl backdrop-blur-xl p-2 z-50 animate-in fade-in slide-in-from-top-2 duration-150">
+              <div className="px-2 py-1 text-[10px] font-mono font-bold uppercase tracking-wider text-[#878278] dark:text-[#7d7970] flex items-center justify-between border-b border-[#e5e0d5] dark:border-[#33302b] pb-1.5 mb-1.5">
                 <span className="flex items-center gap-1">
                   <Command className="w-3 h-3" />
                   SaaS Control Command
                 </span>
-                <span className="text-[9px] lowercase text-slate-500 font-normal">press enter to execute</span>
+                <span className="text-[9px] lowercase text-[#878278] dark:text-[#7d7970] font-normal">press enter to execute</span>
               </div>
 
               {/* /main-admin Option */}
@@ -198,24 +198,24 @@ export const Topbar: React.FC = () => {
                 type="button"
                 id="cmd-execute-main-admin"
                 onClick={handleOpenMainAdmin}
-                className={`w-full text-left p-2.5 rounded-lg flex items-start justify-between gap-2 transition-all cursor-pointer ${
+                className={`w-full text-left p-2.5 rounded-xl flex items-start justify-between gap-2 transition-all cursor-pointer ${
                   isExactAdminMatch
-                    ? 'bg-yellow-400 text-slate-950 font-bold shadow-xs'
-                    : 'bg-yellow-50 hover:bg-yellow-100/80 dark:bg-yellow-950/30 dark:hover:bg-yellow-900/40 text-slate-950 dark:text-white border border-yellow-300/60 dark:border-yellow-500/30'
+                    ? 'bg-[#d97706] dark:bg-[#f59e0b] text-white dark:text-[#181715] font-bold shadow-xs'
+                    : 'bg-[#faf8f5] hover:bg-[#f4f1ea] dark:bg-[#181715] dark:hover:bg-[#282622] text-[#1f1e1b] dark:text-[#f5f3ef] border border-[#e5e0d5] dark:border-[#33302b]'
                 }`}
               >
                 <div className="space-y-0.5">
                   <div className="flex items-center gap-1.5">
-                    <span className="font-mono text-xs font-black bg-yellow-200 dark:bg-yellow-400/20 px-1.5 py-0.5 rounded text-slate-950 dark:text-yellow-300 border border-yellow-300">
+                    <span className="font-mono text-xs font-bold bg-amber-500/15 text-[#b45309] dark:text-[#fbbf24] px-1.5 py-0.5 rounded border border-amber-500/20">
                       /main-admin
                     </span>
                     <span className="text-xs font-bold">Launch SaaS Super-Admin Panel</span>
                   </div>
-                  <p className="text-[11px] text-slate-700 dark:text-slate-300 font-normal leading-snug">
+                  <p className="text-[11px] text-[#5c5850] dark:text-[#b8b4aa] font-normal leading-snug">
                     Root control deck: users, MRR, subscriptions, unpaid accounts &amp; platform telemetry.
                   </p>
                 </div>
-                <ArrowRight className="w-4 h-4 text-amber-600 dark:text-yellow-400 shrink-0 mt-1" />
+                <ArrowRight className="w-4 h-4 text-[#d97706] dark:text-[#f59e0b] shrink-0 mt-1" />
               </button>
             </div>
           )}
@@ -225,9 +225,9 @@ export const Topbar: React.FC = () => {
         {pendingCount > 0 && (
           <button
             onClick={() => setActiveNav('live-stream')}
-            className="flex items-center gap-1.5 px-2.5 py-1.5 rounded-lg text-xs font-bold bg-amber-400/20 text-amber-950 dark:text-yellow-300 border border-amber-400/50 dark:border-yellow-400/40 hover:bg-amber-400/30 transition-all animate-pulse shadow-xs cursor-pointer"
+            className="flex items-center gap-1.5 px-2.5 py-1.5 rounded-xl text-xs font-bold bg-amber-500/15 text-[#b45309] dark:text-[#fbbf24] border border-amber-500/30 hover:bg-amber-500/25 transition-all shadow-xs cursor-pointer"
           >
-            <Radio className="w-3.5 h-3.5 text-amber-600 dark:text-yellow-400" />
+            <Radio className="w-3.5 h-3.5 text-[#d97706] dark:text-[#f59e0b]" />
             <span className="hidden sm:inline">{pendingCount} Approval{pendingCount > 1 ? 's' : ''}</span>
           </button>
         )}
@@ -244,7 +244,7 @@ export const Topbar: React.FC = () => {
                 type: 'info'
               });
             }}
-            className="px-3 py-1.5 rounded-lg text-xs font-bold bg-rose-600 hover:bg-rose-500 text-white flex items-center gap-1.5 transition-all shadow-xs cursor-pointer"
+            className="px-3 py-1.5 rounded-xl text-xs font-bold bg-rose-600 hover:bg-rose-500 text-white flex items-center gap-1.5 transition-all shadow-xs cursor-pointer"
           >
             <span>Exit Admin</span>
           </button>
@@ -255,10 +255,10 @@ export const Topbar: React.FC = () => {
           <button
             id="topbar-view-website-btn"
             onClick={() => setIsLandingPage(true)}
-            className="px-3 py-1.5 rounded-lg text-xs font-semibold border border-yellow-400/40 hover:border-yellow-400 bg-yellow-400/10 hover:bg-yellow-400/20 text-yellow-700 dark:text-yellow-400 flex items-center gap-1.5 transition-all cursor-pointer"
+            className="px-3 py-1.5 rounded-xl text-xs font-semibold border border-[#e5e0d5] dark:border-[#33302b] bg-white dark:bg-[#211f1c] hover:bg-[#f4f1ea] dark:hover:bg-[#282622] text-[#1f1e1b] dark:text-[#f5f3ef] flex items-center gap-1.5 transition-all cursor-pointer shadow-xs"
             title="View Public Portfolio / Landing Website"
           >
-            <Globe className="w-3.5 h-3.5 text-yellow-500" />
+            <Globe className="w-3.5 h-3.5 text-[#d97706] dark:text-[#f59e0b]" />
             <span className="hidden md:inline">Website</span>
           </button>
         )}
@@ -268,9 +268,9 @@ export const Topbar: React.FC = () => {
           <button
             id="topbar-create-agent-btn"
             onClick={() => setActiveNav('studio')}
-            className="px-3.5 py-1.5 rounded-lg text-xs font-bold bg-yellow-400 hover:bg-yellow-300 text-slate-950 flex items-center gap-1.5 transition-all shadow-sm shadow-yellow-400/30 border border-yellow-300 dark:border-yellow-400/50 cursor-pointer"
+            className="px-3.5 py-1.5 rounded-xl text-xs font-semibold bg-[#d97706] hover:bg-[#b45309] dark:bg-[#f59e0b] dark:hover:bg-[#fbbf24] text-white dark:text-[#181715] flex items-center gap-1.5 transition-all shadow-xs cursor-pointer"
           >
-            <Sparkles className="w-3.5 h-3.5 text-slate-950" />
+            <Sparkles className="w-3.5 h-3.5" />
             <span className="hidden sm:inline">New Agent</span>
           </button>
         )}
@@ -280,18 +280,18 @@ export const Topbar: React.FC = () => {
           id="topbar-theme-toggle"
           onClick={toggleTheme}
           aria-label="Toggle color theme"
-          className="flex items-center gap-1.5 px-2.5 py-1.5 rounded-lg border border-yellow-300/70 dark:border-yellow-500/30 bg-white/90 dark:bg-[#121524] text-slate-900 dark:text-yellow-300 hover:border-yellow-400 hover:bg-yellow-50 dark:hover:bg-yellow-950/30 transition-all text-xs font-semibold shadow-2xs cursor-pointer"
+          className="flex items-center gap-1.5 px-2.5 py-1.5 rounded-xl border border-[#e5e0d5] dark:border-[#33302b] bg-white dark:bg-[#211f1c] text-[#1f1e1b] dark:text-[#f5f3ef] hover:bg-[#f4f1ea] dark:hover:bg-[#282622] transition-all text-xs font-semibold shadow-xs cursor-pointer"
           title={theme === 'dark' ? 'Switch to Light Mode' : 'Switch to Dark Mode'}
         >
           {theme === 'dark' ? (
             <>
-              <Sun className="w-3.5 h-3.5 text-yellow-300 animate-pulse" />
-              <span className="hidden sm:inline text-[11px] font-bold text-yellow-200">Dark (Gold)</span>
+              <Sun className="w-3.5 h-3.5 text-[#f59e0b] animate-pulse" />
+              <span className="hidden sm:inline text-[11px] font-bold text-[#f5f3ef]">Light</span>
             </>
           ) : (
             <>
-              <Moon className="w-3.5 h-3.5 text-slate-800" />
-              <span className="hidden sm:inline text-[11px] font-bold text-slate-900">Light (Glass)</span>
+              <Moon className="w-3.5 h-3.5 text-[#5c5850]" />
+              <span className="hidden sm:inline text-[11px] font-bold text-[#1f1e1b]">Dark</span>
             </>
           )}
         </button>

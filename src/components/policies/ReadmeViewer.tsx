@@ -210,25 +210,25 @@ export const ReadmeViewer: React.FC = () => {
 
   return (
     <div className="space-y-6">
-      {/* Top Header Card - White & Yellow Glassy */}
-      <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-4 p-5 rounded-2xl bg-white/85 dark:bg-[#0c0e18]/85 backdrop-blur-md border border-yellow-300/40 dark:border-yellow-500/20 shadow-sm">
+      {/* Top Header Card */}
+      <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-4 p-6 rounded-2xl bg-white dark:bg-[#211f1c] border border-[#e5e0d5] dark:border-[#33302b] shadow-xs">
         <div className="flex items-center gap-3.5">
-          <div className="w-10 h-10 rounded-xl bg-yellow-400 text-slate-950 flex items-center justify-center shadow-xs border border-yellow-300 font-bold shrink-0">
+          <div className="w-10 h-10 rounded-2xl bg-amber-500/10 text-[#d97706] dark:text-[#f59e0b] border border-amber-500/20 flex items-center justify-center font-bold shrink-0">
             <BookOpen className="w-5 h-5" />
           </div>
           <div>
             <div className="flex items-center gap-2.5 flex-wrap">
-              <h2 className="text-base font-bold text-slate-950 dark:text-white">
+              <h2 className="text-base font-bold text-[#1f1e1b] dark:text-[#f5f3ef]">
                 AGENT_POLICY_README.md
               </h2>
-              <span className="px-2.5 py-0.5 rounded-full text-[10px] font-mono font-bold bg-yellow-400/20 text-amber-950 dark:text-yellow-300 border border-yellow-400/50">
+              <span className="px-2.5 py-0.5 rounded-full text-[10px] font-mono font-bold bg-amber-500/10 text-[#d97706] dark:text-[#f59e0b] border border-amber-500/20">
                 v2.4.0 ENFORCED
               </span>
-              <span className="px-2 py-0.5 rounded text-[10px] font-mono font-bold bg-emerald-500/15 text-emerald-800 dark:text-emerald-300 border border-emerald-500/30">
+              <span className="px-2 py-0.5 rounded-full text-[10px] font-mono font-bold bg-emerald-500/15 text-emerald-800 dark:text-emerald-300 border border-emerald-500/30">
                 ACTIVE AUDIT SPEC
               </span>
             </div>
-            <p className="text-xs font-medium text-slate-700 dark:text-slate-300 mt-1">
+            <p className="text-xs font-medium text-[#5c5850] dark:text-[#b8b4aa] mt-1">
               Living markdown specification defining agent tool permissions, human validation triggers, and compliance criteria.
             </p>
           </div>
@@ -237,14 +237,14 @@ export const ReadmeViewer: React.FC = () => {
         {/* View Mode Controls & Action Buttons */}
         <div className="flex items-center gap-2 flex-wrap self-start lg:self-auto">
           {/* View Mode Toggle: Preview | Split | Edit */}
-          <div className="inline-flex p-1 bg-yellow-100/60 dark:bg-[#131627] border border-yellow-300/60 dark:border-[#1e2338] rounded-xl text-xs font-semibold">
+          <div className="inline-flex p-1 bg-[#faf8f5] dark:bg-[#181715] border border-[#e5e0d5] dark:border-[#33302b] rounded-xl text-xs font-semibold">
             <button
               type="button"
               onClick={() => setViewMode('preview')}
               className={`px-3 py-1.5 rounded-lg flex items-center gap-1.5 transition-all cursor-pointer ${
                 viewMode === 'preview'
-                  ? 'bg-yellow-400 text-slate-950 font-bold shadow-xs'
-                  : 'text-slate-700 hover:text-slate-950 dark:text-slate-300 dark:hover:text-yellow-300'
+                  ? 'bg-[#1f1e1b] dark:bg-[#f5f3ef] text-white dark:text-[#181715] font-bold shadow-xs'
+                  : 'text-[#5c5850] hover:text-[#1f1e1b] dark:text-[#b8b4aa] dark:hover:text-[#f5f3ef]'
               }`}
             >
               <Eye className="w-3.5 h-3.5" />
@@ -255,8 +255,8 @@ export const ReadmeViewer: React.FC = () => {
               onClick={() => setViewMode('split')}
               className={`px-3 py-1.5 rounded-lg flex items-center gap-1.5 transition-all cursor-pointer hidden sm:flex ${
                 viewMode === 'split'
-                  ? 'bg-yellow-400 text-slate-950 font-bold shadow-xs'
-                  : 'text-slate-700 hover:text-slate-950 dark:text-slate-300 dark:hover:text-yellow-300'
+                  ? 'bg-[#1f1e1b] dark:bg-[#f5f3ef] text-white dark:text-[#181715] font-bold shadow-xs'
+                  : 'text-[#5c5850] hover:text-[#1f1e1b] dark:text-[#b8b4aa] dark:hover:text-[#f5f3ef]'
               }`}
             >
               <Columns className="w-3.5 h-3.5" />
@@ -267,8 +267,8 @@ export const ReadmeViewer: React.FC = () => {
               onClick={() => setViewMode('edit')}
               className={`px-3 py-1.5 rounded-lg flex items-center gap-1.5 transition-all cursor-pointer ${
                 viewMode === 'edit'
-                  ? 'bg-yellow-400 text-slate-950 font-bold shadow-xs'
-                  : 'text-slate-700 hover:text-slate-950 dark:text-slate-300 dark:hover:text-yellow-300'
+                  ? 'bg-[#1f1e1b] dark:bg-[#f5f3ef] text-white dark:text-[#181715] font-bold shadow-xs'
+                  : 'text-[#5c5850] hover:text-[#1f1e1b] dark:text-[#b8b4aa] dark:hover:text-[#f5f3ef]'
               }`}
             >
               <Edit3 className="w-3.5 h-3.5" />
@@ -281,7 +281,7 @@ export const ReadmeViewer: React.FC = () => {
             <button
               type="button"
               onClick={handleSave}
-              className="px-3.5 py-1.5 text-xs font-bold bg-yellow-400 hover:bg-yellow-300 text-slate-950 rounded-xl transition-all shadow-sm border border-yellow-300 flex items-center gap-1.5 cursor-pointer"
+              className="px-3.5 py-1.5 text-xs font-bold bg-[#d97706] hover:bg-[#b45309] dark:bg-[#f59e0b] dark:hover:bg-[#fbbf24] text-white dark:text-[#181715] rounded-xl transition-all shadow-xs flex items-center gap-1.5 cursor-pointer"
             >
               <Check className="w-3.5 h-3.5" />
               <span>Save Changes</span>
@@ -292,10 +292,10 @@ export const ReadmeViewer: React.FC = () => {
           <button
             type="button"
             onClick={handleCopy}
-            className="px-3 py-1.5 text-xs font-bold bg-white/90 dark:bg-[#15192c] hover:bg-yellow-100/70 text-slate-900 dark:text-slate-200 rounded-xl transition-all flex items-center gap-1.5 cursor-pointer border border-yellow-300/50 dark:border-[#1e2338]"
+            className="px-3.5 py-1.5 text-xs font-bold bg-[#faf8f5] dark:bg-[#181715] hover:bg-amber-500/10 text-[#1f1e1b] dark:text-[#f5f3ef] rounded-xl transition-all flex items-center gap-1.5 cursor-pointer border border-[#e5e0d5] dark:border-[#33302b]"
             title="Copy markdown text"
           >
-            {copied ? <Check className="w-3.5 h-3.5 text-emerald-600" /> : <Copy className="w-3.5 h-3.5 text-slate-600 dark:text-yellow-400" />}
+            {copied ? <Check className="w-3.5 h-3.5 text-emerald-600" /> : <Copy className="w-3.5 h-3.5 text-[#d97706] dark:text-[#f59e0b]" />}
             <span>{copied ? 'Copied!' : 'Copy'}</span>
           </button>
 
@@ -303,10 +303,10 @@ export const ReadmeViewer: React.FC = () => {
           <button
             type="button"
             onClick={handleDownload}
-            className="px-3 py-1.5 text-xs font-bold bg-white/90 dark:bg-[#15192c] hover:bg-yellow-100/70 text-slate-900 dark:text-slate-200 rounded-xl transition-all flex items-center gap-1.5 cursor-pointer border border-yellow-300/50 dark:border-[#1e2338]"
+            className="px-3.5 py-1.5 text-xs font-bold bg-[#faf8f5] dark:bg-[#181715] hover:bg-amber-500/10 text-[#1f1e1b] dark:text-[#f5f3ef] rounded-xl transition-all flex items-center gap-1.5 cursor-pointer border border-[#e5e0d5] dark:border-[#33302b]"
             title="Download AGENT_POLICY_README.md"
           >
-            <Download className="w-3.5 h-3.5 text-slate-600 dark:text-yellow-400" />
+            <Download className="w-3.5 h-3.5 text-[#d97706] dark:text-[#f59e0b]" />
             <span>Export .md</span>
           </button>
 
@@ -324,7 +324,7 @@ export const ReadmeViewer: React.FC = () => {
               <button
                 type="button"
                 onClick={() => setShowResetConfirm(false)}
-                className="px-2 py-0.5 text-[11px] font-bold text-slate-700 dark:text-slate-300 hover:bg-slate-200 dark:hover:bg-slate-800 rounded cursor-pointer"
+                className="px-2 py-0.5 text-[11px] font-bold text-[#5c5850] dark:text-[#b8b4aa] hover:bg-[#e5e0d5] dark:hover:bg-[#33302b] rounded cursor-pointer"
               >
                 No
               </button>
@@ -333,7 +333,7 @@ export const ReadmeViewer: React.FC = () => {
             <button
               type="button"
               onClick={() => setShowResetConfirm(true)}
-              className="p-2 text-slate-600 hover:text-slate-950 dark:text-slate-400 dark:hover:text-yellow-300 rounded-xl hover:bg-yellow-100/50 dark:hover:bg-[#15192c] transition-all cursor-pointer border border-yellow-300/30 dark:border-[#1e2338]"
+              className="p-2 text-[#5c5850] hover:text-[#1f1e1b] dark:text-[#b8b4aa] dark:hover:text-[#f5f3ef] rounded-xl hover:bg-amber-500/10 transition-all cursor-pointer border border-[#e5e0d5] dark:border-[#33302b]"
               title="Reset to default ISO/IEC 42001 template"
             >
               <RotateCcw className="w-4 h-4" />
@@ -343,10 +343,10 @@ export const ReadmeViewer: React.FC = () => {
       </div>
 
       {/* Preset Governance Template Bar */}
-      <div className="p-4 rounded-xl bg-white/70 dark:bg-[#0c0e18]/70 backdrop-blur-md border border-yellow-300/40 dark:border-yellow-500/20 flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+      <div className="p-4 rounded-2xl bg-white dark:bg-[#211f1c] border border-[#e5e0d5] dark:border-[#33302b] shadow-xs flex flex-col sm:flex-row sm:items-center justify-between gap-3">
         <div className="flex items-center gap-2 text-xs">
-          <FileCheck className="w-4 h-4 text-yellow-600 dark:text-yellow-400" />
-          <span className="font-bold text-slate-900 dark:text-slate-100">Enterprise Specification Templates:</span>
+          <FileCheck className="w-4 h-4 text-[#d97706] dark:text-[#f59e0b]" />
+          <span className="font-bold text-[#1f1e1b] dark:text-[#f5f3ef]">Enterprise Specification Templates:</span>
         </div>
         <div className="flex items-center gap-2 flex-wrap">
           {README_TEMPLATES.map((tmpl, idx) => (
@@ -354,10 +354,10 @@ export const ReadmeViewer: React.FC = () => {
               key={idx}
               type="button"
               onClick={() => handleApplyTemplate(idx)}
-              className={`px-3 py-1 text-xs rounded-lg font-bold transition-all cursor-pointer border ${
+              className={`px-3 py-1.5 text-xs rounded-xl font-bold transition-all cursor-pointer border ${
                 selectedTemplateIndex === idx
-                  ? 'bg-yellow-400 text-slate-950 border-yellow-400 shadow-xs'
-                  : 'bg-white dark:bg-[#131627] text-slate-800 dark:text-slate-300 border-yellow-300/50 dark:border-[#1e2338] hover:border-yellow-400'
+                  ? 'bg-[#1f1e1b] dark:bg-[#f5f3ef] text-white dark:text-[#181715] border-[#1f1e1b] dark:border-[#f5f3ef] shadow-xs'
+                  : 'bg-[#faf8f5] dark:bg-[#181715] text-[#5c5850] dark:text-[#b8b4aa] border-[#e5e0d5] dark:border-[#33302b] hover:border-[#d97706]/40'
               }`}
             >
               {tmpl.label}
@@ -368,26 +368,26 @@ export const ReadmeViewer: React.FC = () => {
 
       {/* Markdown Quick Snippet Bar (Visible when in Edit or Split mode) */}
       {viewMode !== 'preview' && (
-        <div className="p-3 rounded-xl bg-yellow-50/70 dark:bg-[#101322] border border-yellow-300/50 dark:border-[#1e2338] flex items-center gap-2 flex-wrap text-xs">
-          <span className="font-bold text-slate-800 dark:text-slate-300 text-[11px] mr-1">Insert Directive:</span>
+        <div className="p-3.5 rounded-2xl bg-[#faf8f5] dark:bg-[#181715] border border-[#e5e0d5] dark:border-[#33302b] flex items-center gap-2 flex-wrap text-xs">
+          <span className="font-bold text-[#1f1e1b] dark:text-[#f5f3ef] text-[11px] mr-1">Insert Directive:</span>
           <button
             type="button"
             onClick={() => insertSnippet('### New Tool Gate: `tool_name`\n* Risk Tier: 🟡 YELLOW\n* Threshold: `amount <= 100`\n')}
-            className="px-2.5 py-1 rounded bg-white dark:bg-[#171b30] border border-yellow-300/60 dark:border-[#1e2338] text-slate-900 dark:text-slate-200 font-medium hover:border-yellow-400 cursor-pointer"
+            className="px-2.5 py-1 rounded-xl bg-white dark:bg-[#211f1c] border border-[#e5e0d5] dark:border-[#33302b] text-[#1f1e1b] dark:text-[#f5f3ef] font-medium hover:border-[#d97706]/40 cursor-pointer shadow-xs"
           >
             + Tool Gate
           </button>
           <button
             type="button"
             onClick={() => insertSnippet('> **Security Directive**: Any prompt injection payload detected will immediately terminate the agent thread and notify SOC.')}
-            className="px-2.5 py-1 rounded bg-white dark:bg-[#171b30] border border-yellow-300/60 dark:border-[#1e2338] text-slate-900 dark:text-slate-200 font-medium hover:border-yellow-400 cursor-pointer"
+            className="px-2.5 py-1 rounded-xl bg-white dark:bg-[#211f1c] border border-[#e5e0d5] dark:border-[#33302b] text-[#1f1e1b] dark:text-[#f5f3ef] font-medium hover:border-[#d97706]/40 cursor-pointer shadow-xs"
           >
             + Security Callout
           </button>
           <button
             type="button"
             onClick={() => insertSnippet('| Parameter | Operator | Limit Value | Action |\n| :--- | :--- | :--- | :--- |\n| `transfers_count` | `>` | `10` | 1-Tap Approval |\n')}
-            className="px-2.5 py-1 rounded bg-white dark:bg-[#171b30] border border-yellow-300/60 dark:border-[#1e2338] text-slate-900 dark:text-slate-200 font-medium hover:border-yellow-400 cursor-pointer"
+            className="px-2.5 py-1 rounded-xl bg-white dark:bg-[#211f1c] border border-[#e5e0d5] dark:border-[#33302b] text-[#1f1e1b] dark:text-[#f5f3ef] font-medium hover:border-[#d97706]/40 cursor-pointer shadow-xs"
           >
             + Policy Table
           </button>
@@ -396,13 +396,13 @@ export const ReadmeViewer: React.FC = () => {
 
       {/* Main Content Area */}
       {viewMode === 'edit' && (
-        <div className="p-5 rounded-2xl bg-white/90 dark:bg-[#0c0e18]/90 backdrop-blur-md border border-yellow-300/40 dark:border-yellow-500/20 shadow-sm space-y-3">
-          <div className="flex items-center justify-between text-xs text-slate-700 dark:text-slate-300 border-b border-yellow-200/80 dark:border-[#1e2338] pb-2">
-            <span className="font-mono font-bold flex items-center gap-1.5 text-slate-950 dark:text-yellow-300">
-              <FileText className="w-4 h-4 text-yellow-500" />
+        <div className="p-6 rounded-2xl bg-white dark:bg-[#211f1c] border border-[#e5e0d5] dark:border-[#33302b] shadow-xs space-y-3">
+          <div className="flex items-center justify-between text-xs text-[#5c5850] dark:text-[#b8b4aa] border-b border-[#e5e0d5] dark:border-[#33302b] pb-2">
+            <span className="font-mono font-bold flex items-center gap-1.5 text-[#1f1e1b] dark:text-[#f5f3ef]">
+              <FileText className="w-4 h-4 text-[#d97706] dark:text-[#f59e0b]" />
               Markdown Source Editor
             </span>
-            <span className="font-mono text-slate-800 dark:text-slate-400 font-semibold">
+            <span className="font-mono text-[#878278] dark:text-[#7d7970] font-semibold">
               {draftContent.length} characters • {draftContent.split(/\s+/).filter(Boolean).length} words
             </span>
           </div>
@@ -411,7 +411,7 @@ export const ReadmeViewer: React.FC = () => {
             value={draftContent}
             onChange={(e) => setDraftContent(e.target.value)}
             rows={26}
-            className="w-full p-4 font-mono text-xs leading-relaxed bg-yellow-50/30 dark:bg-[#070913] text-slate-950 dark:text-slate-100 border border-yellow-300/70 dark:border-[#1e2338] rounded-xl focus:outline-hidden focus:ring-2 focus:ring-yellow-400/50 resize-y"
+            className="w-full p-4 font-mono text-xs leading-relaxed bg-[#faf8f5] dark:bg-[#181715] text-[#1f1e1b] dark:text-[#f5f3ef] border border-[#e5e0d5] dark:border-[#33302b] rounded-2xl focus:outline-hidden focus:border-[#d97706] resize-y"
             placeholder="Write markdown policy specification here..."
           />
         </div>
@@ -420,26 +420,26 @@ export const ReadmeViewer: React.FC = () => {
       {viewMode === 'split' && (
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
           {/* Left Editor */}
-          <div className="p-5 rounded-2xl bg-white/90 dark:bg-[#0c0e18]/90 backdrop-blur-md border border-yellow-300/40 dark:border-yellow-500/20 shadow-sm space-y-3">
-            <div className="flex items-center justify-between text-xs text-slate-700 dark:text-slate-300 border-b border-yellow-200/80 dark:border-[#1e2338] pb-2">
-              <span className="font-mono font-bold text-slate-950 dark:text-yellow-300 flex items-center gap-1.5">
-                <Edit3 className="w-3.5 h-3.5 text-yellow-500" />
+          <div className="p-6 rounded-2xl bg-white dark:bg-[#211f1c] border border-[#e5e0d5] dark:border-[#33302b] shadow-xs space-y-3">
+            <div className="flex items-center justify-between text-xs text-[#5c5850] dark:text-[#b8b4aa] border-b border-[#e5e0d5] dark:border-[#33302b] pb-2">
+              <span className="font-mono font-bold text-[#1f1e1b] dark:text-[#f5f3ef] flex items-center gap-1.5">
+                <Edit3 className="w-3.5 h-3.5 text-[#d97706] dark:text-[#f59e0b]" />
                 Raw Source
               </span>
-              <span className="font-mono text-[11px] text-slate-800 dark:text-slate-400 font-semibold">{draftContent.length} chars</span>
+              <span className="font-mono text-[11px] text-[#878278] dark:text-[#7d7970] font-semibold">{draftContent.length} chars</span>
             </div>
             <textarea
               value={draftContent}
               onChange={(e) => setDraftContent(e.target.value)}
               rows={26}
-              className="w-full p-3.5 font-mono text-xs leading-relaxed bg-yellow-50/30 dark:bg-[#070913] text-slate-950 dark:text-slate-100 border border-yellow-300/70 dark:border-[#1e2338] rounded-xl focus:outline-hidden focus:ring-2 focus:ring-yellow-400/50 resize-y"
+              className="w-full p-3.5 font-mono text-xs leading-relaxed bg-[#faf8f5] dark:bg-[#181715] text-[#1f1e1b] dark:text-[#f5f3ef] border border-[#e5e0d5] dark:border-[#33302b] rounded-xl focus:outline-hidden focus:border-[#d97706] resize-y"
             />
           </div>
 
           {/* Right Live Preview */}
-          <div className="p-6 rounded-2xl bg-white/90 dark:bg-[#0c0e18]/90 backdrop-blur-md border border-yellow-300/40 dark:border-yellow-500/20 shadow-sm overflow-y-auto max-h-[640px]">
-            <div className="text-xs font-mono font-bold text-slate-950 dark:text-yellow-300 border-b border-yellow-200/80 dark:border-[#1e2338] pb-2 mb-4 flex items-center gap-1.5">
-              <Eye className="w-3.5 h-3.5 text-yellow-500" />
+          <div className="p-6 rounded-2xl bg-white dark:bg-[#211f1c] border border-[#e5e0d5] dark:border-[#33302b] shadow-xs overflow-y-auto max-h-[640px]">
+            <div className="text-xs font-mono font-bold text-[#1f1e1b] dark:text-[#f5f3ef] border-b border-[#e5e0d5] dark:border-[#33302b] pb-2 mb-4 flex items-center gap-1.5">
+              <Eye className="w-3.5 h-3.5 text-[#d97706] dark:text-[#f59e0b]" />
               <span>Real-Time Formatted Preview</span>
             </div>
             <RenderedMarkdown content={draftContent} />
@@ -448,7 +448,7 @@ export const ReadmeViewer: React.FC = () => {
       )}
 
       {viewMode === 'preview' && (
-        <div className="p-6 sm:p-10 rounded-2xl bg-white/90 dark:bg-[#0c0e18]/90 backdrop-blur-md border border-yellow-300/40 dark:border-yellow-500/20 shadow-sm">
+        <div className="p-6 sm:p-10 rounded-2xl bg-white dark:bg-[#211f1c] border border-[#e5e0d5] dark:border-[#33302b] shadow-xs">
           <div className="max-w-4xl mx-auto">
             <RenderedMarkdown content={draftContent} />
           </div>
@@ -458,39 +458,39 @@ export const ReadmeViewer: React.FC = () => {
   );
 };
 
-// Rendered Markdown Component with high-contrast text and yellow accents
+// Rendered Markdown Component with high-contrast text and warm neutral accents
 const RenderedMarkdown: React.FC<{ content: string }> = ({ content }) => {
   return (
     <div className="prose-slate max-w-none">
       <Markdown
         components={{
           h1: ({ children }) => (
-            <h1 className="text-xl sm:text-2xl font-black text-slate-950 dark:text-white pb-3 mb-5 border-b-2 border-yellow-300 dark:border-yellow-500/40 tracking-tight">
+            <h1 className="text-xl sm:text-2xl font-bold text-[#1f1e1b] dark:text-[#f5f3ef] pb-3 mb-5 border-b border-[#e5e0d5] dark:border-[#33302b] tracking-tight">
               {children}
             </h1>
           ),
           h2: ({ children }) => (
-            <h2 className="text-base sm:text-lg font-bold text-slate-950 dark:text-yellow-300 mt-8 mb-3 flex items-center gap-2 border-b border-yellow-200 dark:border-[#1e2338] pb-1.5">
+            <h2 className="text-base sm:text-lg font-bold text-[#1f1e1b] dark:text-[#f5f3ef] mt-8 mb-3 flex items-center gap-2 border-b border-[#e5e0d5] dark:border-[#33302b] pb-1.5">
               {children}
             </h2>
           ),
           h3: ({ children }) => (
-            <h3 className="text-sm sm:text-base font-bold text-slate-900 dark:text-white mt-5 mb-2">
+            <h3 className="text-sm sm:text-base font-bold text-[#1f1e1b] dark:text-[#f5f3ef] mt-5 mb-2">
               {children}
             </h3>
           ),
           p: ({ children }) => (
-            <p className="text-xs sm:text-sm font-medium text-slate-800 dark:text-slate-200 leading-relaxed mb-3">
+            <p className="text-xs sm:text-sm font-medium text-[#5c5850] dark:text-[#b8b4aa] leading-relaxed mb-3">
               {children}
             </p>
           ),
           ul: ({ children }) => (
-            <ul className="list-disc pl-5 text-xs sm:text-sm font-medium text-slate-800 dark:text-slate-200 space-y-1.5 mb-4">
+            <ul className="list-disc pl-5 text-xs sm:text-sm font-medium text-[#5c5850] dark:text-[#b8b4aa] space-y-1.5 mb-4">
               {children}
             </ul>
           ),
           ol: ({ children }) => (
-            <ol className="list-decimal pl-5 text-xs sm:text-sm font-medium text-slate-800 dark:text-slate-200 space-y-1.5 mb-4">
+            <ol className="list-decimal pl-5 text-xs sm:text-sm font-medium text-[#5c5850] dark:text-[#b8b4aa] space-y-1.5 mb-4">
               {children}
             </ol>
           ),
@@ -500,45 +500,45 @@ const RenderedMarkdown: React.FC<{ content: string }> = ({ content }) => {
             const isInline = !match && !String(children).includes('\n');
             return isInline ? (
               <code
-                className="px-1.5 py-0.5 rounded bg-yellow-100/80 dark:bg-[#15192c] text-amber-950 dark:text-yellow-300 font-mono text-[11px] font-bold border border-yellow-300/80 dark:border-[#1e2338]"
+                className="px-1.5 py-0.5 rounded bg-amber-500/10 text-[#d97706] dark:text-[#f59e0b] font-mono text-[11px] font-bold border border-amber-500/20"
                 {...props}
               >
                 {children}
               </code>
             ) : (
-              <pre className="p-4 my-4 rounded-xl bg-slate-950 dark:bg-[#070913] text-yellow-300 font-mono text-xs overflow-x-auto border border-yellow-500/30 shadow-inner">
+              <pre className="p-4 my-4 rounded-xl bg-[#181715] text-[#f5f3ef] font-mono text-xs overflow-x-auto border border-[#33302b] shadow-inner">
                 <code>{children}</code>
               </pre>
             );
           },
           table: ({ children }) => (
-            <div className="overflow-x-auto my-5 border border-yellow-300/70 dark:border-[#1e2338] rounded-xl shadow-xs">
+            <div className="overflow-x-auto my-5 border border-[#e5e0d5] dark:border-[#33302b] rounded-2xl shadow-xs">
               <table className="w-full text-left text-xs">{children}</table>
             </div>
           ),
           thead: ({ children }) => (
-            <thead className="bg-yellow-100 dark:bg-[#131627] font-mono font-bold text-slate-950 dark:text-yellow-400 uppercase text-[11px] tracking-wider border-b border-yellow-300 dark:border-[#1e2338]">
+            <thead className="bg-[#faf8f5] dark:bg-[#181715] font-mono font-bold text-[#1f1e1b] dark:text-[#f5f3ef] uppercase text-[11px] tracking-wider border-b border-[#e5e0d5] dark:border-[#33302b]">
               {children}
             </thead>
           ),
           tbody: ({ children }) => (
-            <tbody className="divide-y divide-yellow-200/60 dark:divide-[#1e2338] bg-white dark:bg-[#0e111e]">
+            <tbody className="divide-y divide-[#e5e0d5] dark:divide-[#33302b] bg-white dark:bg-[#211f1c]">
               {children}
             </tbody>
           ),
           tr: ({ children }) => (
-            <tr className="hover:bg-yellow-50/60 dark:hover:bg-[#15192c]/50 transition-colors">
+            <tr className="hover:bg-[#faf8f5]/60 dark:hover:bg-[#181715]/60 transition-colors">
               {children}
             </tr>
           ),
-          th: ({ children }) => <th className="py-2.5 px-4 font-bold text-slate-950 dark:text-white">{children}</th>,
-          td: ({ children }) => <td className="py-2.5 px-4 text-slate-900 dark:text-slate-200 font-medium">{children}</td>,
+          th: ({ children }) => <th className="py-2.5 px-4 font-bold text-[#1f1e1b] dark:text-[#f5f3ef]">{children}</th>,
+          td: ({ children }) => <td className="py-2.5 px-4 text-[#5c5850] dark:text-[#b8b4aa] font-medium">{children}</td>,
           blockquote: ({ children }) => (
-            <blockquote className="border-l-4 border-yellow-400 pl-4 py-2.5 my-4 bg-yellow-50/70 dark:bg-yellow-400/10 text-xs font-medium text-slate-900 dark:text-slate-200 rounded-r-lg border-y border-r border-yellow-200/50 dark:border-yellow-400/20">
+            <blockquote className="border-l-2 border-[#d97706] pl-4 py-2.5 my-4 bg-amber-500/10 text-xs font-medium text-[#1f1e1b] dark:text-[#f5f3ef] rounded-r-xl border-y border-r border-amber-500/20">
               {children}
             </blockquote>
           ),
-          hr: () => <hr className="my-6 border-yellow-300/60 dark:border-[#1e2338]" />
+          hr: () => <hr className="my-6 border-[#e5e0d5] dark:border-[#33302b]" />
         }}
       >
         {content}

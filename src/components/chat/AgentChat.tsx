@@ -115,42 +115,42 @@ export const AgentChat: React.FC = () => {
     : [];
 
   return (
-    <div className="h-[calc(100vh-8.5rem)] flex flex-col md:flex-row rounded-2xl border border-yellow-300/50 dark:border-yellow-500/20 bg-white/85 dark:bg-[#0c0e18]/85 backdrop-blur-md overflow-hidden shadow-sm shadow-yellow-950/5">
+    <div className="h-[calc(100vh-8.5rem)] flex flex-col md:flex-row rounded-2xl border border-[#e5e0d5] dark:border-[#33302b] bg-white dark:bg-[#211f1c] overflow-hidden shadow-xs">
       {/* Left Column: Agent Selector */}
-      <div className="w-full md:w-72 lg:w-80 border-b md:border-b-0 md:border-r border-yellow-300/40 dark:border-yellow-500/20 flex flex-col bg-yellow-50/30 dark:bg-[#080911]/90 backdrop-blur-md">
+      <div className="w-full md:w-72 lg:w-80 border-b md:border-b-0 md:border-r border-[#e5e0d5] dark:border-[#33302b] flex flex-col bg-[#faf8f5] dark:bg-[#181715]">
         {/* Header & Search */}
-        <div className="p-3.5 border-b border-yellow-300/40 dark:border-yellow-500/20 space-y-2.5">
+        <div className="p-3.5 border-b border-[#e5e0d5] dark:border-[#33302b] space-y-2.5">
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-2">
-              <div className="w-6 h-6 rounded-md bg-yellow-400/20 text-amber-600 dark:text-yellow-400 border border-yellow-400/30 flex items-center justify-center font-bold text-xs">
+              <div className="w-6 h-6 rounded-lg bg-amber-500/10 text-[#d97706] dark:text-[#f59e0b] border border-amber-500/20 flex items-center justify-center font-bold text-xs">
                 <Bot className="w-3.5 h-3.5" />
               </div>
-              <span className="font-bold text-xs text-slate-950 dark:text-white">
+              <span className="font-bold text-xs text-[#1f1e1b] dark:text-[#f5f3ef]">
                 Active Agents
               </span>
-              <span className="text-[10px] font-mono font-bold px-1.5 py-0.5 rounded bg-yellow-100 dark:bg-yellow-950/50 text-amber-900 dark:text-yellow-300 border border-yellow-300/70 dark:border-yellow-500/40">
+              <span className="text-[10px] font-mono font-bold px-1.5 py-0.5 rounded-full bg-amber-500/10 text-[#b45309] dark:text-[#fbbf24] border border-amber-500/20">
                 {agents.length}
               </span>
             </div>
 
             <button
               onClick={() => setActiveNav('studio')}
-              className="text-[11px] font-bold px-2 py-1 rounded-md bg-yellow-400 hover:bg-yellow-300 text-slate-950 flex items-center gap-1 transition-all cursor-pointer shadow-xs border border-yellow-300"
+              className="text-[11px] font-bold px-2.5 py-1 rounded-xl bg-[#d97706] hover:bg-[#b45309] dark:bg-[#f59e0b] dark:hover:bg-[#fbbf24] text-white dark:text-[#181715] flex items-center gap-1 transition-all cursor-pointer shadow-xs"
               title="Create new agent"
             >
-              <Sparkles className="w-3 h-3 text-slate-950" />
+              <Sparkles className="w-3 h-3" />
               <span>New</span>
             </button>
           </div>
 
           <div className="relative">
-            <Search className="w-3.5 h-3.5 absolute left-2.5 top-1/2 -translate-y-1/2 text-slate-600 dark:text-slate-400" />
+            <Search className="w-3.5 h-3.5 absolute left-2.5 top-1/2 -translate-y-1/2 text-[#878278] dark:text-[#7d7970]" />
             <input
               type="text"
               value={agentSearch}
               onChange={(e) => setAgentSearch(e.target.value)}
               placeholder="Search agents..."
-              className="w-full bg-white/90 dark:bg-[#080910] border border-yellow-300/60 dark:border-yellow-500/30 rounded-lg pl-7 pr-3 py-1.5 text-xs text-slate-950 dark:text-white placeholder:text-slate-500 dark:placeholder:text-slate-400 focus:outline-none focus:border-yellow-500 transition-colors font-medium"
+              className="w-full bg-white dark:bg-[#211f1c] border border-[#e5e0d5] dark:border-[#33302b] rounded-xl pl-8 pr-3 py-1.5 text-xs text-[#1f1e1b] dark:text-[#f5f3ef] placeholder:text-[#878278] dark:placeholder:text-[#7d7970] focus:outline-hidden focus:border-[#d97706] transition-colors font-medium shadow-xs"
             />
           </div>
         </div>
@@ -171,17 +171,17 @@ export const AgentChat: React.FC = () => {
                 }}
                 className={`w-full text-left p-2.5 rounded-xl transition-all flex items-start gap-2.5 border cursor-pointer ${
                   isSelected
-                    ? 'bg-yellow-400/20 dark:bg-yellow-400/10 border-yellow-400/80 dark:border-yellow-400/50 text-slate-950 dark:text-yellow-200 shadow-xs'
-                    : 'border-transparent hover:bg-yellow-100/40 dark:hover:bg-[#141724]/60 text-slate-900 dark:text-slate-300'
+                    ? 'bg-white dark:bg-[#211f1c] border-[#e5e0d5] dark:border-[#33302b] shadow-xs text-[#1f1e1b] dark:text-[#f5f3ef]'
+                    : 'border-transparent hover:bg-[#f4f1ea] dark:hover:bg-[#211f1c] text-[#5c5850] dark:text-[#b8b4aa]'
                 }`}
               >
                 <div
-                  className={`p-2 rounded-lg flex-shrink-0 mt-0.5 ${
+                  className={`p-2 rounded-xl flex-shrink-0 mt-0.5 ${
                     isPaused
                       ? 'bg-rose-500/10 text-rose-500 border border-rose-500/20'
                       : isSelected
-                      ? 'bg-yellow-400 text-slate-950 font-bold shadow-xs border border-yellow-300'
-                      : 'bg-yellow-100/60 dark:bg-[#15192c] text-amber-800 dark:text-yellow-400 border border-yellow-300/40 dark:border-yellow-500/20'
+                      ? 'bg-[#d97706] dark:bg-[#f59e0b] text-white dark:text-[#181715] font-bold shadow-xs'
+                      : 'bg-white dark:bg-[#282622] text-[#878278] dark:text-[#b8b4aa] border border-[#e5e0d5] dark:border-[#33302b]'
                   }`}
                 >
                   <Icon className="w-4 h-4" />
@@ -189,7 +189,7 @@ export const AgentChat: React.FC = () => {
 
                 <div className="flex-1 min-w-0">
                   <div className="flex items-center justify-between gap-1">
-                    <span className="font-bold text-xs truncate text-slate-950 dark:text-white">
+                    <span className="font-bold text-xs truncate text-[#1f1e1b] dark:text-[#f5f3ef]">
                       {agent.name}
                     </span>
                     <span
@@ -199,15 +199,15 @@ export const AgentChat: React.FC = () => {
                     />
                   </div>
 
-                  <p className="text-[11px] text-slate-800 dark:text-slate-300 truncate mt-0.5 font-medium">
+                  <p className="text-[11px] text-[#5c5850] dark:text-[#b8b4aa] truncate mt-0.5 font-medium">
                     {agent.description}
                   </p>
 
                   <div className="flex items-center gap-1.5 mt-1.5 text-[10px] font-mono">
-                    <span className="px-1.5 py-0.2 rounded bg-yellow-50 dark:bg-yellow-950/40 text-amber-900 dark:text-yellow-300 border border-yellow-300/60 dark:border-yellow-500/30 font-bold">
+                    <span className="px-1.5 py-0.2 rounded bg-amber-500/10 text-[#b45309] dark:text-[#fbbf24] border border-amber-500/20 font-bold">
                       {agent.model}
                     </span>
-                    <span className="text-slate-700 dark:text-slate-300 font-bold">
+                    <span className="text-[#878278] dark:text-[#7d7970] font-bold">
                       {agent.autonomyMode}
                     </span>
                   </div>
@@ -217,11 +217,11 @@ export const AgentChat: React.FC = () => {
           })}
 
           {filteredAgents.length === 0 && (
-            <div className="p-6 text-center text-xs text-slate-700 dark:text-slate-300 space-y-1.5 font-medium">
+            <div className="p-6 text-center text-xs text-[#878278] dark:text-[#7d7970] space-y-1.5 font-medium">
               <p>No agents found.</p>
               <button
                 onClick={() => setActiveNav('studio')}
-                className="text-amber-800 dark:text-yellow-400 font-bold hover:underline cursor-pointer"
+                className="text-[#d97706] dark:text-[#f59e0b] font-bold hover:underline cursor-pointer"
               >
                 Build new agent
               </button>
@@ -230,38 +230,38 @@ export const AgentChat: React.FC = () => {
         </div>
 
         {/* Footer Shortcut */}
-        <div className="p-2.5 border-t border-yellow-300/40 dark:border-yellow-500/20 bg-white/50 dark:bg-[#07080d]/60">
+        <div className="p-2.5 border-t border-[#e5e0d5] dark:border-[#33302b] bg-[#faf8f5] dark:bg-[#181715]">
           <button
             onClick={() => setActiveNav('agents')}
-            className="w-full py-1.5 px-3 rounded-lg border border-yellow-300/60 dark:border-yellow-500/30 text-slate-900 dark:text-yellow-200 text-xs font-bold hover:bg-yellow-100/50 dark:hover:bg-[#161a2a] flex items-center justify-center gap-1.5 transition-colors cursor-pointer"
+            className="w-full py-1.5 px-3 rounded-xl border border-[#e5e0d5] dark:border-[#33302b] bg-white dark:bg-[#211f1c] text-[#1f1e1b] dark:text-[#f5f3ef] text-xs font-bold hover:bg-[#f4f1ea] dark:hover:bg-[#282622] flex items-center justify-center gap-1.5 transition-colors cursor-pointer shadow-xs"
           >
             <span>Manage All Agents</span>
-            <ArrowRight className="w-3.5 h-3.5 text-amber-600 dark:text-yellow-400" />
+            <ArrowRight className="w-3.5 h-3.5 text-[#d97706] dark:text-[#f59e0b]" />
           </button>
         </div>
       </div>
 
       {/* Right Column: Chat Canvas */}
-      <div className="flex-1 flex flex-col h-full min-w-0 bg-white/80 dark:bg-[#0b0c14]/85 backdrop-blur-md">
+      <div className="flex-1 flex flex-col h-full min-w-0 bg-white dark:bg-[#211f1c]">
         {/* Top Chat Header */}
         {currentAgent && (
-          <div className="px-4 py-3 border-b border-yellow-300/40 dark:border-yellow-500/20 bg-white/90 dark:bg-[#0c0e18]/90 backdrop-blur-md flex items-center justify-between z-10">
+          <div className="px-4 py-3 border-b border-[#e5e0d5] dark:border-[#33302b] bg-[#faf8f5]/80 dark:bg-[#181715]/80 backdrop-blur-md flex items-center justify-between z-10">
             <div className="flex items-center gap-3 min-w-0">
               {React.createElement(getAgentIcon(currentAgent.archetype, currentAgent.avatarIcon), {
                 className: `w-5 h-5 flex-shrink-0 ${
-                  isCurrentAgentPaused ? 'text-rose-500' : 'text-amber-600 dark:text-yellow-400'
+                  isCurrentAgentPaused ? 'text-rose-500' : 'text-[#d97706] dark:text-[#f59e0b]'
                 }`
               })}
               <div className="min-w-0">
                 <div className="flex items-center gap-2">
-                  <h2 className="font-bold text-sm text-slate-950 dark:text-white truncate">
+                  <h2 className="font-bold text-sm text-[#1f1e1b] dark:text-[#f5f3ef] truncate">
                     {currentAgent.name}
                   </h2>
-                  <span className="text-[10px] font-mono px-1.5 py-0.5 rounded bg-yellow-100 dark:bg-yellow-950/60 text-amber-900 dark:text-yellow-300 border border-yellow-300/70 dark:border-yellow-500/30 font-bold">
+                  <span className="text-[10px] font-mono px-1.5 py-0.5 rounded bg-amber-500/10 text-[#b45309] dark:text-[#fbbf24] border border-amber-500/20 font-bold">
                     {currentAgent.model}
                   </span>
                   <span
-                    className={`text-[10px] font-bold px-1.5 py-0.5 rounded ${
+                    className={`text-[10px] font-bold px-1.5 py-0.5 rounded-full ${
                       isCurrentAgentPaused
                         ? 'bg-rose-500/10 text-rose-500 border border-rose-500/20'
                         : 'bg-emerald-500/10 text-emerald-800 dark:text-emerald-400 border border-emerald-500/20'
@@ -270,7 +270,7 @@ export const AgentChat: React.FC = () => {
                     {isCurrentAgentPaused ? 'HALTED' : 'READY'}
                   </span>
                 </div>
-                <p className="text-[11px] text-slate-800 dark:text-slate-300 truncate font-medium">
+                <p className="text-[11px] text-[#5c5850] dark:text-[#b8b4aa] truncate font-medium">
                   {currentAgent.description}
                 </p>
               </div>
@@ -282,7 +282,7 @@ export const AgentChat: React.FC = () => {
               <select
                 value={currentAgent.autonomyMode}
                 onChange={(e) => setAutonomyMode(currentAgent.id, e.target.value as AutonomyMode)}
-                className="hidden sm:block bg-white/90 dark:bg-[#080910] border border-yellow-300/60 dark:border-yellow-500/30 rounded-lg px-2 py-1 text-xs font-bold text-slate-950 dark:text-white focus:outline-none focus:border-yellow-500 font-mono cursor-pointer"
+                className="hidden sm:block bg-white dark:bg-[#211f1c] border border-[#e5e0d5] dark:border-[#33302b] rounded-xl px-2.5 py-1 text-xs font-bold text-[#1f1e1b] dark:text-[#f5f3ef] focus:outline-hidden focus:border-[#d97706] font-mono cursor-pointer shadow-xs"
                 title="Runtime autonomy mode"
               >
                 <option value="FULL_AUTO">Full Auto</option>
@@ -294,7 +294,7 @@ export const AgentChat: React.FC = () => {
               {/* Kill Switch Toggle */}
               <button
                 onClick={() => toggleKillSwitch(currentAgent.id)}
-                className={`p-1.5 rounded-lg border text-xs font-bold transition-all cursor-pointer ${
+                className={`p-1.5 rounded-xl border text-xs font-bold transition-all cursor-pointer ${
                   isCurrentAgentPaused
                     ? 'bg-emerald-600 text-white border-emerald-600 shadow-xs'
                     : 'border-rose-300 dark:border-rose-900/60 text-rose-600 dark:text-rose-400 hover:bg-rose-50 dark:hover:bg-rose-950/30'
@@ -310,16 +310,16 @@ export const AgentChat: React.FC = () => {
                   setShowRulesDrawer(!showRulesDrawer);
                   if (showSystemPrompt) setShowSystemPrompt(false);
                 }}
-                className={`p-1.5 rounded-lg border text-xs font-bold transition-all flex items-center gap-1.5 cursor-pointer ${
+                className={`p-1.5 px-2.5 rounded-xl border text-xs font-bold transition-all flex items-center gap-1.5 cursor-pointer shadow-xs ${
                   showRulesDrawer
-                    ? 'bg-yellow-400 text-slate-950 border-yellow-400 shadow-xs'
-                    : 'border-yellow-300/60 dark:border-yellow-500/30 text-slate-900 dark:text-yellow-300 bg-yellow-50/70 dark:bg-yellow-950/30 hover:bg-yellow-100'
+                    ? 'bg-[#d97706] dark:bg-[#f59e0b] text-white dark:text-[#181715] border-[#d97706] dark:border-[#f59e0b]'
+                    : 'border-[#e5e0d5] dark:border-[#33302b] text-[#1f1e1b] dark:text-[#f5f3ef] bg-white dark:bg-[#211f1c] hover:bg-[#f4f1ea] dark:hover:bg-[#282622]'
                 }`}
                 title="Active Governed Rules"
               >
-                <Shield className="w-3.5 h-3.5 text-amber-600 dark:text-yellow-400" />
+                <Shield className="w-3.5 h-3.5 text-[#d97706] dark:text-[#f59e0b]" />
                 <span className="hidden sm:inline">Rules</span>
-                <span className="text-[10px] font-mono px-1 py-0.2 rounded bg-yellow-400/30 dark:bg-yellow-400/20 text-slate-950 dark:text-yellow-200 font-bold">
+                <span className="text-[10px] font-mono px-1 py-0.2 rounded-full bg-amber-500/10 text-[#b45309] dark:text-[#fbbf24] font-bold">
                   {activeAgentRules.length}
                 </span>
               </button>
@@ -329,10 +329,10 @@ export const AgentChat: React.FC = () => {
                   setShowSystemPrompt(!showSystemPrompt);
                   if (showRulesDrawer) setShowRulesDrawer(false);
                 }}
-                className={`p-1.5 rounded-lg border text-xs font-bold transition-colors cursor-pointer ${
+                className={`p-1.5 rounded-xl border text-xs font-bold transition-colors cursor-pointer shadow-xs ${
                   showSystemPrompt
-                    ? 'bg-yellow-400 text-slate-950 border-yellow-300 shadow-xs'
-                    : 'border-yellow-300/60 dark:border-yellow-500/30 text-slate-700 dark:text-slate-400 hover:bg-yellow-100/50 dark:hover:bg-yellow-950/20'
+                    ? 'bg-[#d97706] dark:bg-[#f59e0b] text-white dark:text-[#181715] border-[#d97706] dark:border-[#f59e0b]'
+                    : 'border-[#e5e0d5] dark:border-[#33302b] text-[#5c5850] dark:text-[#b8b4aa] bg-white dark:bg-[#211f1c] hover:bg-[#f4f1ea] dark:hover:bg-[#282622]'
                 }`}
                 title="System Prompt & Config"
               >
@@ -345,7 +345,7 @@ export const AgentChat: React.FC = () => {
                   clearChat(currentAgent.id);
                   addToast({ title: 'Chat Cleared', description: 'Conversation reset.', type: 'info' });
                 }}
-                className="p-1.5 rounded-lg border border-yellow-300/60 dark:border-yellow-500/30 text-slate-600 hover:text-slate-950 dark:text-slate-400 dark:hover:text-white hover:bg-yellow-100/50 dark:hover:bg-yellow-950/20 transition-colors cursor-pointer"
+                className="p-1.5 rounded-xl border border-[#e5e0d5] dark:border-[#33302b] text-[#878278] hover:text-[#1f1e1b] dark:text-[#7d7970] dark:hover:text-[#f5f3ef] bg-white dark:bg-[#211f1c] hover:bg-[#f4f1ea] dark:hover:bg-[#282622] transition-colors cursor-pointer shadow-xs"
                 title="Clear conversation"
               >
                 <Trash2 className="w-3.5 h-3.5" />
@@ -356,25 +356,25 @@ export const AgentChat: React.FC = () => {
 
         {/* Collapsible System Prompt Drawer */}
         {showSystemPrompt && currentAgent && (
-          <div className="p-3.5 bg-yellow-50/60 dark:bg-yellow-950/20 border-b border-yellow-300/40 dark:border-yellow-500/20 text-xs space-y-2">
+          <div className="p-3.5 bg-[#faf8f5] dark:bg-[#181715] border-b border-[#e5e0d5] dark:border-[#33302b] text-xs space-y-2">
             <div className="flex items-center justify-between">
-              <span className="font-bold uppercase tracking-wider font-mono text-amber-900 dark:text-yellow-400 text-[10px]">
+              <span className="font-bold uppercase tracking-wider font-mono text-[#d97706] dark:text-[#f59e0b] text-[10px]">
                 System Prompt ({currentAgent.framework})
               </span>
-              <span className="text-[10px] text-slate-700 dark:text-slate-400 font-mono font-bold">
+              <span className="text-[10px] text-[#878278] dark:text-[#7d7970] font-mono font-bold">
                 Daily Budget: ${currentAgent.dailyBudgetUsd} USD
               </span>
             </div>
-            <pre className="p-2.5 bg-slate-950 rounded-lg border border-yellow-500/20 text-yellow-100/90 font-mono text-[11px] whitespace-pre-wrap max-h-32 overflow-y-auto">
+            <pre className="p-2.5 bg-white dark:bg-[#211f1c] rounded-xl border border-[#e5e0d5] dark:border-[#33302b] text-[#1f1e1b] dark:text-[#f5f3ef] font-mono text-[11px] whitespace-pre-wrap max-h-32 overflow-y-auto">
               {currentAgent.systemPrompt}
             </pre>
             {currentAgent.tools && currentAgent.tools.length > 0 && (
               <div className="flex items-center gap-1.5 flex-wrap">
-                <span className="text-slate-700 dark:text-slate-400 text-[10px] font-mono font-bold">Tools:</span>
+                <span className="text-[#878278] dark:text-[#7d7970] text-[10px] font-mono font-bold">Tools:</span>
                 {currentAgent.tools.map((tool) => (
                   <span
                     key={tool}
-                    className="px-1.5 py-0.5 rounded bg-yellow-100 dark:bg-yellow-950/40 text-amber-950 dark:text-yellow-300 font-mono text-[10px] border border-yellow-300/60 dark:border-yellow-500/30 font-bold"
+                    className="px-1.5 py-0.5 rounded bg-amber-500/10 text-[#b45309] dark:text-[#fbbf24] font-mono text-[10px] border border-amber-500/20 font-bold"
                   >
                     {tool}()
                   </span>
@@ -386,17 +386,17 @@ export const AgentChat: React.FC = () => {
 
         {/* Collapsible Governed Rules Drawer */}
         {showRulesDrawer && currentAgent && (
-          <div className="p-3.5 bg-yellow-50/80 dark:bg-[#151710] border-b border-yellow-300/40 dark:border-yellow-500/20 text-xs space-y-3">
+          <div className="p-3.5 bg-[#faf8f5] dark:bg-[#181715] border-b border-[#e5e0d5] dark:border-[#33302b] text-xs space-y-3">
             <div className="flex items-center justify-between">
               <div className="flex items-center gap-2">
-                <Shield className="w-4 h-4 text-amber-600 dark:text-yellow-400" />
-                <span className="font-bold uppercase tracking-wider font-mono text-slate-950 dark:text-yellow-300 text-[11px]">
+                <Shield className="w-4 h-4 text-[#d97706] dark:text-[#f59e0b]" />
+                <span className="font-bold uppercase tracking-wider font-mono text-[#1f1e1b] dark:text-[#f5f3ef] text-[11px]">
                   Active Governance Policies ({activeAgentRules.length})
                 </span>
               </div>
               <button
                 onClick={() => setActiveNav('policies')}
-                className="text-[11px] font-bold text-amber-900 dark:text-yellow-300 hover:underline flex items-center gap-1 cursor-pointer"
+                className="text-[11px] font-bold text-[#d97706] dark:text-[#f59e0b] hover:underline flex items-center gap-1 cursor-pointer"
               >
                 <span>Edit in Policy Studio</span>
                 <ArrowRight className="w-3 h-3" />
@@ -404,7 +404,7 @@ export const AgentChat: React.FC = () => {
             </div>
 
             {activeAgentRules.length === 0 ? (
-              <p className="text-slate-700 dark:text-slate-400 text-xs italic font-medium">
+              <p className="text-[#878278] dark:text-[#7d7970] text-xs italic font-medium">
                 No custom prompt rules currently targeting this agent. Autonomous parameters adhere to standard Traffic Light matrix.
               </p>
             ) : (
@@ -412,10 +412,10 @@ export const AgentChat: React.FC = () => {
                 {activeAgentRules.map((rule) => (
                   <div
                     key={rule.id}
-                    className="p-2.5 rounded-xl bg-white/95 dark:bg-[#0c0e18]/90 border border-yellow-300/60 dark:border-yellow-500/30 space-y-1 shadow-xs"
+                    className="p-2.5 rounded-xl bg-white dark:bg-[#211f1c] border border-[#e5e0d5] dark:border-[#33302b] space-y-1 shadow-xs"
                   >
                     <div className="flex items-center justify-between">
-                      <span className="font-bold text-slate-950 dark:text-white text-xs">
+                      <span className="font-bold text-[#1f1e1b] dark:text-[#f5f3ef] text-xs">
                         {rule.ruleName}
                       </span>
                       <span
@@ -423,19 +423,19 @@ export const AgentChat: React.FC = () => {
                           rule.riskLevel === 'RED'
                             ? 'bg-rose-500/10 text-rose-700 dark:text-rose-400 border-rose-500/30'
                             : rule.riskLevel === 'YELLOW'
-                            ? 'bg-amber-500/15 text-amber-900 dark:text-yellow-300 border-amber-500/30'
+                            ? 'bg-amber-500/15 text-[#b45309] dark:text-[#fbbf24] border-amber-500/30'
                             : 'bg-emerald-500/10 text-emerald-800 dark:text-emerald-300 border-emerald-500/30'
                         }`}
                       >
                         {rule.riskLevel}
                       </span>
                     </div>
-                    <div className="flex items-center gap-1.5 text-[10px] font-mono text-slate-700 dark:text-slate-400">
-                      <span>Tool: <strong className="text-slate-950 dark:text-slate-200">{rule.targetTool || 'All Tools'}</strong></span>
+                    <div className="flex items-center gap-1.5 text-[10px] font-mono text-[#878278] dark:text-[#7d7970]">
+                      <span>Tool: <strong className="text-[#1f1e1b] dark:text-[#f5f3ef]">{rule.targetTool || 'All Tools'}</strong></span>
                       <span>•</span>
-                      <span className="truncate font-semibold text-slate-800 dark:text-slate-300">{rule.conditionExpression || 'Always Active'}</span>
+                      <span className="truncate font-semibold text-[#5c5850] dark:text-[#b8b4aa]">{rule.conditionExpression || 'Always Active'}</span>
                     </div>
-                    <p className="text-[11px] text-slate-800 dark:text-slate-300 line-clamp-2 italic bg-yellow-50/70 dark:bg-yellow-950/20 p-1.5 rounded-md border border-yellow-200/80 dark:border-yellow-500/20 font-medium">
+                    <p className="text-[11px] text-[#5c5850] dark:text-[#b8b4aa] line-clamp-2 italic bg-[#faf8f5] dark:bg-[#181715] p-1.5 rounded-lg border border-[#e5e0d5] dark:border-[#33302b] font-medium">
                       "{rule.systemInstructionAddition}"
                     </p>
                   </div>
@@ -454,7 +454,7 @@ export const AgentChat: React.FC = () => {
             </div>
             <button
               onClick={() => toggleKillSwitch(currentAgent.id)}
-              className="px-2.5 py-0.5 bg-rose-600 hover:bg-rose-500 text-white font-semibold text-xs rounded transition-colors cursor-pointer shadow-xs"
+              className="px-2.5 py-0.5 bg-rose-600 hover:bg-rose-500 text-white font-semibold text-xs rounded-lg transition-colors cursor-pointer shadow-xs"
             >
               Resume
             </button>
@@ -466,17 +466,17 @@ export const AgentChat: React.FC = () => {
           {/* Welcome Screen when conversation is empty */}
           {messages.length === 0 && currentAgent && (
             <div className="max-w-lg mx-auto py-12 text-center space-y-4">
-              <div className="w-12 h-12 rounded-xl bg-yellow-400 text-slate-950 flex items-center justify-center mx-auto shadow-md shadow-yellow-500/30 border border-yellow-300 font-bold">
+              <div className="w-12 h-12 rounded-2xl bg-[#d97706] dark:bg-[#f59e0b] text-white dark:text-[#181715] flex items-center justify-center mx-auto shadow-xs font-bold">
                 {React.createElement(getAgentIcon(currentAgent.archetype, currentAgent.avatarIcon), {
                   className: 'w-6 h-6'
                 })}
               </div>
 
               <div>
-                <h3 className="text-base font-bold text-slate-950 dark:text-white">
+                <h3 className="text-base font-bold text-[#1f1e1b] dark:text-[#f5f3ef]">
                   {currentAgent.name}
                 </h3>
-                <p className="text-xs text-slate-750 dark:text-slate-300 text-slate-700 mt-1 max-w-sm mx-auto font-semibold">
+                <p className="text-xs text-[#5c5850] dark:text-[#b8b4aa] mt-1 max-w-sm mx-auto font-medium">
                   {currentAgent.welcomeMessage || currentAgent.description}
                 </p>
               </div>
@@ -484,7 +484,7 @@ export const AgentChat: React.FC = () => {
               {/* Starter Prompts */}
               {currentAgent.suggestedPrompts && currentAgent.suggestedPrompts.length > 0 && (
                 <div className="space-y-2 pt-2">
-                  <span className="text-[10px] font-bold text-amber-900 dark:text-yellow-400 uppercase tracking-wider font-mono block">
+                  <span className="text-[10px] font-bold text-[#878278] dark:text-[#7d7970] uppercase tracking-wider font-mono block">
                     Suggested Questions
                   </span>
                   <div className="grid grid-cols-1 gap-1.5 text-left">
@@ -492,10 +492,10 @@ export const AgentChat: React.FC = () => {
                       <button
                         key={i}
                         onClick={() => handleSend(prompt)}
-                        className="p-2.5 rounded-lg border border-yellow-300/70 dark:border-yellow-500/30 bg-white/95 dark:bg-[#0c0e18]/80 hover:border-yellow-400 hover:bg-yellow-50/80 dark:hover:bg-yellow-950/30 text-xs text-slate-900 dark:text-slate-200 transition-all flex items-center justify-between group cursor-pointer shadow-2xs font-semibold"
+                        className="p-2.5 rounded-xl border border-[#e5e0d5] dark:border-[#33302b] bg-white dark:bg-[#211f1c] hover:bg-[#faf8f5] dark:hover:bg-[#181715] text-xs text-[#1f1e1b] dark:text-[#f5f3ef] transition-all flex items-center justify-between group cursor-pointer shadow-xs font-semibold"
                       >
                         <span className="line-clamp-1">{prompt}</span>
-                        <Send className="w-3 h-3 text-slate-600 dark:text-slate-400 group-hover:text-amber-700 dark:group-hover:text-yellow-400 transition-colors ml-2 flex-shrink-0" />
+                        <Send className="w-3 h-3 text-[#878278] dark:text-[#7d7970] group-hover:text-[#d97706] dark:group-hover:text-[#f59e0b] transition-colors ml-2 flex-shrink-0" />
                       </button>
                     ))}
                   </div>
@@ -515,7 +515,7 @@ export const AgentChat: React.FC = () => {
                 className={`flex gap-3 text-xs ${isUser ? 'justify-end' : 'justify-start'}`}
               >
                 {!isUser && (
-                  <div className="w-7 h-7 rounded-lg bg-yellow-400/20 text-amber-800 dark:text-yellow-400 border border-yellow-400/40 flex items-center justify-center flex-shrink-0 mt-0.5">
+                  <div className="w-7 h-7 rounded-xl bg-amber-500/10 text-[#d97706] dark:text-[#f59e0b] border border-amber-500/20 flex items-center justify-center flex-shrink-0 mt-0.5 shadow-xs">
                     {React.createElement(getAgentIcon(currentAgent.archetype, currentAgent.avatarIcon), {
                       className: 'w-3.5 h-3.5'
                     })}
@@ -525,27 +525,27 @@ export const AgentChat: React.FC = () => {
                 <div className={`space-y-1.5 max-w-[85%] sm:max-w-[75%] ${isUser ? 'items-end' : 'items-start'}`}>
                   {/* Internal Reasoning Steps */}
                   {!isUser && msg.thoughts && msg.thoughts.length > 0 && (
-                    <div className="rounded-lg border border-yellow-300/60 dark:border-yellow-500/25 bg-yellow-50/50 dark:bg-yellow-950/20 overflow-hidden text-[11px]">
+                    <div className="rounded-xl border border-[#e5e0d5] dark:border-[#33302b] bg-[#faf8f5] dark:bg-[#181715] overflow-hidden text-[11px]">
                       <button
                         onClick={() => toggleThought(msg.id)}
-                        className="w-full px-2.5 py-1.5 flex items-center justify-between text-slate-850 dark:text-slate-200 text-slate-900 hover:text-slate-950 dark:hover:text-white font-mono cursor-pointer font-bold"
+                        className="w-full px-2.5 py-1.5 flex items-center justify-between text-[#1f1e1b] dark:text-[#f5f3ef] font-mono cursor-pointer font-bold"
                       >
                         <span className="flex items-center gap-1.5 font-bold">
-                          <Brain className="w-3 h-3 text-amber-700 dark:text-yellow-400" />
+                          <Brain className="w-3 h-3 text-[#d97706] dark:text-[#f59e0b]" />
                           <span>Reasoning ({msg.thoughts.length} steps)</span>
                         </span>
                         {isThoughtCollapsed ? (
-                          <ChevronRight className="w-3 h-3 text-slate-600 dark:text-slate-400" />
+                          <ChevronRight className="w-3 h-3 text-[#878278]" />
                         ) : (
-                          <ChevronDown className="w-3 h-3 text-slate-600 dark:text-slate-400" />
+                          <ChevronDown className="w-3 h-3 text-[#878278]" />
                         )}
                       </button>
 
                       {!isThoughtCollapsed && (
-                        <div className="px-2.5 pb-2 pt-1 border-t border-yellow-300/40 dark:border-yellow-500/20 font-mono space-y-1 text-slate-900 dark:text-slate-300 font-medium">
+                        <div className="px-2.5 pb-2 pt-1 border-t border-[#e5e0d5] dark:border-[#33302b] font-mono space-y-1 text-[#5c5850] dark:text-[#b8b4aa] font-medium">
                           {msg.thoughts.map((t, i) => (
                             <div key={i} className="flex items-start gap-1.5">
-                              <span className="text-amber-700 dark:text-yellow-400 font-bold text-[10px]">{i + 1}.</span>
+                              <span className="text-[#d97706] dark:text-[#f59e0b] font-bold text-[10px]">{i + 1}.</span>
                               <span>{t}</span>
                             </div>
                           ))}
@@ -556,40 +556,34 @@ export const AgentChat: React.FC = () => {
 
                   {/* Tool Execution Card */}
                   {!isUser && msg.toolCall && (
-                    <div
-                      className={`p-2.5 rounded-lg border text-xs font-mono space-y-1 ${
-                        msg.toolCall.riskLevel === 'YELLOW'
-                          ? 'border-yellow-400/90 bg-yellow-400/15'
-                          : 'border-yellow-300/60 dark:border-yellow-500/25 bg-yellow-50/40 dark:bg-yellow-950/15'
-                      }`}
-                    >
+                    <div className="p-2.5 rounded-xl border border-[#e5e0d5] dark:border-[#33302b] bg-white dark:bg-[#211f1c] text-xs font-mono space-y-1 shadow-xs">
                       <div className="flex items-center justify-between">
-                        <div className="flex items-center gap-1.5 font-bold text-slate-950 dark:text-slate-100">
-                          <Terminal className="w-3 h-3 text-amber-700 dark:text-yellow-400" />
+                        <div className="flex items-center gap-1.5 font-bold text-[#1f1e1b] dark:text-[#f5f3ef]">
+                          <Terminal className="w-3 h-3 text-[#d97706] dark:text-[#f59e0b]" />
                           <span>Tool: {msg.toolCall.toolName}()</span>
                         </div>
                         <span
                           className={`text-[10px] font-bold px-1.5 py-0.2 rounded border ${
                             msg.toolCall.riskLevel === 'YELLOW'
-                              ? 'bg-amber-500/20 text-amber-950 dark:text-yellow-300 border-amber-500/40'
-                              : 'bg-emerald-500/20 text-emerald-800 dark:text-emerald-400 border-emerald-500/30'
+                              ? 'bg-amber-500/15 text-[#b45309] dark:text-[#fbbf24] border-amber-500/30'
+                              : 'bg-emerald-500/10 text-emerald-800 dark:text-emerald-300 border-emerald-500/30'
                           }`}
                         >
                           {msg.toolCall.riskLevel} {msg.toolCall.intercepted ? '(GATED)' : '(AUTO)'}
                         </span>
                       </div>
 
-                      <div className="text-[11px] text-slate-750 text-slate-800 dark:text-slate-400 font-medium">
-                        <strong className="text-slate-950 dark:text-slate-300">Input:</strong> {JSON.stringify(msg.toolCall.params)}
+                      <div className="text-[11px] text-[#5c5850] dark:text-[#b8b4aa] font-medium">
+                        <strong className="text-[#1f1e1b] dark:text-[#f5f3ef]">Input:</strong> {JSON.stringify(msg.toolCall.params)}
                       </div>
 
-                      <div className="text-[11px] text-slate-850 text-slate-800 dark:text-slate-300 pt-1 border-t border-yellow-300/40 dark:border-yellow-500/20 font-medium">
-                        <strong className="text-slate-950 dark:text-slate-300">Output:</strong> {msg.toolCall.result}
+                      <div className="text-[11px] text-[#5c5850] dark:text-[#b8b4aa] pt-1 border-t border-[#e5e0d5] dark:border-[#33302b] font-medium">
+                        <strong className="text-[#1f1e1b] dark:text-[#f5f3ef]">Output:</strong> {msg.toolCall.result}
                       </div>
 
                       {msg.toolCall.riskLevel === 'YELLOW' && msg.toolCall.intercepted && (
-                        <div className="pt-2 border-t border-yellow-400/40 flex flex-wrap items-center justify-between gap-2">
-                          <div className="flex items-center gap-1.5 text-[11px] text-amber-950 dark:text-yellow-300 font-sans font-bold">
+                        <div className="pt-2 border-t border-[#e5e0d5] dark:border-[#33302b] flex flex-wrap items-center justify-between gap-2">
+                          <div className="flex items-center gap-1.5 text-[11px] text-[#b45309] dark:text-[#fbbf24] font-sans font-bold">
                             <AlertTriangle className="w-3.5 h-3.5 flex-shrink-0" />
                             <span>Awaiting Supervisor Approval</span>
                           </div>
@@ -612,14 +606,14 @@ export const AgentChat: React.FC = () => {
                                   });
                                 }
                               }}
-                              className="px-2.5 py-1 bg-yellow-400 hover:bg-yellow-300 text-slate-950 font-bold text-[11px] font-sans rounded-md flex items-center gap-1 cursor-pointer shadow-xs border border-yellow-300"
+                              className="px-2.5 py-1 bg-[#d97706] hover:bg-[#b45309] dark:bg-[#f59e0b] dark:hover:bg-[#fbbf24] text-white dark:text-[#181715] font-bold text-[11px] font-sans rounded-lg flex items-center gap-1 cursor-pointer shadow-xs"
                             >
                               <CheckCircle2 className="w-3 h-3" />
                               <span>1-Tap Authorize</span>
                             </button>
                             <button
                               onClick={() => setActiveNav('live-stream')}
-                              className="px-2 py-1 bg-white dark:bg-[#121526] border border-yellow-400/70 hover:border-yellow-400 text-amber-900 dark:text-yellow-300 text-[11px] font-sans font-bold rounded-md flex items-center gap-1 cursor-pointer"
+                              className="px-2.5 py-1 bg-[#faf8f5] dark:bg-[#181715] border border-[#e5e0d5] dark:border-[#33302b] hover:bg-[#f4f1ea] dark:hover:bg-[#282622] text-[#1f1e1b] dark:text-[#f5f3ef] text-[11px] font-sans font-bold rounded-lg flex items-center gap-1 cursor-pointer"
                             >
                               <span>Control Tower</span>
                               <ArrowRight className="w-3 h-3" />
@@ -632,10 +626,10 @@ export const AgentChat: React.FC = () => {
 
                   {/* Message Bubble */}
                   <div
-                    className={`p-3.5 rounded-xl leading-relaxed whitespace-pre-wrap shadow-xs ${
+                    className={`p-3.5 rounded-2xl leading-relaxed whitespace-pre-wrap shadow-xs ${
                       isUser
-                        ? 'bg-yellow-400 text-slate-950 font-bold border border-yellow-300'
-                        : 'bg-white/95 dark:bg-[#0c0e18]/90 backdrop-blur-md text-slate-950 dark:text-white border border-yellow-300/60 dark:border-yellow-500/25 font-medium'
+                        ? 'bg-[#1f1e1b] dark:bg-[#f5f3ef] text-white dark:text-[#181715] font-medium'
+                        : 'bg-white dark:bg-[#211f1c] text-[#1f1e1b] dark:text-[#f5f3ef] border border-[#e5e0d5] dark:border-[#33302b] font-medium'
                     }`}
                   >
                     {msg.content}
@@ -643,7 +637,7 @@ export const AgentChat: React.FC = () => {
 
                   {/* Telemetry Footer */}
                   <div
-                    className={`flex items-center gap-2 text-[10px] font-mono text-slate-700 dark:text-slate-400 px-1 font-semibold ${
+                    className={`flex items-center gap-2 text-[10px] font-mono text-[#878278] dark:text-[#7d7970] px-1 font-semibold ${
                       isUser ? 'justify-end' : 'justify-start'
                     }`}
                   >
@@ -662,7 +656,7 @@ export const AgentChat: React.FC = () => {
                 </div>
 
                 {isUser && (
-                  <div className="w-7 h-7 rounded-lg bg-slate-950 dark:bg-yellow-400 text-white dark:text-slate-950 font-bold flex items-center justify-center flex-shrink-0 mt-0.5 text-[10px] border border-yellow-400/50 shadow-xs">
+                  <div className="w-7 h-7 rounded-xl bg-[#1f1e1b] dark:bg-[#f5f3ef] text-white dark:text-[#181715] font-bold flex items-center justify-center flex-shrink-0 mt-0.5 text-[10px] shadow-xs">
                     ME
                   </div>
                 )}
@@ -673,22 +667,22 @@ export const AgentChat: React.FC = () => {
           {/* Thinking animation */}
           {isThinking && (
             <div className="flex gap-3 text-xs justify-start items-start">
-              <div className="w-7 h-7 rounded-lg bg-yellow-400/20 text-amber-700 dark:text-yellow-400 border border-yellow-400/30 flex items-center justify-center flex-shrink-0 mt-0.5">
+              <div className="w-7 h-7 rounded-xl bg-amber-500/10 text-[#d97706] dark:text-[#f59e0b] border border-amber-500/20 flex items-center justify-center flex-shrink-0 mt-0.5">
                 <Bot className="w-3.5 h-3.5 animate-spin" />
               </div>
 
-              <div className="p-3 rounded-xl bg-white/95 dark:bg-[#0c0e18]/90 backdrop-blur-md border border-yellow-300/60 dark:border-yellow-500/25 shadow-xs text-slate-800 dark:text-slate-300 space-y-1 font-medium">
+              <div className="p-3 rounded-2xl bg-white dark:bg-[#211f1c] border border-[#e5e0d5] dark:border-[#33302b] shadow-xs text-[#5c5850] dark:text-[#b8b4aa] space-y-1 font-medium">
                 <div className="flex items-center gap-2">
                   <div className="flex gap-1">
-                    <span className="w-1.5 h-1.5 rounded-full bg-yellow-400 animate-bounce" style={{ animationDelay: '0ms' }} />
-                    <span className="w-1.5 h-1.5 rounded-full bg-yellow-400 animate-bounce" style={{ animationDelay: '150ms' }} />
-                    <span className="w-1.5 h-1.5 rounded-full bg-yellow-400 animate-bounce" style={{ animationDelay: '300ms' }} />
+                    <span className="w-1.5 h-1.5 rounded-full bg-[#d97706] dark:bg-[#f59e0b] animate-bounce" style={{ animationDelay: '0ms' }} />
+                    <span className="w-1.5 h-1.5 rounded-full bg-[#d97706] dark:bg-[#f59e0b] animate-bounce" style={{ animationDelay: '150ms' }} />
+                    <span className="w-1.5 h-1.5 rounded-full bg-[#d97706] dark:bg-[#f59e0b] animate-bounce" style={{ animationDelay: '300ms' }} />
                   </div>
-                  <span className="font-bold text-slate-950 dark:text-white text-xs">
+                  <span className="font-bold text-[#1f1e1b] dark:text-[#f5f3ef] text-xs">
                     {currentAgent?.name} is thinking...
                   </span>
                 </div>
-                <p className="text-[10px] font-mono text-slate-700 dark:text-slate-400 font-semibold">
+                <p className="text-[10px] font-mono text-[#878278] dark:text-[#7d7970] font-semibold">
                   {thinkingStage}
                 </p>
               </div>
@@ -699,8 +693,8 @@ export const AgentChat: React.FC = () => {
         </div>
 
         {/* Input Bar */}
-        <div className="p-3.5 border-t border-yellow-300/40 dark:border-yellow-500/20 bg-white/90 dark:bg-[#0c0e18]/90 backdrop-blur-md">
-          <div className="relative rounded-xl border border-yellow-300/70 dark:border-yellow-500/30 bg-white dark:bg-[#080910] focus-within:border-yellow-500 focus-within:ring-2 focus-within:ring-yellow-400/20 transition-all shadow-2xs">
+        <div className="p-3.5 border-t border-[#e5e0d5] dark:border-[#33302b] bg-[#faf8f5] dark:bg-[#181715]">
+          <div className="relative rounded-2xl border border-[#e5e0d5] dark:border-[#33302b] bg-white dark:bg-[#211f1c] focus-within:border-[#d97706] transition-all shadow-xs">
             <textarea
               ref={inputRef}
               value={inputMessage}
@@ -713,22 +707,22 @@ export const AgentChat: React.FC = () => {
                   ? 'Agent paused. Resume above to chat...'
                   : `Message ${currentAgent?.name || 'Agent'}... (Press Enter)`
               }
-              className="w-full bg-transparent p-3 pr-10 text-xs text-slate-950 dark:text-white placeholder:text-slate-500 dark:placeholder:text-slate-400 focus:outline-none resize-none font-semibold"
+              className="w-full bg-transparent p-3 pr-10 text-xs text-[#1f1e1b] dark:text-[#f5f3ef] placeholder:text-[#878278] dark:placeholder:text-[#7d7970] focus:outline-hidden resize-none font-medium"
             />
 
             <button
               onClick={() => handleSend()}
               disabled={!inputMessage.trim() || isThinking}
-              className="absolute right-2 bottom-2 p-1.5 rounded-lg bg-yellow-400 hover:bg-yellow-300 disabled:opacity-30 text-slate-950 font-bold border border-yellow-300 transition-all shadow-xs cursor-pointer"
+              className="absolute right-2.5 bottom-2.5 p-2 rounded-xl bg-[#d97706] hover:bg-[#b45309] dark:bg-[#f59e0b] dark:hover:bg-[#fbbf24] disabled:opacity-30 text-white dark:text-[#181715] font-bold transition-all shadow-xs cursor-pointer"
               title="Send message"
             >
               <Send className="w-3.5 h-3.5" />
             </button>
           </div>
 
-          <div className="flex items-center justify-between mt-1.5 px-1 text-[10px] text-slate-700 dark:text-slate-400 font-mono font-semibold">
+          <div className="flex items-center justify-between mt-1.5 px-1 text-[10px] text-[#878278] dark:text-[#7d7970] font-mono font-semibold">
             <span>
-              Governed Key: <strong className="text-amber-800 dark:text-yellow-400 font-bold">al_live_scoped</strong>
+              Governed Key: <strong className="text-[#d97706] dark:text-[#f59e0b] font-bold">al_live_scoped</strong>
             </span>
             <span>Shift + Enter for new line</span>
           </div>

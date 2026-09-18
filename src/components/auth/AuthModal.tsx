@@ -260,7 +260,7 @@ export const AuthModal: React.FC = () => {
                       e.preventDefault();
                       addToast({ title: 'Password Reset', description: 'Reset instructions sent to your email.', type: 'info' });
                     }}
-                    className="text-[11px] text-yellow-600 dark:text-yellow-400 hover:underline"
+                    className="text-[11px] text-[#d97706] dark:text-[#f59e0b] hover:underline"
                   >
                     Forgot password?
                   </a>
@@ -273,7 +273,7 @@ export const AuthModal: React.FC = () => {
                     value={password}
                     onChange={(e) => setPassword(e.target.value)}
                     placeholder="••••••••••••"
-                    className="w-full pl-9 pr-10 py-2.5 rounded-xl border border-slate-200 dark:border-slate-800 bg-slate-50 dark:bg-[#070912] text-sm focus:outline-none focus:ring-2 focus:ring-yellow-400/50"
+                    className="w-full pl-9 pr-10 py-2.5 rounded-xl border border-[#e5e0d5] dark:border-[#33302b] bg-[#faf8f5] dark:bg-[#181715] text-sm focus:outline-hidden focus:border-[#d97706]"
                   />
                   <button
                     type="button"
@@ -316,7 +316,7 @@ export const AuthModal: React.FC = () => {
                       value={name}
                       onChange={(e) => setName(e.target.value)}
                       placeholder="Elena Rostova"
-                      className="w-full pl-9 pr-3 py-2 rounded-xl border border-slate-200 dark:border-slate-800 bg-slate-50 dark:bg-[#070912] text-xs focus:outline-none focus:ring-2 focus:ring-yellow-400/50"
+                      className="w-full pl-9 pr-3 py-2 rounded-xl border border-[#e5e0d5] dark:border-[#33302b] bg-[#faf8f5] dark:bg-[#181715] text-xs focus:outline-hidden focus:border-[#d97706]"
                     />
                   </div>
                 </div>
@@ -333,7 +333,7 @@ export const AuthModal: React.FC = () => {
                       value={orgName}
                       onChange={(e) => setOrgName(e.target.value)}
                       placeholder="Nova Financial AI"
-                      className="w-full pl-9 pr-3 py-2 rounded-xl border border-slate-200 dark:border-slate-800 bg-slate-50 dark:bg-[#070912] text-xs focus:outline-none focus:ring-2 focus:ring-yellow-400/50"
+                      className="w-full pl-9 pr-3 py-2 rounded-xl border border-[#e5e0d5] dark:border-[#33302b] bg-[#faf8f5] dark:bg-[#181715] text-xs focus:outline-hidden focus:border-[#d97706]"
                     />
                   </div>
                 </div>
@@ -351,7 +351,7 @@ export const AuthModal: React.FC = () => {
                     value={email}
                     onChange={(e) => setEmail(e.target.value)}
                     placeholder="elena@novafin.ai"
-                    className="w-full pl-9 pr-3 py-2 rounded-xl border border-slate-200 dark:border-slate-800 bg-slate-50 dark:bg-[#070912] text-xs focus:outline-none focus:ring-2 focus:ring-yellow-400/50"
+                    className="w-full pl-9 pr-3 py-2 rounded-xl border border-[#e5e0d5] dark:border-[#33302b] bg-[#faf8f5] dark:bg-[#181715] text-xs focus:outline-hidden focus:border-[#d97706]"
                   />
                 </div>
               </div>
@@ -368,7 +368,7 @@ export const AuthModal: React.FC = () => {
                     value={password}
                     onChange={(e) => setPassword(e.target.value)}
                     placeholder="Minimum 6 characters"
-                    className="w-full pl-9 pr-3 py-2 rounded-xl border border-slate-200 dark:border-slate-800 bg-slate-50 dark:bg-[#070912] text-xs focus:outline-none focus:ring-2 focus:ring-yellow-400/50"
+                    className="w-full pl-9 pr-3 py-2 rounded-xl border border-[#e5e0d5] dark:border-[#33302b] bg-[#faf8f5] dark:bg-[#181715] text-xs focus:outline-hidden focus:border-[#d97706]"
                   />
                 </div>
               </div>

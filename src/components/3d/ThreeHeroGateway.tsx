@@ -899,18 +899,18 @@ export const ThreeHeroGateway: React.FC = () => {
   return (
     <div
       ref={containerRef}
-      className="relative w-full h-[640px] sm:h-[740px] lg:h-[820px] flex items-center justify-center rounded-3xl overflow-hidden border border-yellow-400/30 bg-gradient-to-b from-[#060814] via-[#090d1e] to-[#04060d] backdrop-blur-2xl shadow-2xl shadow-yellow-950/30 group select-none"
+      className="relative w-full h-[640px] sm:h-[740px] lg:h-[820px] flex items-center justify-center rounded-3xl overflow-hidden border border-[#33302b] bg-gradient-to-b from-[#0c0b0a] via-[#141210] to-[#080706] backdrop-blur-2xl shadow-2xl group select-none"
     >
       {/* 3D Scene Subtle Ground Ambient Glow */}
-      <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_center,_var(--tw-gradient-stops))] from-yellow-500/10 via-transparent to-transparent pointer-events-none" />
+      <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_center,_var(--tw-gradient-stops))] from-amber-500/5 via-transparent to-transparent pointer-events-none" />
 
       {/* TOP COMMAND DECK BAR */}
       <div className="absolute top-4 left-4 right-4 z-20 flex flex-wrap items-center justify-between gap-3 pointer-events-none">
         {/* Fleet Architecture Identity Badge */}
-        <div className="flex items-center gap-2.5 px-3.5 py-1.5 rounded-full bg-slate-950/85 border border-yellow-500/30 backdrop-blur-xl text-xs font-mono text-yellow-400 pointer-events-auto shadow-xl">
-          <Car className="w-4 h-4 text-yellow-400" />
-          <span className="font-bold tracking-wider">AUTONOMOUS AI AGENT FLEET EXPRESSWAY</span>
-          <span className="text-slate-600 dark:text-slate-400">|</span>
+        <div className="flex items-center gap-2.5 px-3.5 py-1.5 rounded-full bg-[#181715]/90 border border-[#33302b] backdrop-blur-xl text-xs font-mono text-[#f59e0b] pointer-events-auto shadow-xl">
+          <Car className="w-4 h-4 text-[#f59e0b]" />
+          <span className="font-bold tracking-wider text-[#f5f3ef]">AUTONOMOUS AI AGENT FLEET EXPRESSWAY</span>
+          <span className="text-[#5c5850]">|</span>
           <span className="text-emerald-400 font-bold">{deployedCount} ACTIVE AGENT CRUISERS</span>
         </div>
 
@@ -919,23 +919,23 @@ export const ThreeHeroGateway: React.FC = () => {
           {/* Deploy New Agent Button */}
           <button
             onClick={handleDeployNewAgent}
-            className="px-3.5 py-1.5 rounded-xl bg-yellow-400 hover:bg-yellow-300 text-slate-950 font-black text-xs font-mono shadow-md shadow-yellow-400/30 flex items-center gap-1.5 transition-all hover:scale-105 cursor-pointer"
+            className="px-3.5 py-1.5 rounded-xl bg-[#d97706] hover:bg-[#b45309] text-white font-bold text-xs font-mono shadow-xs flex items-center gap-1.5 transition-all hover:scale-105 cursor-pointer"
             title="Synthesize and Deploy a new Autonomous AI Agent Vehicle"
           >
-            <PlusCircle className="w-4 h-4 text-slate-950" />
+            <PlusCircle className="w-4 h-4" />
             <span>+ Deploy New Agent</span>
           </button>
 
           {/* Camera View Selector */}
-          <div className="flex items-center p-1 rounded-xl bg-slate-950/80 border border-slate-800 backdrop-blur-xl">
+          <div className="flex items-center p-1 rounded-xl bg-[#181715]/90 border border-[#33302b] backdrop-blur-xl">
             {(['ISOMETRIC', 'DRONE', 'CHASE'] as const).map((mode) => (
               <button
                 key={mode}
                 onClick={() => setViewAngle(mode)}
                 className={`px-2 py-1 rounded-lg text-[10px] font-mono transition-all cursor-pointer ${
                   viewAngle === mode
-                    ? 'bg-yellow-400 text-slate-950 font-bold'
-                    : 'text-slate-400 hover:text-white'
+                    ? 'bg-[#f5f3ef] text-[#181715] font-bold'
+                    : 'text-[#b8b4aa] hover:text-[#f5f3ef]'
                 }`}
               >
                 {mode}
@@ -946,7 +946,7 @@ export const ThreeHeroGateway: React.FC = () => {
           {/* Speed Multiplier Toggle */}
           <button
             onClick={() => setSpeedMultiplier((prev) => (prev === 1 ? 2 : prev === 2 ? 3 : 1))}
-            className="px-2.5 py-1.5 rounded-xl bg-slate-950/80 border border-yellow-500/20 hover:border-yellow-400 text-yellow-400 text-xs font-mono flex items-center gap-1 cursor-pointer"
+            className="px-2.5 py-1.5 rounded-xl bg-[#181715]/90 border border-[#33302b] hover:border-amber-500/40 text-[#f59e0b] text-xs font-mono flex items-center gap-1 cursor-pointer"
             title="Accelerate Agent Swarm Speed"
           >
             <Gauge className="w-3.5 h-3.5" />
@@ -967,7 +967,7 @@ export const ThreeHeroGateway: React.FC = () => {
 
       {/* EVENT TOAST NOTIFICATION */}
       <div className="absolute top-16 left-1/2 -translate-x-1/2 z-20 pointer-events-none">
-        <div className="px-4 py-1.5 rounded-full bg-slate-950/90 border border-yellow-500/40 text-[11px] font-mono text-yellow-300 shadow-2xl backdrop-blur-xl flex items-center gap-2 animate-in fade-in slide-in-from-top-2">
+        <div className="px-4 py-1.5 rounded-full bg-[#181715]/90 border border-amber-500/30 text-[11px] font-mono text-[#f5f3ef] shadow-2xl backdrop-blur-xl flex items-center gap-2 animate-in fade-in slide-in-from-top-2">
           <span className="w-2 h-2 rounded-full bg-emerald-400 animate-ping" />
           <span>{lastEventToast}</span>
         </div>
@@ -980,16 +980,16 @@ export const ThreeHeroGateway: React.FC = () => {
             left: `${Math.min(Math.max(hudScreenPos.x + 20, 20), (containerRef.current?.clientWidth || 800) - 350)}px`,
             top: `${Math.min(Math.max(hudScreenPos.y - 100, 70), (containerRef.current?.clientHeight || 700) - 290)}px`,
           }}
-          className="absolute z-30 pointer-events-auto w-84 p-4 rounded-2xl bg-[#090d20]/95 border border-yellow-400/60 backdrop-blur-2xl shadow-2xl shadow-yellow-950/50 text-slate-100 font-mono transition-all animate-in fade-in zoom-in-95 duration-150"
+          className="absolute z-30 pointer-events-auto w-84 p-4 rounded-2xl bg-[#181715]/95 border border-[#33302b] backdrop-blur-2xl shadow-2xl text-[#f5f3ef] font-mono transition-all animate-in fade-in zoom-in-95 duration-150"
         >
           {/* Header */}
-          <div className="flex items-center justify-between pb-2 mb-2 border-b border-yellow-500/30 text-[11px]">
+          <div className="flex items-center justify-between pb-2 mb-2 border-b border-[#33302b] text-[11px]">
             <div className="flex items-center gap-2">
               <span
                 className="w-2.5 h-2.5 rounded-full animate-ping"
                 style={{ backgroundColor: hoveredVehicle.color }}
               />
-              <span className="font-bold text-yellow-400">{hoveredVehicle.code}</span>
+              <span className="font-bold text-[#f59e0b]">{hoveredVehicle.code}</span>
             </div>
             <span
               className={`px-2 py-0.5 rounded text-[10px] font-bold border ${
@@ -1003,32 +1003,32 @@ export const ThreeHeroGateway: React.FC = () => {
           </div>
 
           <h4 className="text-xs font-bold text-white mb-1">{hoveredVehicle.name}</h4>
-          <p className="text-[10px] text-yellow-300 font-sans leading-snug mb-3">
-            Mission: <strong className="font-semibold">{hoveredVehicle.task}</strong>
+          <p className="text-[10px] text-[#b8b4aa] font-sans leading-snug mb-3">
+            Mission: <strong className="font-semibold text-white">{hoveredVehicle.task}</strong>
           </p>
 
           {/* Real-time Detailed Vehicle Telemetry */}
-          <div className="grid grid-cols-2 gap-2 text-[10px] p-2.5 rounded-xl bg-slate-950/80 border border-slate-800/80 mb-3">
+          <div className="grid grid-cols-2 gap-2 text-[10px] p-2.5 rounded-xl bg-[#0c0b0a]/80 border border-[#33302b] mb-3">
             <div>
-              <span className="text-slate-500 block">Agent Model:</span>
+              <span className="text-[#878278] block">Agent Model:</span>
               <span className="text-white font-bold truncate block">{hoveredVehicle.model}</span>
             </div>
             <div>
-              <span className="text-slate-500 block">Telemetry Speed:</span>
+              <span className="text-[#878278] block">Telemetry Speed:</span>
               <span className="text-emerald-400 font-bold">{hoveredVehicle.speed}</span>
             </div>
             <div>
-              <span className="text-slate-500 block">AST Latency:</span>
-              <span className="text-yellow-400 font-bold">{hoveredVehicle.latency}</span>
+              <span className="text-[#878278] block">AST Latency:</span>
+              <span className="text-[#f59e0b] font-bold">{hoveredVehicle.latency}</span>
             </div>
             <div>
-              <span className="text-slate-500 block">Daily Budget Cap:</span>
+              <span className="text-[#878278] block">Daily Budget Cap:</span>
               <span className="text-sky-300 font-bold">{hoveredVehicle.batteryBudget}</span>
             </div>
           </div>
 
           {/* Cryptographic Proof & Location */}
-          <div className="text-[9px] text-slate-400 flex items-center justify-between pb-2 mb-2 border-b border-slate-800">
+          <div className="text-[9px] text-[#878278] flex items-center justify-between pb-2 mb-2 border-b border-[#33302b]">
             <span>Location: {hoveredVehicle.coordinates}</span>
             <span className="text-emerald-400 font-mono truncate max-w-[120px]">
               {hoveredVehicle.cryptoSignature}
@@ -1050,16 +1050,16 @@ export const ThreeHeroGateway: React.FC = () => {
                   )
                 );
               }}
-              className="flex-1 py-1.5 px-2 rounded-lg bg-yellow-400 hover:bg-yellow-300 text-slate-950 font-bold text-[10px] flex items-center justify-center gap-1.5 transition-all cursor-pointer"
+              className="flex-1 py-1.5 px-2 rounded-lg bg-[#d97706] hover:bg-[#b45309] text-white font-bold text-[10px] flex items-center justify-center gap-1.5 transition-all cursor-pointer"
             >
               {hoveredVehicle.status === 'INTERCEPTED' ? (
                 <>
-                  <Play className="w-3 h-3 fill-slate-950" />
+                  <Play className="w-3 h-3 fill-white" />
                   <span>Release Escrow</span>
                 </>
               ) : (
                 <>
-                  <Pause className="w-3 h-3 fill-slate-950" />
+                  <Pause className="w-3 h-3 fill-white" />
                   <span>Halt at Toll Gate</span>
                 </>
               )}
@@ -1070,7 +1070,7 @@ export const ThreeHeroGateway: React.FC = () => {
                 const el = document.getElementById('sandbox-demo');
                 if (el) el.scrollIntoView({ behavior: 'smooth' });
               }}
-              className="py-1.5 px-2.5 rounded-lg border border-slate-700 hover:border-yellow-400/40 text-slate-300 hover:text-white text-[10px] flex items-center justify-center gap-1 transition-colors cursor-pointer"
+              className="py-1.5 px-2.5 rounded-lg border border-[#33302b] hover:border-amber-500/40 text-[#b8b4aa] hover:text-white text-[10px] flex items-center justify-center gap-1 transition-colors cursor-pointer"
             >
               <Eye className="w-3 h-3" />
               <span>Sandbox</span>
@@ -1082,7 +1082,7 @@ export const ThreeHeroGateway: React.FC = () => {
       {/* BOTTOM LEFT: FLEET REGISTRY & LIVE VEHICLE INSPECTOR */}
       <div className="absolute bottom-4 left-4 z-20 flex flex-col gap-2 max-w-md pointer-events-auto">
         {/* Agent Vehicle Selector Pills */}
-        <div className="flex flex-wrap items-center gap-1 p-1.5 rounded-2xl bg-slate-950/85 border border-yellow-500/20 backdrop-blur-xl">
+        <div className="flex flex-wrap items-center gap-1 p-1.5 rounded-2xl bg-[#181715]/85 border border-[#33302b] backdrop-blur-xl">
           {vehicles.slice(0, 6).map((veh) => {
             const isSelected = activeInspector.id === veh.id;
             return (
@@ -1091,8 +1091,8 @@ export const ThreeHeroGateway: React.FC = () => {
                 onClick={() => setLockedVehicle(veh)}
                 className={`px-2.5 py-1 rounded-lg text-[10px] font-mono transition-all cursor-pointer flex items-center gap-1 ${
                   isSelected
-                    ? 'bg-yellow-400 text-slate-950 font-bold shadow-md shadow-yellow-400/25 scale-105'
-                    : 'text-slate-400 hover:text-slate-200 hover:bg-slate-800/60'
+                    ? 'bg-[#f5f3ef] text-[#181715] font-bold shadow-xs scale-105'
+                    : 'text-[#878278] hover:text-[#f5f3ef] hover:bg-[#211f1c]'
                 }`}
               >
                 <span className="w-1.5 h-1.5 rounded-full" style={{ backgroundColor: veh.color }} />
@@ -1103,7 +1103,7 @@ export const ThreeHeroGateway: React.FC = () => {
         </div>
 
         {/* Selected Vehicle Detail Card */}
-        <div className="p-3.5 rounded-2xl bg-slate-950/90 border border-yellow-500/30 backdrop-blur-2xl shadow-2xl text-xs space-y-2 animate-in fade-in duration-200">
+        <div className="p-3.5 rounded-2xl bg-[#181715]/90 border border-[#33302b] backdrop-blur-2xl shadow-2xl text-xs space-y-2 animate-in fade-in duration-200">
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-2">
               <span className="w-2.5 h-2.5 rounded-full" style={{ backgroundColor: activeInspector.color }} />
@@ -1120,21 +1120,21 @@ export const ThreeHeroGateway: React.FC = () => {
             </span>
           </div>
 
-          <p className="text-[11px] text-slate-300 font-sans leading-relaxed">
+          <p className="text-[11px] text-[#b8b4aa] font-sans leading-relaxed">
             {activeInspector.description}
           </p>
 
-          <div className="grid grid-cols-3 gap-2 pt-2 border-t border-slate-800 font-mono text-[10px]">
+          <div className="grid grid-cols-3 gap-2 pt-2 border-t border-[#33302b] font-mono text-[10px]">
             <div>
-              <span className="text-slate-500 block">Telemetry:</span>
+              <span className="text-[#878278] block">Telemetry:</span>
               <span className="text-emerald-400 font-bold">{activeInspector.latency}</span>
             </div>
             <div>
-              <span className="text-slate-500 block">Tokens Read:</span>
-              <span className="text-yellow-400 font-bold">{activeInspector.tokensProcessed}</span>
+              <span className="text-[#878278] block">Tokens Read:</span>
+              <span className="text-[#f59e0b] font-bold">{activeInspector.tokensProcessed}</span>
             </div>
             <div>
-              <span className="text-slate-500 block">Identity:</span>
+              <span className="text-[#878278] block">Identity:</span>
               <span className="text-sky-300 font-bold truncate block">{activeInspector.model.split('/')[0]}</span>
             </div>
           </div>
@@ -1144,12 +1144,12 @@ export const ThreeHeroGateway: React.FC = () => {
       {/* BOTTOM RIGHT: LIVE TELEMETRY RADAR & FLEET METRICS */}
       <div className="absolute bottom-4 right-4 z-20 hidden md:flex flex-col items-end gap-2 pointer-events-auto">
         {/* Real-time Telemetry Stats Pill */}
-        <div className="p-3 rounded-2xl bg-slate-950/85 border border-yellow-500/25 backdrop-blur-xl font-mono text-xs text-right space-y-1 shadow-xl">
+        <div className="p-3 rounded-2xl bg-[#181715]/85 border border-[#33302b] backdrop-blur-xl font-mono text-xs text-right space-y-1 shadow-xl">
           <div className="flex items-center justify-end gap-2 text-slate-200">
-            <Radio className="w-3.5 h-3.5 text-yellow-400 animate-pulse" />
-            <span className="text-yellow-400 font-bold">1,840 AGENT TRANSACTIONS / SEC</span>
+            <Radio className="w-3.5 h-3.5 text-[#f59e0b] animate-pulse" />
+            <span className="text-[#f59e0b] font-bold">1,840 AGENT TRANSACTIONS / SEC</span>
           </div>
-          <div className="text-[10px] text-slate-400">
+          <div className="text-[10px] text-[#878278]">
             Toll Gate Zero-Trust Status: <span className="text-emerald-400 font-bold">ACTIVE & DEFENDING</span>
           </div>
         </div>
@@ -1158,7 +1158,7 @@ export const ThreeHeroGateway: React.FC = () => {
         <div className="flex items-center gap-2">
           <button
             onClick={() => setSubscriptionModalOpen(true, 'PRO_MONTHLY')}
-            className="px-3.5 py-2 rounded-xl border border-yellow-400/40 hover:border-yellow-400 bg-yellow-400/10 hover:bg-yellow-400/20 text-yellow-400 font-bold text-xs font-mono flex items-center gap-1.5 transition-all backdrop-blur-md cursor-pointer"
+            className="px-3.5 py-2 rounded-xl border border-amber-500/40 hover:border-amber-500 bg-amber-500/10 hover:bg-amber-500/20 text-[#f59e0b] font-bold text-xs font-mono flex items-center gap-1.5 transition-all backdrop-blur-md cursor-pointer"
           >
             <Sparkles className="w-3.5 h-3.5" />
             <span>Pro Fleet ($199/mo)</span>
@@ -1169,9 +1169,9 @@ export const ThreeHeroGateway: React.FC = () => {
               const el = document.getElementById('sandbox-demo');
               if (el) el.scrollIntoView({ behavior: 'smooth' });
             }}
-            className="px-3.5 py-2 rounded-xl bg-slate-900/90 hover:bg-slate-800 text-slate-200 hover:text-white border border-slate-700 text-xs font-mono flex items-center gap-1.5 transition-all backdrop-blur-md cursor-pointer"
+            className="px-3.5 py-2 rounded-xl bg-[#211f1c] hover:bg-[#282622] text-[#f5f3ef] border border-[#33302b] text-xs font-mono flex items-center gap-1.5 transition-all backdrop-blur-md cursor-pointer"
           >
-            <Play className="w-3 h-3 text-yellow-400 fill-yellow-400" />
+            <Play className="w-3 h-3 text-[#f59e0b] fill-[#f59e0b]" />
             <span>Interactive Sandbox</span>
           </button>
         </div>

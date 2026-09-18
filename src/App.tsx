@@ -173,7 +173,7 @@ export default function App() {
   // Dedicated SaaS Super-Admin System
   if (isAdminView) {
     return (
-      <div className="h-screen w-screen overflow-hidden bg-gradient-to-br from-amber-50/60 via-slate-50 to-yellow-50/40 dark:from-[#05070c] dark:via-[#070912] dark:to-[#0f1220] text-slate-900 dark:text-slate-100 font-sans selection:bg-yellow-400 selection:text-slate-950">
+      <div className="h-screen w-screen overflow-hidden bg-[#faf8f5] dark:bg-[#181715] text-[#1f1e1b] dark:text-[#f5f3ef] font-sans selection:bg-amber-500/20 selection:text-amber-900">
         <AdminPortal />
 
         {/* Global Toast Notification Container */}
@@ -181,24 +181,24 @@ export default function App() {
           {toasts.map((toast) => (
             <div
               key={toast.id}
-              className="pointer-events-auto p-4 rounded-xl shadow-xl shadow-yellow-950/10 bg-white/95 dark:bg-[#0c0e18]/95 backdrop-blur-md border border-yellow-300/60 dark:border-yellow-500/30 flex items-start gap-3 text-xs transition-all animate-in fade-in slide-in-from-bottom-2 duration-200"
+              className="pointer-events-auto p-4 rounded-2xl shadow-xl shadow-black/5 dark:shadow-black/40 bg-white/95 dark:bg-[#211f1c]/95 backdrop-blur-md border border-[#e5e0d5] dark:border-[#33302b] flex items-start gap-3 text-xs transition-all animate-in fade-in slide-in-from-bottom-2 duration-200"
             >
               {toast.type === 'success' && (
-                <CheckCircle2 className="w-4 h-4 text-emerald-500 flex-shrink-0 mt-0.5" />
+                <CheckCircle2 className="w-4 h-4 text-emerald-600 dark:text-emerald-400 flex-shrink-0 mt-0.5" />
               )}
               {toast.type === 'warning' && (
-                <AlertTriangle className="w-4 h-4 text-amber-500 flex-shrink-0 mt-0.5" />
+                <AlertTriangle className="w-4 h-4 text-amber-600 dark:text-amber-400 flex-shrink-0 mt-0.5" />
               )}
               {toast.type === 'info' && (
-                <Info className="w-4 h-4 text-amber-600 dark:text-yellow-400 flex-shrink-0 mt-0.5" />
+                <Info className="w-4 h-4 text-[#d97706] dark:text-[#f59e0b] flex-shrink-0 mt-0.5" />
               )}
 
               <div className="flex-1">
-                <span className="font-bold text-slate-950 dark:text-white block">
+                <span className="font-bold text-[#1f1e1b] dark:text-[#f5f3ef] block">
                   {toast.title}
                 </span>
                 {toast.description && (
-                  <p className="text-slate-600 dark:text-slate-300 text-[11px] mt-0.5 font-medium">
+                  <p className="text-[#5c5850] dark:text-[#b8b4aa] text-[11px] mt-0.5 font-medium">
                     {toast.description}
                   </p>
                 )}
@@ -206,7 +206,7 @@ export default function App() {
 
               <button
                 onClick={() => removeToast(toast.id)}
-                className="text-slate-400 hover:text-slate-700 dark:hover:text-white p-0.5 cursor-pointer"
+                className="text-[#878278] hover:text-[#1f1e1b] dark:hover:text-[#f5f3ef] p-0.5 cursor-pointer"
               >
                 <X className="w-3.5 h-3.5" />
               </button>
@@ -220,7 +220,7 @@ export default function App() {
   // Dedicated Google Auth & User Login Page
   if (isLoginPage) {
     return (
-      <div className="min-h-screen w-full bg-[#141413] text-[#f5f3ef] font-sans selection:bg-[#c15f3c] selection:text-white">
+      <div className="min-h-screen w-full bg-[#faf8f5] dark:bg-[#181715] text-[#1f1e1b] dark:text-[#f5f3ef] font-sans selection:bg-amber-500/20 selection:text-amber-900">
         <LoginPage />
 
         {/* Global Toast Notification Container */}
@@ -228,24 +228,24 @@ export default function App() {
           {toasts.map((toast) => (
             <div
               key={toast.id}
-              className="pointer-events-auto p-4 rounded-xl shadow-xl shadow-black/40 bg-[#1e1d1b]/95 backdrop-blur-md border border-[#38342c] flex items-start gap-3 text-xs transition-all animate-in fade-in slide-in-from-bottom-2 duration-200 text-[#f5f3ef]"
+              className="pointer-events-auto p-4 rounded-2xl shadow-xl shadow-black/5 dark:shadow-black/40 bg-white/95 dark:bg-[#211f1c]/95 backdrop-blur-md border border-[#e5e0d5] dark:border-[#33302b] flex items-start gap-3 text-xs transition-all animate-in fade-in slide-in-from-bottom-2 duration-200 text-[#1f1e1b] dark:text-[#f5f3ef]"
             >
               {toast.type === 'success' && (
-                <CheckCircle2 className="w-4 h-4 text-emerald-400 flex-shrink-0 mt-0.5" />
+                <CheckCircle2 className="w-4 h-4 text-emerald-600 dark:text-emerald-400 flex-shrink-0 mt-0.5" />
               )}
               {toast.type === 'warning' && (
-                <AlertTriangle className="w-4 h-4 text-amber-400 flex-shrink-0 mt-0.5" />
+                <AlertTriangle className="w-4 h-4 text-amber-600 dark:text-amber-400 flex-shrink-0 mt-0.5" />
               )}
               {toast.type === 'info' && (
-                <Info className="w-4 h-4 text-sky-400 flex-shrink-0 mt-0.5" />
+                <Info className="w-4 h-4 text-[#d97706] dark:text-[#f59e0b] flex-shrink-0 mt-0.5" />
               )}
 
               <div className="flex-1">
-                <span className="font-bold text-[#f5f3ef] block">
+                <span className="font-bold text-[#1f1e1b] dark:text-[#f5f3ef] block">
                   {toast.title}
                 </span>
                 {toast.description && (
-                  <p className="text-[#9c9689] text-[11px] mt-0.5 font-medium">
+                  <p className="text-[#5c5850] dark:text-[#b8b4aa] text-[11px] mt-0.5 font-medium">
                     {toast.description}
                   </p>
                 )}
@@ -253,7 +253,7 @@ export default function App() {
 
               <button
                 onClick={() => removeToast(toast.id)}
-                className="text-[#736e65] hover:text-[#f5f3ef] p-0.5 cursor-pointer"
+                className="text-[#878278] hover:text-[#1f1e1b] dark:hover:text-[#f5f3ef] p-0.5 cursor-pointer"
               >
                 <X className="w-3.5 h-3.5" />
               </button>
@@ -267,7 +267,7 @@ export default function App() {
   // Public High-Performance 3D Portfolio & Gateway Website
   if (isLandingPage) {
     return (
-      <div className="min-h-screen w-full bg-slate-50 dark:bg-[#060810] text-slate-900 dark:text-slate-100 font-sans selection:bg-yellow-400 selection:text-slate-950">
+      <div className="min-h-screen w-full bg-[#faf8f5] dark:bg-[#181715] text-[#1f1e1b] dark:text-[#f5f3ef] font-sans selection:bg-amber-500/20 selection:text-amber-900">
         <PortfolioPage />
 
         {/* Global Toast Notification Container */}
@@ -275,24 +275,24 @@ export default function App() {
           {toasts.map((toast) => (
             <div
               key={toast.id}
-              className="pointer-events-auto p-4 rounded-xl shadow-xl shadow-yellow-950/10 bg-white/95 dark:bg-[#0c0e18]/95 backdrop-blur-md border border-yellow-300/60 dark:border-yellow-500/30 flex items-start gap-3 text-xs transition-all animate-in fade-in slide-in-from-bottom-2 duration-200"
+              className="pointer-events-auto p-4 rounded-2xl shadow-xl shadow-black/5 dark:shadow-black/40 bg-white/95 dark:bg-[#211f1c]/95 backdrop-blur-md border border-[#e5e0d5] dark:border-[#33302b] flex items-start gap-3 text-xs transition-all animate-in fade-in slide-in-from-bottom-2 duration-200"
             >
               {toast.type === 'success' && (
-                <CheckCircle2 className="w-4 h-4 text-emerald-500 flex-shrink-0 mt-0.5" />
+                <CheckCircle2 className="w-4 h-4 text-emerald-600 dark:text-emerald-400 flex-shrink-0 mt-0.5" />
               )}
               {toast.type === 'warning' && (
-                <AlertTriangle className="w-4 h-4 text-amber-500 flex-shrink-0 mt-0.5" />
+                <AlertTriangle className="w-4 h-4 text-amber-600 dark:text-amber-400 flex-shrink-0 mt-0.5" />
               )}
               {toast.type === 'info' && (
-                <Info className="w-4 h-4 text-amber-600 dark:text-yellow-400 flex-shrink-0 mt-0.5" />
+                <Info className="w-4 h-4 text-[#d97706] dark:text-[#f59e0b] flex-shrink-0 mt-0.5" />
               )}
 
               <div className="flex-1">
-                <span className="font-bold text-slate-950 dark:text-white block">
+                <span className="font-bold text-[#1f1e1b] dark:text-[#f5f3ef] block">
                   {toast.title}
                 </span>
                 {toast.description && (
-                  <p className="text-slate-600 dark:text-slate-300 text-[11px] mt-0.5 font-medium">
+                  <p className="text-[#5c5850] dark:text-[#b8b4aa] text-[11px] mt-0.5 font-medium">
                     {toast.description}
                   </p>
                 )}
@@ -300,7 +300,7 @@ export default function App() {
 
               <button
                 onClick={() => removeToast(toast.id)}
-                className="text-slate-400 hover:text-slate-700 dark:hover:text-white p-0.5 cursor-pointer"
+                className="text-[#878278] hover:text-[#1f1e1b] dark:hover:text-[#f5f3ef] p-0.5 cursor-pointer"
               >
                 <X className="w-3.5 h-3.5" />
               </button>
@@ -312,7 +312,7 @@ export default function App() {
   }
 
   return (
-    <div className="flex h-screen w-screen overflow-hidden bg-gradient-to-br from-amber-50/50 via-white to-yellow-50/30 dark:from-[#07080d] dark:via-[#090b12] dark:to-[#0f111a] text-slate-900 dark:text-slate-100 font-sans selection:bg-yellow-400 selection:text-slate-950 transition-colors duration-200">
+    <div className="flex h-screen w-screen overflow-hidden bg-[#faf8f5] dark:bg-[#181715] text-[#1f1e1b] dark:text-[#f5f3ef] font-sans selection:bg-amber-500/20 selection:text-amber-900 transition-colors duration-200">
       {/* Desktop Persistent Sidebar */}
       <div className="hidden md:flex flex-shrink-0 h-full">
         <Sidebar />
@@ -322,7 +322,7 @@ export default function App() {
       {mobileMenuOpen && (
         <div className="fixed inset-0 z-50 flex md:hidden">
           <div
-            className="fixed inset-0 bg-slate-900/50 dark:bg-black/80 backdrop-blur-xs"
+            className="fixed inset-0 bg-[#181715]/60 backdrop-blur-xs"
             onClick={() => setMobileMenuOpen(false)}
           />
           <div className="relative z-10 w-72 h-full">
@@ -334,20 +334,20 @@ export default function App() {
       {/* Primary Application Body */}
       <div className="flex-1 flex flex-col h-full min-w-0 overflow-hidden bg-transparent">
         {/* Mobile Header Bar */}
-        <div className="md:hidden flex items-center justify-between px-4 py-3 bg-white/90 dark:bg-[#0c0e18]/90 backdrop-blur-md border-b border-yellow-200/80 dark:border-yellow-500/20">
+        <div className="md:hidden flex items-center justify-between px-4 py-3 bg-white/90 dark:bg-[#211f1c]/90 backdrop-blur-md border-b border-[#e5e0d5] dark:border-[#33302b]">
           <button
             onClick={() => setMobileMenuOpen(true)}
-            className="p-1.5 rounded-lg border border-yellow-300/80 dark:border-yellow-500/30 text-slate-800 dark:text-yellow-300"
+            className="p-1.5 rounded-lg border border-[#e5e0d5] dark:border-[#33302b] text-[#1f1e1b] dark:text-[#f5f3ef]"
             aria-label="Open menu"
           >
             <Menu className="w-5 h-5" />
           </button>
 
           <div className="flex items-center gap-2">
-            <div className="w-6 h-6 rounded bg-yellow-400 text-slate-950 flex items-center justify-center font-bold text-xs shadow-sm">
+            <div className="w-6 h-6 rounded bg-[#d97706] dark:bg-[#f59e0b] text-white dark:text-[#181715] flex items-center justify-center font-bold text-xs shadow-sm">
               AL
             </div>
-            <span className="font-bold text-sm text-slate-900 dark:text-white">AgentLens</span>
+            <span className="font-bold text-sm text-[#1f1e1b] dark:text-[#f5f3ef]">AgentLens</span>
           </div>
 
           <div className="w-6" />
@@ -357,16 +357,16 @@ export default function App() {
 
         {/* Platform Announcement Banner if active */}
         {globalAnnouncement && (
-          <div className="bg-yellow-400 text-slate-950 px-4 py-2 text-xs font-bold flex items-center justify-between shadow-xs border-b border-yellow-500/40">
+          <div className="bg-[#fef3c7] dark:bg-[#282622] text-[#92400e] dark:text-[#f59e0b] px-4 py-2 text-xs font-semibold flex items-center justify-between shadow-xs border-b border-[#fde68a] dark:border-[#33302b]">
             <div className="flex items-center gap-2 max-w-5xl mx-auto flex-1">
-              <span className="font-mono uppercase text-[10px] bg-slate-950 text-yellow-400 px-1.5 py-0.5 rounded">
+              <span className="font-mono uppercase text-[10px] bg-[#d97706] text-white px-1.5 py-0.5 rounded font-bold">
                 Announcement
               </span>
               <span>{globalAnnouncement}</span>
             </div>
             <button
               onClick={() => setGlobalAnnouncement(null)}
-              className="p-1 rounded hover:bg-yellow-500/30 text-slate-950 cursor-pointer"
+              className="p-1 rounded hover:bg-amber-200/50 dark:hover:bg-[#33302b] text-[#92400e] dark:text-[#f59e0b] cursor-pointer"
               title="Dismiss announcement"
             >
               <X className="w-3.5 h-3.5" />
@@ -385,24 +385,24 @@ export default function App() {
         {toasts.map((toast) => (
           <div
             key={toast.id}
-            className="pointer-events-auto p-4 rounded-xl shadow-xl shadow-yellow-950/10 bg-white/95 dark:bg-[#0c0e18]/95 backdrop-blur-md border border-yellow-300/60 dark:border-yellow-500/30 flex items-start gap-3 text-xs transition-all animate-in fade-in slide-in-from-bottom-2 duration-200"
+            className="pointer-events-auto p-4 rounded-2xl shadow-xl shadow-black/5 dark:shadow-black/40 bg-white/95 dark:bg-[#211f1c]/95 backdrop-blur-md border border-[#e5e0d5] dark:border-[#33302b] flex items-start gap-3 text-xs transition-all animate-in fade-in slide-in-from-bottom-2 duration-200"
           >
             {toast.type === 'success' && (
-              <CheckCircle2 className="w-4 h-4 text-emerald-500 flex-shrink-0 mt-0.5" />
+              <CheckCircle2 className="w-4 h-4 text-emerald-600 dark:text-emerald-400 flex-shrink-0 mt-0.5" />
             )}
             {toast.type === 'warning' && (
-              <AlertTriangle className="w-4 h-4 text-amber-500 flex-shrink-0 mt-0.5" />
+              <AlertTriangle className="w-4 h-4 text-amber-600 dark:text-amber-400 flex-shrink-0 mt-0.5" />
             )}
             {toast.type === 'info' && (
-              <Info className="w-4 h-4 text-amber-600 dark:text-yellow-400 flex-shrink-0 mt-0.5" />
+              <Info className="w-4 h-4 text-[#d97706] dark:text-[#f59e0b] flex-shrink-0 mt-0.5" />
             )}
 
             <div className="flex-1">
-              <span className="font-bold text-slate-950 dark:text-white block">
+              <span className="font-bold text-[#1f1e1b] dark:text-[#f5f3ef] block">
                 {toast.title}
               </span>
               {toast.description && (
-                <p className="text-slate-600 dark:text-slate-300 text-[11px] mt-0.5 font-medium">
+                <p className="text-[#5c5850] dark:text-[#b8b4aa] text-[11px] mt-0.5 font-medium">
                   {toast.description}
                 </p>
               )}
@@ -410,7 +410,7 @@ export default function App() {
 
             <button
               onClick={() => removeToast(toast.id)}
-              className="text-slate-400 hover:text-slate-700 dark:hover:text-white p-0.5 cursor-pointer"
+              className="text-[#878278] hover:text-[#1f1e1b] dark:hover:text-[#f5f3ef] p-0.5 cursor-pointer"
             >
               <X className="w-3.5 h-3.5" />
             </button>

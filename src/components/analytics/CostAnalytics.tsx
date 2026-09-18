@@ -64,104 +64,104 @@ export const CostAnalytics: React.FC = () => {
     <div className="space-y-8 pb-12">
       {/* Top Savings KPI Cards */}
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-        <div className="p-5 rounded-xl bg-white/85 dark:bg-[#0c0e18]/85 backdrop-blur-md border border-yellow-300/50 dark:border-yellow-500/20 shadow-xs">
-          <div className="flex items-center justify-between text-slate-600 dark:text-slate-400">
+        <div className="p-5 rounded-2xl bg-white dark:bg-[#211f1c] border border-[#e5e0d5] dark:border-[#33302b] shadow-xs">
+          <div className="flex items-center justify-between text-[#878278] dark:text-[#7d7970]">
             <span className="text-xs font-bold uppercase tracking-wider font-mono">
               Direct Dollar Savings
             </span>
-            <div className="p-2 rounded-lg bg-yellow-400/20 text-amber-800 dark:text-yellow-300 border border-yellow-400/30">
+            <div className="p-2 rounded-xl bg-amber-500/10 text-[#d97706] dark:text-[#f59e0b] border border-amber-500/20">
               <DollarSign className="w-4 h-4" />
             </div>
           </div>
           <div className="mt-3 flex items-baseline gap-2">
-            <span className="text-2xl font-bold text-slate-950 dark:text-white font-mono">
+            <span className="text-2xl font-bold text-[#1f1e1b] dark:text-[#f5f3ef] font-mono">
               $1,482.50
             </span>
             <span className="text-xs text-emerald-600 dark:text-emerald-400 font-bold font-mono">
               this month
             </span>
           </div>
-          <p className="text-xs text-slate-600 dark:text-slate-400 mt-1 font-medium">
+          <p className="text-xs text-[#5c5850] dark:text-[#b8b4aa] mt-1 font-medium">
             Eliminated via Semantic Caching & Smart Routing
           </p>
         </div>
 
-        <div className="p-5 rounded-xl bg-white/85 dark:bg-[#0c0e18]/85 backdrop-blur-md border border-yellow-300/50 dark:border-yellow-500/20 shadow-xs">
-          <div className="flex items-center justify-between text-slate-600 dark:text-slate-400">
+        <div className="p-5 rounded-2xl bg-white dark:bg-[#211f1c] border border-[#e5e0d5] dark:border-[#33302b] shadow-xs">
+          <div className="flex items-center justify-between text-[#878278] dark:text-[#7d7970]">
             <span className="text-xs font-bold uppercase tracking-wider font-mono">
               Semantic Cache Hit Ratio
             </span>
-            <div className="p-2 rounded-lg bg-yellow-400/20 text-amber-800 dark:text-yellow-300 border border-yellow-400/30">
+            <div className="p-2 rounded-xl bg-amber-500/10 text-[#d97706] dark:text-[#f59e0b] border border-amber-500/20">
               <Zap className="w-4 h-4" />
             </div>
           </div>
           <div className="mt-3 flex items-baseline gap-2">
-            <span className="text-2xl font-bold text-slate-950 dark:text-white font-mono">
+            <span className="text-2xl font-bold text-[#1f1e1b] dark:text-[#f5f3ef] font-mono">
               34.8%
             </span>
-            <span className="text-xs text-slate-500 dark:text-slate-400 font-mono font-medium">
+            <span className="text-xs text-[#878278] dark:text-[#7d7970] font-mono font-medium">
               (29,340 queries)
             </span>
           </div>
-          <p className="text-xs text-slate-600 dark:text-slate-400 mt-1 font-medium">
+          <p className="text-xs text-[#5c5850] dark:text-[#b8b4aa] mt-1 font-medium">
             Redis Vector similarity &gt; 0.94
           </p>
         </div>
 
-        <div className="p-5 rounded-xl bg-white/85 dark:bg-[#0c0e18]/85 backdrop-blur-md border border-yellow-300/50 dark:border-yellow-500/20 shadow-xs">
-          <div className="flex items-center justify-between text-slate-600 dark:text-slate-400">
+        <div className="p-5 rounded-2xl bg-white dark:bg-[#211f1c] border border-[#e5e0d5] dark:border-[#33302b] shadow-xs">
+          <div className="flex items-center justify-between text-[#878278] dark:text-[#7d7970]">
             <span className="text-xs font-bold uppercase tracking-wider font-mono">
               Latency Saved
             </span>
-            <div className="p-2 rounded-lg bg-yellow-400/20 text-amber-800 dark:text-yellow-300 border border-yellow-400/30">
+            <div className="p-2 rounded-xl bg-amber-500/10 text-[#d97706] dark:text-[#f59e0b] border border-amber-500/20">
               <TrendingDown className="w-4 h-4" />
             </div>
           </div>
           <div className="mt-3 flex items-baseline gap-2">
-            <span className="text-2xl font-bold text-slate-950 dark:text-white font-mono">
+            <span className="text-2xl font-bold text-[#1f1e1b] dark:text-[#f5f3ef] font-mono">
               -620ms
             </span>
-            <span className="text-xs text-amber-700 dark:text-yellow-300 font-bold font-mono">
+            <span className="text-xs text-[#d97706] dark:text-[#f59e0b] font-bold font-mono">
               avg per hit
             </span>
           </div>
-          <p className="text-xs text-slate-600 dark:text-slate-400 mt-1 font-medium">
+          <p className="text-xs text-[#5c5850] dark:text-[#b8b4aa] mt-1 font-medium">
             Sub-millisecond cache returns vs. LLM sockets
           </p>
         </div>
 
-        <div className="p-5 rounded-xl bg-white/85 dark:bg-[#0c0e18]/85 backdrop-blur-md border border-yellow-300/50 dark:border-yellow-500/20 shadow-xs">
-          <div className="flex items-center justify-between text-slate-600 dark:text-slate-400">
+        <div className="p-5 rounded-2xl bg-white dark:bg-[#211f1c] border border-[#e5e0d5] dark:border-[#33302b] shadow-xs">
+          <div className="flex items-center justify-between text-[#878278] dark:text-[#7d7970]">
             <span className="text-xs font-bold uppercase tracking-wider font-mono">
               Tokens Saved
             </span>
-            <div className="p-2 rounded-lg bg-yellow-400/20 text-amber-800 dark:text-yellow-300 border border-yellow-400/30">
+            <div className="p-2 rounded-xl bg-amber-500/10 text-[#d97706] dark:text-[#f59e0b] border border-amber-500/20">
               <Cpu className="w-4 h-4" />
             </div>
           </div>
           <div className="mt-3 flex items-baseline gap-2">
-            <span className="text-2xl font-bold text-slate-950 dark:text-white font-mono">
+            <span className="text-2xl font-bold text-[#1f1e1b] dark:text-[#f5f3ef] font-mono">
               18.4M
             </span>
-            <span className="text-xs text-slate-500 dark:text-slate-400 font-mono font-medium">
+            <span className="text-xs text-[#878278] dark:text-[#7d7970] font-mono font-medium">
               tokens avoided
             </span>
           </div>
-          <p className="text-xs text-slate-600 dark:text-slate-400 mt-1 font-medium">
+          <p className="text-xs text-[#5c5850] dark:text-[#b8b4aa] mt-1 font-medium">
             Reduced carbon & server compute load
           </p>
         </div>
       </div>
 
       {/* Smart Model Routing Rules Engine */}
-      <div className="p-5 rounded-xl bg-white/85 dark:bg-[#0c0e18]/85 backdrop-blur-md border border-yellow-300/40 dark:border-yellow-500/20 shadow-xs space-y-4">
+      <div className="p-5 rounded-2xl bg-white dark:bg-[#211f1c] border border-[#e5e0d5] dark:border-[#33302b] shadow-xs space-y-4">
         <div className="flex items-center justify-between">
           <div>
-            <h2 className="text-sm font-bold text-slate-950 dark:text-white flex items-center gap-2">
-              <Sparkles className="w-4 h-4 text-amber-600 dark:text-yellow-400" />
+            <h2 className="text-sm font-bold text-[#1f1e1b] dark:text-[#f5f3ef] flex items-center gap-2">
+              <Sparkles className="w-4 h-4 text-[#d97706] dark:text-[#f59e0b]" />
               <span>Smart Dynamic Model Router Rules</span>
             </h2>
-            <p className="text-xs text-slate-600 dark:text-slate-400 mt-0.5 font-medium">
+            <p className="text-xs text-[#5c5850] dark:text-[#b8b4aa] mt-0.5 font-medium">
               Automatically route simple classification & summarization tasks to lean models to eliminate 30-70% of LLM billing
             </p>
           </div>
@@ -173,13 +173,13 @@ export const CostAnalytics: React.FC = () => {
               key={rule.id}
               className={`p-4 rounded-xl border transition-all flex flex-col sm:flex-row sm:items-center justify-between gap-4 ${
                 rule.enabled
-                  ? 'border-yellow-400/60 dark:border-yellow-500/30 bg-yellow-50/40 dark:bg-yellow-950/20'
-                  : 'border-yellow-200/50 dark:border-yellow-500/10 bg-slate-50/40 dark:bg-neutral-900/30 opacity-60'
+                  ? 'border-[#e5e0d5] dark:border-[#33302b] bg-[#faf8f5] dark:bg-[#181715]'
+                  : 'border-[#e5e0d5]/40 dark:border-[#33302b]/40 bg-white/40 dark:bg-[#211f1c]/40 opacity-60'
               }`}
             >
               <div className="space-y-1.5">
                 <div className="flex items-center gap-2">
-                  <span className="font-mono text-xs font-bold px-2 py-0.5 rounded bg-yellow-400/20 text-slate-900 dark:text-yellow-200 border border-yellow-400/40">
+                  <span className="font-mono text-xs font-bold px-2 py-0.5 rounded bg-amber-500/10 text-[#b45309] dark:text-[#fbbf24] border border-amber-500/20">
                     IF {rule.condition}
                   </span>
                   <span className="text-xs font-mono font-bold text-emerald-600 dark:text-emerald-400">
@@ -187,20 +187,20 @@ export const CostAnalytics: React.FC = () => {
                   </span>
                 </div>
 
-                <div className="flex items-center gap-2 text-xs font-mono text-slate-700 dark:text-slate-300 pt-1 font-medium">
-                  <span className="line-through text-slate-400">{rule.sourceModel}</span>
-                  <ArrowRight className="w-3.5 h-3.5 text-amber-600 dark:text-yellow-400" />
-                  <span className="font-bold text-amber-800 dark:text-yellow-300">{rule.fallbackModel}</span>
+                <div className="flex items-center gap-2 text-xs font-mono text-[#5c5850] dark:text-[#b8b4aa] pt-1 font-medium">
+                  <span className="line-through text-[#878278]">{rule.sourceModel}</span>
+                  <ArrowRight className="w-3.5 h-3.5 text-[#d97706] dark:text-[#f59e0b]" />
+                  <span className="font-bold text-[#1f1e1b] dark:text-[#f5f3ef]">{rule.fallbackModel}</span>
                 </div>
               </div>
 
               <div className="flex items-center gap-3 self-end sm:self-center">
                 <button
                   onClick={() => toggleRule(rule.id)}
-                  className={`px-3 py-1.5 rounded-lg text-xs font-bold transition-all cursor-pointer ${
+                  className={`px-3 py-1.5 rounded-xl text-xs font-bold transition-all cursor-pointer ${
                     rule.enabled
-                      ? 'bg-yellow-400 hover:bg-yellow-300 text-slate-950 border border-yellow-300 shadow-sm'
-                      : 'bg-slate-200 dark:bg-neutral-800 text-slate-600 dark:text-slate-400'
+                      ? 'bg-[#d97706] hover:bg-[#b45309] dark:bg-[#f59e0b] dark:hover:bg-[#fbbf24] text-white dark:text-[#181715] shadow-xs'
+                      : 'bg-white dark:bg-[#282622] text-[#878278] dark:text-[#7d7970] border border-[#e5e0d5] dark:border-[#33302b]'
                   }`}
                 >
                   {rule.enabled ? 'Enabled' : 'Disabled'}

@@ -156,7 +156,7 @@ export const SubscriptionModal: React.FC = () => {
           particleCount: 120,
           spread: 70,
           origin: { y: 0.6 },
-          colors: ['#fbbf24', '#f59e0b', '#38bdf8', '#ffffff'],
+          colors: ['#d97706', '#f59e0b', '#38bdf8', '#ffffff'],
         });
       } catch (err) {}
 
@@ -195,7 +195,7 @@ export const SubscriptionModal: React.FC = () => {
         {/* Close button */}
         <button
           onClick={() => setSubscriptionModalOpen(false)}
-          className="absolute top-4 right-4 p-2 rounded-xl text-[#878278] hover:text-[#1f1e1b] dark:hover:text-[#f5f3ef] hover:bg-[#ece8df] dark:hover:bg-[#282622] transition-colors"
+          className="absolute top-4 right-4 p-2 rounded-xl text-[#878278] hover:text-[#1f1e1b] dark:hover:text-[#f5f3ef] hover:bg-[#ece8df] dark:hover:bg-[#282622] transition-colors cursor-pointer"
         >
           <X className="w-5 h-5" />
         </button>
@@ -203,14 +203,14 @@ export const SubscriptionModal: React.FC = () => {
         {isSuccess ? (
           /* SUCCESS STATE */
           <div className="p-12 text-center space-y-4">
-            <div className="w-16 h-16 mx-auto rounded-full bg-emerald-500/10 border border-emerald-500/30 flex items-center justify-center text-emerald-400 animate-bounce">
+            <div className="w-16 h-16 mx-auto rounded-full bg-emerald-500/10 border border-emerald-500/30 flex items-center justify-center text-emerald-600 dark:text-emerald-400 animate-bounce">
               <CheckCircle2 className="w-8 h-8" />
             </div>
-            <h3 className="text-2xl font-bold tracking-tight">Payment Succeeded & Fleet Activated!</h3>
-            <p className="text-sm text-slate-500 dark:text-slate-400 max-w-md mx-auto">
-              Your organization has been upgraded to <strong className="text-yellow-400">{currentPlan.name}</strong>. Quota limits increased immediately.
+            <h3 className="text-2xl font-bold tracking-tight text-[#1f1e1b] dark:text-[#f5f3ef]">Payment Succeeded & Fleet Activated!</h3>
+            <p className="text-sm text-[#5c5850] dark:text-[#b8b4aa] max-w-md mx-auto">
+              Your organization has been upgraded to <strong className="text-[#d97706] dark:text-[#f59e0b]">{currentPlan.name}</strong>. Quota limits increased immediately.
             </p>
-            <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-yellow-400/10 text-yellow-500 text-xs font-mono">
+            <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-amber-500/10 text-[#d97706] dark:text-[#f59e0b] border border-amber-500/20 text-xs font-mono">
               <Sparkles className="w-4 h-4" />
               <span>Redirecting to Customer Workspace...</span>
             </div>
@@ -219,38 +219,38 @@ export const SubscriptionModal: React.FC = () => {
           /* CHECKOUT FORM */
           <div className="p-6 sm:p-8 grid grid-cols-1 md:grid-cols-12 gap-6">
             {/* Left: Plan Summary & Quota */}
-            <div className="md:col-span-5 flex flex-col justify-between p-5 rounded-2xl bg-slate-50 dark:bg-[#070912] border border-slate-200 dark:border-slate-800/80">
+            <div className="md:col-span-5 flex flex-col justify-between p-5 rounded-2xl bg-[#f4f1ea] dark:bg-[#181715] border border-[#e5e0d5] dark:border-[#33302b]">
               <div>
                 <div className="flex items-center gap-2 mb-2">
-                  <span className="px-2.5 py-0.5 rounded-full text-[10px] font-mono font-bold bg-yellow-400 text-slate-950 uppercase tracking-wider">
+                  <span className="px-2.5 py-0.5 rounded-full text-[10px] font-mono font-bold bg-[#1f1e1b] text-white dark:bg-[#f5f3ef] dark:text-[#181715] uppercase tracking-wider">
                     {billingCycle} PLAN
                   </span>
-                  <span className="text-xs text-slate-400 font-mono">ID: {currentPlan.id}</span>
+                  <span className="text-xs text-[#878278] dark:text-[#7d7970] font-mono">ID: {currentPlan.id}</span>
                 </div>
 
-                <h3 className="text-lg font-bold">{currentPlan.name}</h3>
+                <h3 className="text-lg font-bold text-[#1f1e1b] dark:text-[#f5f3ef]">{currentPlan.name}</h3>
                 <div className="mt-3 flex items-baseline gap-1">
-                  <span className="text-3xl font-black tracking-tight text-slate-950 dark:text-white">
+                  <span className="text-3xl font-black tracking-tight text-[#1f1e1b] dark:text-[#f5f3ef]">
                     ${unitPrice}
                   </span>
-                  <span className="text-xs text-slate-500">/ month</span>
+                  <span className="text-xs text-[#878278] dark:text-[#7d7970]">/ month</span>
                 </div>
 
                 {billingCycle === 'YEARLY' && unitPrice > 0 && (
-                  <p className="text-[11px] text-emerald-500 font-semibold mt-0.5">
+                  <p className="text-[11px] text-emerald-600 dark:text-emerald-400 font-semibold mt-0.5">
                     Billed annually at ${annualTotal} (Save 20%)
                   </p>
                 )}
 
                 {/* Billing Cycle Switcher */}
-                <div className="flex p-1 mt-4 rounded-xl bg-slate-200 dark:bg-slate-800/80 text-xs font-medium">
+                <div className="flex p-1 mt-4 rounded-xl bg-[#e5e0d5] dark:bg-[#282622] text-xs font-medium">
                   <button
                     type="button"
                     onClick={() => setBillingCycle('MONTHLY')}
-                    className={`flex-1 py-1.5 rounded-lg transition-all ${
+                    className={`flex-1 py-1.5 rounded-lg transition-all cursor-pointer ${
                       billingCycle === 'MONTHLY'
-                        ? 'bg-white dark:bg-slate-900 text-slate-900 dark:text-white shadow-sm font-bold'
-                        : 'text-slate-500'
+                        ? 'bg-white dark:bg-[#181715] text-[#1f1e1b] dark:text-[#f5f3ef] shadow-xs font-bold'
+                        : 'text-[#5c5850] dark:text-[#b8b4aa]'
                     }`}
                   >
                     Monthly
@@ -258,10 +258,10 @@ export const SubscriptionModal: React.FC = () => {
                   <button
                     type="button"
                     onClick={() => setBillingCycle('YEARLY')}
-                    className={`flex-1 py-1.5 rounded-lg transition-all ${
+                    className={`flex-1 py-1.5 rounded-lg transition-all cursor-pointer ${
                       billingCycle === 'YEARLY'
-                        ? 'bg-white dark:bg-slate-900 text-slate-900 dark:text-white shadow-sm font-bold'
-                        : 'text-slate-500'
+                        ? 'bg-white dark:bg-[#181715] text-[#1f1e1b] dark:text-[#f5f3ef] shadow-xs font-bold'
+                        : 'text-[#5c5850] dark:text-[#b8b4aa]'
                     }`}
                   >
                     Yearly (-20%)
@@ -269,13 +269,13 @@ export const SubscriptionModal: React.FC = () => {
                 </div>
 
                 {/* Features list */}
-                <div className="mt-5 space-y-2 pt-4 border-t border-slate-200 dark:border-slate-800">
-                  <div className="text-[11px] font-mono uppercase text-slate-400 tracking-wider">
+                <div className="mt-5 space-y-2 pt-4 border-t border-[#e5e0d5] dark:border-[#33302b]">
+                  <div className="text-[11px] font-mono uppercase text-[#878278] dark:text-[#7d7970] tracking-wider font-bold">
                     Included Capabilities
                   </div>
                   {currentPlan.features.map((feat, i) => (
-                    <div key={i} className="flex items-start gap-2 text-xs text-slate-600 dark:text-slate-300">
-                      <CheckCircle2 className="w-3.5 h-3.5 text-yellow-500 flex-shrink-0 mt-0.5" />
+                    <div key={i} className="flex items-start gap-2 text-xs text-[#5c5850] dark:text-[#b8b4aa]">
+                      <CheckCircle2 className="w-3.5 h-3.5 text-[#d97706] dark:text-[#f59e0b] shrink-0 mt-0.5" />
                       <span>{feat}</span>
                     </div>
                   ))}
@@ -283,8 +283,8 @@ export const SubscriptionModal: React.FC = () => {
               </div>
 
               {/* Organization Footnote */}
-              <div className="mt-6 pt-3 border-t border-slate-200 dark:border-slate-800 text-[11px] text-slate-500">
-                Billing Account: <strong className="text-slate-800 dark:text-slate-200">{currentOrg.name}</strong>
+              <div className="mt-6 pt-3 border-t border-[#e5e0d5] dark:border-[#33302b] text-[11px] text-[#878278] dark:text-[#7d7970]">
+                Billing Account: <strong className="text-[#1f1e1b] dark:text-[#f5f3ef]">{currentOrg.name}</strong>
               </div>
             </div>
 
@@ -293,13 +293,13 @@ export const SubscriptionModal: React.FC = () => {
               <form onSubmit={handleProcessPayment} className="space-y-4">
                 <div>
                   <div className="flex items-center justify-between mb-2">
-                    <label className="text-xs font-bold uppercase tracking-wider text-slate-400 font-mono">
+                    <label className="text-xs font-bold uppercase tracking-wider text-[#878278] dark:text-[#7d7970] font-mono">
                       Select Payment Method
                     </label>
                     <button
                       type="button"
                       onClick={handleTestCardFill}
-                      className="text-[11px] text-yellow-600 dark:text-yellow-400 hover:underline font-mono"
+                      className="text-[11px] text-[#d97706] dark:text-[#f59e0b] hover:underline font-mono cursor-pointer"
                     >
                       Fill Demo Card
                     </button>
@@ -310,10 +310,10 @@ export const SubscriptionModal: React.FC = () => {
                     <button
                       type="button"
                       onClick={() => setPaymentMethod('CARD')}
-                      className={`p-3 rounded-xl border flex items-center justify-center gap-2 transition-all ${
+                      className={`p-3 rounded-xl border flex items-center justify-center gap-2 transition-all cursor-pointer ${
                         paymentMethod === 'CARD'
-                          ? 'border-yellow-400 bg-yellow-400/10 text-yellow-600 dark:text-yellow-400 font-bold ring-1 ring-yellow-400'
-                          : 'border-slate-200 dark:border-slate-800 text-slate-500 hover:border-slate-300'
+                          ? 'border-[#d97706] bg-amber-500/10 text-[#d97706] dark:text-[#f59e0b] font-bold'
+                          : 'border-[#e5e0d5] dark:border-[#33302b] text-[#5c5850] dark:text-[#b8b4aa] hover:border-amber-500/30'
                       }`}
                     >
                       <CreditCard className="w-4 h-4" />
@@ -323,10 +323,10 @@ export const SubscriptionModal: React.FC = () => {
                     <button
                       type="button"
                       onClick={() => setPaymentMethod('PAYPAL')}
-                      className={`p-3 rounded-xl border flex items-center justify-center gap-2 transition-all ${
+                      className={`p-3 rounded-xl border flex items-center justify-center gap-2 transition-all cursor-pointer ${
                         paymentMethod === 'PAYPAL'
-                          ? 'border-yellow-400 bg-yellow-400/10 text-yellow-600 dark:text-yellow-400 font-bold ring-1 ring-yellow-400'
-                          : 'border-slate-200 dark:border-slate-800 text-slate-500 hover:border-slate-300'
+                          ? 'border-[#d97706] bg-amber-500/10 text-[#d97706] dark:text-[#f59e0b] font-bold'
+                          : 'border-[#e5e0d5] dark:border-[#33302b] text-[#5c5850] dark:text-[#b8b4aa] hover:border-amber-500/30'
                       }`}
                     >
                       <span className="font-black italic text-blue-500 text-xs">P</span>
@@ -339,25 +339,25 @@ export const SubscriptionModal: React.FC = () => {
                   /* CARD INPUTS */
                   <div className="space-y-3 pt-1">
                     <div>
-                      <label className="block text-[11px] font-semibold text-slate-700 dark:text-slate-300 mb-1">
+                      <label className="block text-[11px] font-semibold text-[#5c5850] dark:text-[#b8b4aa] mb-1">
                         Card Number
                       </label>
                       <div className="relative">
-                        <CreditCard className="w-4 h-4 text-slate-400 absolute left-3 top-1/2 -translate-y-1/2" />
+                        <CreditCard className="w-4 h-4 text-[#878278] absolute left-3 top-1/2 -translate-y-1/2" />
                         <input
                           type="text"
                           required
                           value={cardNumber}
                           onChange={(e) => setCardNumber(e.target.value)}
                           placeholder="4242 4242 4242 4242"
-                          className="w-full pl-9 pr-3 py-2 rounded-xl border border-slate-200 dark:border-slate-800 bg-slate-50 dark:bg-[#070912] text-xs font-mono focus:outline-none focus:ring-2 focus:ring-yellow-400/50"
+                          className="w-full pl-9 pr-3 py-2 rounded-xl border border-[#e5e0d5] dark:border-[#33302b] bg-[#faf8f5] dark:bg-[#181715] text-xs font-mono text-[#1f1e1b] dark:text-[#f5f3ef] focus:outline-hidden focus:border-[#d97706]"
                         />
                       </div>
                     </div>
 
                     <div className="grid grid-cols-2 gap-3">
                       <div>
-                        <label className="block text-[11px] font-semibold text-slate-700 dark:text-slate-300 mb-1">
+                        <label className="block text-[11px] font-semibold text-[#5c5850] dark:text-[#b8b4aa] mb-1">
                           Expiry Date
                         </label>
                         <input
@@ -366,12 +366,12 @@ export const SubscriptionModal: React.FC = () => {
                           value={cardExpiry}
                           onChange={(e) => setCardExpiry(e.target.value)}
                           placeholder="MM/YY"
-                          className="w-full px-3 py-2 rounded-xl border border-slate-200 dark:border-slate-800 bg-slate-50 dark:bg-[#070912] text-xs font-mono focus:outline-none focus:ring-2 focus:ring-yellow-400/50"
+                          className="w-full px-3 py-2 rounded-xl border border-[#e5e0d5] dark:border-[#33302b] bg-[#faf8f5] dark:bg-[#181715] text-xs font-mono text-[#1f1e1b] dark:text-[#f5f3ef] focus:outline-hidden focus:border-[#d97706]"
                         />
                       </div>
 
                       <div>
-                        <label className="block text-[11px] font-semibold text-slate-700 dark:text-slate-300 mb-1">
+                        <label className="block text-[11px] font-semibold text-[#5c5850] dark:text-[#b8b4aa] mb-1">
                           Security CVC
                         </label>
                         <input
@@ -380,14 +380,14 @@ export const SubscriptionModal: React.FC = () => {
                           value={cardCvc}
                           onChange={(e) => setCardCvc(e.target.value)}
                           placeholder="CVC"
-                          className="w-full px-3 py-2 rounded-xl border border-slate-200 dark:border-slate-800 bg-slate-50 dark:bg-[#070912] text-xs font-mono focus:outline-none focus:ring-2 focus:ring-yellow-400/50"
+                          className="w-full px-3 py-2 rounded-xl border border-[#e5e0d5] dark:border-[#33302b] bg-[#faf8f5] dark:bg-[#181715] text-xs font-mono text-[#1f1e1b] dark:text-[#f5f3ef] focus:outline-hidden focus:border-[#d97706]"
                         />
                       </div>
                     </div>
 
                     <div className="grid grid-cols-2 gap-3">
                       <div>
-                        <label className="block text-[11px] font-semibold text-slate-700 dark:text-slate-300 mb-1">
+                        <label className="block text-[11px] font-semibold text-[#5c5850] dark:text-[#b8b4aa] mb-1">
                           Cardholder Name
                         </label>
                         <input
@@ -396,12 +396,12 @@ export const SubscriptionModal: React.FC = () => {
                           value={cardHolder}
                           onChange={(e) => setCardHolder(e.target.value)}
                           placeholder="Alex Vance"
-                          className="w-full px-3 py-2 rounded-xl border border-slate-200 dark:border-slate-800 bg-slate-50 dark:bg-[#070912] text-xs focus:outline-none focus:ring-2 focus:ring-yellow-400/50"
+                          className="w-full px-3 py-2 rounded-xl border border-[#e5e0d5] dark:border-[#33302b] bg-[#faf8f5] dark:bg-[#181715] text-xs font-mono text-[#1f1e1b] dark:text-[#f5f3ef] focus:outline-hidden focus:border-[#d97706]"
                         />
                       </div>
 
                       <div>
-                        <label className="block text-[11px] font-semibold text-slate-700 dark:text-slate-300 mb-1">
+                        <label className="block text-[11px] font-semibold text-[#5c5850] dark:text-[#b8b4aa] mb-1">
                           Postal / Zip Code
                         </label>
                         <input
@@ -410,37 +410,37 @@ export const SubscriptionModal: React.FC = () => {
                           value={postalCode}
                           onChange={(e) => setPostalCode(e.target.value)}
                           placeholder="94107"
-                          className="w-full px-3 py-2 rounded-xl border border-slate-200 dark:border-slate-800 bg-slate-50 dark:bg-[#070912] text-xs font-mono focus:outline-none focus:ring-2 focus:ring-yellow-400/50"
+                          className="w-full px-3 py-2 rounded-xl border border-[#e5e0d5] dark:border-[#33302b] bg-[#faf8f5] dark:bg-[#181715] text-xs font-mono text-[#1f1e1b] dark:text-[#f5f3ef] focus:outline-hidden focus:border-[#d97706]"
                         />
                       </div>
                     </div>
                   </div>
                 ) : (
                   /* PAYPAL FAST CHECKOUT */
-                  <div className="p-4 rounded-xl bg-blue-500/5 border border-blue-500/20 text-center space-y-3">
-                    <div className="text-xs text-slate-600 dark:text-slate-300">
+                  <div className="p-4 rounded-2xl bg-blue-500/5 border border-blue-500/20 text-center space-y-3">
+                    <div className="text-xs text-[#5c5850] dark:text-[#b8b4aa]">
                       Connect your PayPal account for automated monthly recurring subscription billing with instant PayPal Buyer Protection.
                     </div>
-                    <div className="py-2 px-4 rounded-xl bg-[#ffc439] text-[#003087] font-black text-sm shadow-md hover:bg-[#ffb71b] cursor-pointer flex items-center justify-center gap-2">
-                      <span className="italic">PayPal</span>
+                    <div className="py-2.5 px-4 rounded-xl bg-[#ffc439] text-[#003087] font-bold text-sm shadow-xs hover:bg-[#ffb71b] cursor-pointer flex items-center justify-center gap-2">
+                      <span className="italic font-black">PayPal</span>
                       <span className="text-xs font-bold text-slate-900">Subscribe Now</span>
                     </div>
                   </div>
                 )}
 
                 {/* Cost Breakdown */}
-                <div className="p-3 rounded-xl bg-slate-50 dark:bg-[#070912] border border-slate-200 dark:border-slate-800/80 font-mono text-xs space-y-1.5">
-                  <div className="flex justify-between text-slate-500">
+                <div className="p-3 rounded-2xl bg-[#f4f1ea] dark:bg-[#181715] border border-[#e5e0d5] dark:border-[#33302b] font-mono text-xs space-y-1.5">
+                  <div className="flex justify-between text-[#878278] dark:text-[#7d7970]">
                     <span>Subtotal:</span>
                     <span>${amountToCharge}.00</span>
                   </div>
-                  <div className="flex justify-between text-slate-500">
+                  <div className="flex justify-between text-[#878278] dark:text-[#7d7970]">
                     <span>Tax (0% Reverse Charge B2B):</span>
                     <span>$0.00</span>
                   </div>
-                  <div className="flex justify-between pt-1 border-t border-slate-200 dark:border-slate-800 text-sm font-bold text-slate-900 dark:text-white">
+                  <div className="flex justify-between pt-1 border-t border-[#e5e0d5] dark:border-[#33302b] text-sm font-bold text-[#1f1e1b] dark:text-[#f5f3ef]">
                     <span>Total Due Today:</span>
-                    <span className="text-yellow-500">${amountToCharge}.00 USD</span>
+                    <span className="text-[#d97706] dark:text-[#f59e0b]">${amountToCharge}.00 USD</span>
                   </div>
                 </div>
 
@@ -464,7 +464,7 @@ export const SubscriptionModal: React.FC = () => {
                   )}
                 </button>
 
-                <div className="flex items-center justify-center gap-4 text-[10px] text-slate-400 font-mono">
+                <div className="flex items-center justify-center gap-4 text-[10px] text-[#878278] dark:text-[#7d7970] font-mono">
                   <span className="flex items-center gap-1">
                     <ShieldCheck className="w-3 h-3 text-emerald-500" /> PCI-DSS Level 1
                   </span>

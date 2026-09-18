@@ -127,21 +127,21 @@ Genesis Block Hash: ${SAMPLE_LEDGER[SAMPLE_LEDGER.length - 1].previousHash}
   return (
     <div className="space-y-8 pb-12">
       {/* Top 1-Click Audit Package Card */}
-      <div className="p-6 rounded-xl bg-gradient-to-r from-amber-500/15 via-yellow-500/10 to-transparent dark:from-yellow-950/40 dark:via-[#0c0e18] dark:to-[#0c0e18] border border-yellow-400/60 dark:border-yellow-500/30 shadow-xs flex flex-col md:flex-row md:items-center justify-between gap-6 backdrop-blur-md">
+      <div className="p-6 rounded-2xl bg-white dark:bg-[#211f1c] border border-[#e5e0d5] dark:border-[#33302b] shadow-xs flex flex-col md:flex-row md:items-center justify-between gap-6">
         <div className="flex items-start gap-4">
-          <div className="p-3 bg-yellow-400/20 text-amber-700 dark:text-yellow-300 rounded-xl border border-yellow-400/30">
+          <div className="p-3 bg-amber-500/10 text-[#d97706] dark:text-[#f59e0b] rounded-2xl border border-amber-500/20">
             <FileCheck className="w-8 h-8" />
           </div>
           <div>
             <div className="flex items-center gap-2">
-              <h2 className="text-base font-bold text-slate-950 dark:text-white tracking-tight">
+              <h2 className="text-base font-bold text-[#1f1e1b] dark:text-[#f5f3ef] tracking-tight">
                 1-Click Regulatory Audit Package
               </h2>
-              <span className="text-[10px] font-mono px-2 py-0.5 rounded bg-yellow-400/20 text-amber-900 dark:text-yellow-300 font-bold border border-yellow-400/40">
+              <span className="text-[10px] font-mono px-2 py-0.5 rounded-full bg-amber-500/10 text-[#d97706] dark:text-[#f59e0b] font-bold border border-amber-500/20">
                 AUDITOR READY
               </span>
             </div>
-            <p className="text-xs text-slate-600 dark:text-slate-300 mt-1 max-w-xl font-medium">
+            <p className="text-xs text-[#5c5850] dark:text-[#b8b4aa] mt-1 max-w-xl font-medium">
               Export certified verification packages proving Article 14 Human Oversight (EU AI Act), SOC 2 Type II agent access controls, and Presidio 18-PHI redaction.
             </p>
           </div>
@@ -151,7 +151,7 @@ Genesis Block Hash: ${SAMPLE_LEDGER[SAMPLE_LEDGER.length - 1].previousHash}
           <select
             value={framework}
             onChange={(e) => setFramework(e.target.value as any)}
-            className="bg-white/90 dark:bg-neutral-950 border border-yellow-300/60 dark:border-yellow-500/30 rounded-lg px-3 py-2 text-xs text-slate-900 dark:text-neutral-200 focus:outline-none focus:border-yellow-500 font-medium"
+            className="bg-[#faf8f5] dark:bg-[#181715] border border-[#e5e0d5] dark:border-[#33302b] rounded-xl px-3 py-2 text-xs text-[#1f1e1b] dark:text-[#f5f3ef] focus:outline-hidden focus:border-[#d97706] font-medium shadow-xs"
           >
             <option value="EU_AI_ACT">EU AI Act (Art. 14 Human Oversight)</option>
             <option value="SOC2">SOC 2 Type II (Agent Access Control)</option>
@@ -161,16 +161,16 @@ Genesis Block Hash: ${SAMPLE_LEDGER[SAMPLE_LEDGER.length - 1].previousHash}
           <button
             onClick={handleDownloadReport}
             disabled={generating}
-            className="px-4 py-2.5 bg-yellow-400 hover:bg-yellow-300 disabled:opacity-50 text-slate-950 font-bold text-xs rounded-lg flex items-center justify-center gap-2 transition-all shadow-sm border border-yellow-300 cursor-pointer"
+            className="px-4 py-2.5 bg-[#d97706] hover:bg-[#b45309] dark:bg-[#f59e0b] dark:hover:bg-[#fbbf24] disabled:opacity-50 text-white dark:text-[#181715] font-bold text-xs rounded-xl flex items-center justify-center gap-2 transition-all shadow-xs cursor-pointer"
           >
             {generating ? (
               <>
-                <Loader2 className="w-4 h-4 animate-spin text-slate-950" />
+                <Loader2 className="w-4 h-4 animate-spin text-white dark:text-[#181715]" />
                 <span>Signing Audit Proof...</span>
               </>
             ) : (
               <>
-                <Download className="w-4 h-4 text-slate-950" />
+                <Download className="w-4 h-4" />
                 <span>Download Audit Package</span>
               </>
             )}
@@ -180,25 +180,25 @@ Genesis Block Hash: ${SAMPLE_LEDGER[SAMPLE_LEDGER.length - 1].previousHash}
 
       {/* Compliance Proof Cards */}
       <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
-        <div className="p-4 rounded-xl bg-white/85 dark:bg-[#0c0e18]/85 backdrop-blur-md border border-yellow-300/50 dark:border-yellow-500/20 shadow-xs space-y-2">
-          <div className="flex items-center gap-2 text-amber-700 dark:text-yellow-400 text-xs font-bold">
+        <div className="p-5 rounded-2xl bg-white dark:bg-[#211f1c] border border-[#e5e0d5] dark:border-[#33302b] shadow-xs space-y-2">
+          <div className="flex items-center gap-2 text-[#d97706] dark:text-[#f59e0b] text-xs font-bold">
             <Lock className="w-4 h-4" />
             <span>Zero Raw Master Keys</span>
           </div>
-          <p className="text-xs text-slate-600 dark:text-slate-300 font-medium">
-            Agents only possess virtual keys (<code className="font-mono font-bold text-amber-800 dark:text-yellow-300">al_live_</code>). Master API keys never touch agent context or client memory.
+          <p className="text-xs text-[#5c5850] dark:text-[#b8b4aa] font-medium">
+            Agents only possess virtual keys (<code className="font-mono font-bold text-[#d97706] dark:text-[#f59e0b]">al_live_</code>). Master API keys never touch agent context or client memory.
           </p>
           <span className="text-[10px] font-mono text-emerald-600 dark:text-emerald-400 font-bold block pt-1">
             Status: 100% Zero-Trust
           </span>
         </div>
 
-        <div className="p-4 rounded-xl bg-white/85 dark:bg-[#0c0e18]/85 backdrop-blur-md border border-yellow-300/50 dark:border-yellow-500/20 shadow-xs space-y-2">
+        <div className="p-5 rounded-2xl bg-white dark:bg-[#211f1c] border border-[#e5e0d5] dark:border-[#33302b] shadow-xs space-y-2">
           <div className="flex items-center gap-2 text-emerald-600 dark:text-emerald-400 text-xs font-bold">
             <ShieldCheck className="w-4 h-4" />
             <span>Article 14 Human Oversight</span>
           </div>
-          <p className="text-xs text-slate-600 dark:text-slate-300 font-medium">
+          <p className="text-xs text-[#5c5850] dark:text-[#b8b4aa] font-medium">
             Every high-risk financial, external email, or database action pauses execution and requires affirmative human approval.
           </p>
           <span className="text-[10px] font-mono text-emerald-600 dark:text-emerald-400 font-bold block pt-1">
@@ -206,12 +206,12 @@ Genesis Block Hash: ${SAMPLE_LEDGER[SAMPLE_LEDGER.length - 1].previousHash}
           </span>
         </div>
 
-        <div className="p-4 rounded-xl bg-white/85 dark:bg-[#0c0e18]/85 backdrop-blur-md border border-yellow-300/50 dark:border-yellow-500/20 shadow-xs space-y-2">
-          <div className="flex items-center gap-2 text-amber-700 dark:text-yellow-400 text-xs font-bold">
+        <div className="p-5 rounded-2xl bg-white dark:bg-[#211f1c] border border-[#e5e0d5] dark:border-[#33302b] shadow-xs space-y-2">
+          <div className="flex items-center gap-2 text-[#d97706] dark:text-[#f59e0b] text-xs font-bold">
             <Hash className="w-4 h-4" />
             <span>Cryptographic Ledger</span>
           </div>
-          <p className="text-xs text-slate-600 dark:text-slate-300 font-medium">
+          <p className="text-xs text-[#5c5850] dark:text-[#b8b4aa] font-medium">
             All approvals, rejections, and supervisor feedbacks are chained in a Merkle tree with SHA-256 tamper-proof timestamps.
           </p>
           <span className="text-[10px] font-mono text-emerald-600 dark:text-emerald-400 font-bold block pt-1">
@@ -221,14 +221,14 @@ Genesis Block Hash: ${SAMPLE_LEDGER[SAMPLE_LEDGER.length - 1].previousHash}
       </div>
 
       {/* Merkle Hash-Chained Audit Trail Table */}
-      <div className="p-5 rounded-xl bg-white/85 dark:bg-[#0c0e18]/85 backdrop-blur-md border border-yellow-300/40 dark:border-yellow-500/20 shadow-xs space-y-4">
+      <div className="p-5 rounded-2xl bg-white dark:bg-[#211f1c] border border-[#e5e0d5] dark:border-[#33302b] shadow-xs space-y-4">
         <div className="flex items-center justify-between">
           <div>
-            <h3 className="text-sm font-bold text-slate-950 dark:text-white flex items-center gap-2">
-              <Hash className="w-4 h-4 text-amber-600 dark:text-yellow-400" />
+            <h3 className="text-sm font-bold text-[#1f1e1b] dark:text-[#f5f3ef] flex items-center gap-2">
+              <Hash className="w-4 h-4 text-[#d97706] dark:text-[#f59e0b]" />
               <span>Tamper-Proof Merkle Audit Ledger</span>
             </h3>
-            <p className="text-xs text-slate-600 dark:text-slate-400 mt-0.5 font-medium">
+            <p className="text-xs text-[#5c5850] dark:text-[#b8b4aa] mt-0.5 font-medium">
               Cryptographically chained execution proof for SOC 2 Type II & EU AI Act certification
             </p>
           </div>
@@ -236,7 +236,7 @@ Genesis Block Hash: ${SAMPLE_LEDGER[SAMPLE_LEDGER.length - 1].previousHash}
 
         <div className="overflow-x-auto">
           <table className="w-full text-left text-xs">
-            <thead className="bg-yellow-50/70 dark:bg-yellow-950/30 text-slate-700 dark:text-slate-300 uppercase tracking-wider font-mono border-b border-yellow-200/80 dark:border-yellow-500/20 font-bold">
+            <thead className="bg-[#faf8f5] dark:bg-[#181715] text-[#5c5850] dark:text-[#b8b4aa] uppercase tracking-wider font-mono border-b border-[#e5e0d5] dark:border-[#33302b] font-bold">
               <tr>
                 <th className="py-3 px-4">Block ID & Time</th>
                 <th className="py-3 px-4">Agent & Tool</th>
@@ -246,29 +246,29 @@ Genesis Block Hash: ${SAMPLE_LEDGER[SAMPLE_LEDGER.length - 1].previousHash}
                 <th className="py-3 px-4 text-right">Verdict</th>
               </tr>
             </thead>
-            <tbody className="divide-y divide-yellow-100/60 dark:divide-yellow-500/10">
+            <tbody className="divide-y divide-[#e5e0d5] dark:divide-[#33302b]">
               {SAMPLE_LEDGER.map((item) => (
-                <tr key={item.id} className="hover:bg-yellow-50/40 dark:hover:bg-yellow-950/20 transition-colors">
+                <tr key={item.id} className="hover:bg-[#faf8f5]/60 dark:hover:bg-[#181715]/60 transition-colors">
                   <td className="py-3 px-4 font-mono">
-                    <span className="font-bold text-slate-950 dark:text-white block">{item.id}</span>
-                    <span className="text-[10px] text-slate-500 dark:text-slate-400">{item.timestamp}</span>
+                    <span className="font-bold text-[#1f1e1b] dark:text-[#f5f3ef] block">{item.id}</span>
+                    <span className="text-[10px] text-[#878278] dark:text-[#7d7970]">{item.timestamp}</span>
                   </td>
                   <td className="py-3 px-4">
-                    <span className="font-bold text-slate-900 dark:text-slate-200 block">{item.agentName}</span>
-                    <span className="font-mono text-[11px] font-bold text-amber-800 dark:text-yellow-300">{item.toolName}</span>
+                    <span className="font-bold text-[#1f1e1b] dark:text-[#f5f3ef] block">{item.agentName}</span>
+                    <span className="font-mono text-[11px] font-bold text-[#d97706] dark:text-[#f59e0b]">{item.toolName}</span>
                   </td>
-                  <td className="py-3 px-4 text-slate-700 dark:text-slate-300 max-w-xs font-medium">
+                  <td className="py-3 px-4 text-[#5c5850] dark:text-[#b8b4aa] max-w-xs font-medium">
                     {item.actionSummary}
                   </td>
-                  <td className="py-3 px-4 font-mono text-[11px] text-slate-600 dark:text-slate-400">
+                  <td className="py-3 px-4 font-mono text-[11px] text-[#878278] dark:text-[#7d7970]">
                     {item.approver}
                   </td>
-                  <td className="py-3 px-4 font-mono text-[10px] text-slate-500 dark:text-slate-400">
+                  <td className="py-3 px-4 font-mono text-[10px] text-[#878278] dark:text-[#7d7970]">
                     <div>{item.merkleHash.slice(0, 20)}...</div>
-                    <div className="text-slate-400 dark:text-slate-500 text-[9px]">Prev: {item.previousHash.slice(0, 16)}...</div>
+                    <div className="text-[#878278]/70 dark:text-[#7d7970]/70 text-[9px]">Prev: {item.previousHash.slice(0, 16)}...</div>
                   </td>
                   <td className="py-3 px-4 text-right">
-                    <span className="px-2 py-0.5 rounded text-[10px] font-bold bg-emerald-500/10 text-emerald-700 dark:text-emerald-300 border border-emerald-500/30">
+                    <span className="px-2 py-0.5 rounded-full text-[10px] font-bold bg-emerald-500/10 text-emerald-700 dark:text-emerald-300 border border-emerald-500/30">
                       {item.complianceVerdict}
                     </span>
                   </td>
