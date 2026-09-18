@@ -1,0 +1,56 @@
+{
+  "entities": {
+    "user": {
+      "title": "User Profile",
+      "description": "Authenticated user profile and organization membership",
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string",
+          "description": "Firebase Auth UID of the user",
+          "maxLength": 128
+        },
+        "email": {
+          "type": "string",
+          "description": "User work email address",
+          "maxLength": 120
+        },
+        "displayName": {
+          "type": "string",
+          "description": "Full name of the user",
+          "maxLength": 100
+        },
+        "organizationName": {
+          "type": "string",
+          "description": "User organization or team name",
+          "maxLength": 100
+        },
+        "planTier": {
+          "type": "string",
+          "description": "Selected fleet plan tier",
+          "enum": ["FREE", "STARTER", "PRO_MONTHLY", "PRO_YEARLY", "ENTERPRISE"]
+        },
+        "role": {
+          "type": "string",
+          "description": "User permission role",
+          "enum": ["user", "admin", "owner"]
+        },
+        "createdAt": {
+          "type": "string",
+          "description": "ISO timestamp of account registration"
+        },
+        "lastLoginAt": {
+          "type": "string",
+          "description": "ISO timestamp of most recent login"
+        }
+      },
+      "required": ["id", "email", "organizationName", "planTier", "createdAt"]
+    }
+  },
+  "firestore": {
+    "/users/{userId}": {
+      "schema": "user",
+      "description": "Stores user profile data, sign-up organization details, and plan tier"
+    }
+  }
+}

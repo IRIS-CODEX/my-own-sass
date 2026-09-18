@@ -1,0 +1,81 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+
+    // Default deny all access
+    match /{document=**} {
+      allow read, write: if false;
+    }
+
+    // Helper functions
+    function isSignedIn() {
+      return request.auth != null;
+    }
+
+    function isOwner(userId) {
+      return isSignedIn() && request.auth.uid == userId;
+    }
+
+    function isSuperAdmin() {
+      return isSignedIn() && (
+        request.auth.token.email == 'hamudijems4@gmail.com' ||
+        exists(/databases/$(database)/documents/admins/$(request.auth.uid))
+      );
+    }
+
+    function isValidId(id) {
+      return id is string && id.size() > 0 && id.size() <= 128 && id.matches('^[a-zA-Z0-9_\\-]+$');
+    }
+
+    function incoming() {
+      return request.resource.data;
+    }
+
+    function existing() {
+      return resource.data;
+    }
+
+    function isValidUser(data) {
+      return data.keys().hasAll(['id', 'email', 'organizationName', 'planTier', 'createdAt']) &&
+        data.id is string && data.id.size() <= 128 &&
+        data.email is string && data.email.size() <= 120 &&
+        data.organizationName is string && data.organizationName.size() <= 100 &&
+        data.planTier is string && data.planTier.size() <= 30 &&
+        data.createdAt is string && data.createdAt.size() <= 40;
+    }
+
+    // Users Collection
+    match /users/{userId} {
+      // Individual users can read their profile; super admins can read all profiles
+      allow get: if isOwner(userId) || isSuperAdmin();
+      allow list: if isSuperAdmin();
+
+      // Users can create their own profile during initial signup
+      allow create: if isOwner(userId) &&
+        isValidId(userId) &&
+        isValidUser(incoming()) &&
+        incoming().id == request.auth.uid;
+
+      // Users can update non-critical profile fields; admins can manage accounts
+      allow update: if (isOwner(userId) || isSuperAdmin()) &&
+        isValidUser(incoming()) &&
+        incoming().id == existing().id &&
+        incoming().createdAt == existing().createdAt &&
+        incoming().diff(existing()).affectedKeys().hasOnly(['displayName', 'organizationName', 'planTier', 'lastLoginAt', 'role']);
+
+      // Only super admin can delete accounts
+      allow delete: if isSuperAdmin();
+    }
+
+    // Admins Collection
+    match /admins/{adminId} {
+      allow read: if isSignedIn();
+      allow write: if isSuperAdmin();
+    }
+
+    // Connection test collection for initialization health check
+    match /test/{docId} {
+      allow read, write: if true;
+    }
+  }
+}
