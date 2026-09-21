@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import confetti from 'canvas-confetti';
 import { useAppStore } from '../../stores/useAppStore';
 import { useAdminStore } from '../../stores/useAdminStore';
+import { sendSubscriptionConfirmationEmail } from '../../lib/gmailService';
 import {
   X,
   CreditCard,
@@ -13,6 +14,7 @@ import {
   ArrowRight,
   Globe,
   Radio,
+  Mail,
 } from 'lucide-react';
 
 interface PlanDetails {
@@ -180,9 +182,28 @@ export const SubscriptionModal: React.FC = () => {
         email: currentUser?.email,
       });
 
+      // Dispatch Gmail Confirmation & Invoice Notification
+      const targetEmail = currentUser?.email || 'alex@acmelabs.ai';
+      sendSubscriptionConfirmationEmail({
+        userEmail: targetEmail,
+        userName: currentUser?.name || 'Autonomous Fleet Operator',
+        planName: currentPlan.name,
+        amountUsd: amountToCharge,
+        billingCycle,
+        organizationName: currentOrg.name || 'Enterprise Fleet',
+      }).then((result) => {
+        if (result.success) {
+          addToast({
+            title: 'Gmail Invoice Transmitted',
+            description: `Official subscription receipt sent to ${targetEmail}`,
+            type: 'success',
+          });
+        }
+      });
+
       setTimeout(() => {
         setIsSuccess(false);
-      }, 1400);
+      }, 2000);
     }, 1200);
   };
 
@@ -210,9 +231,15 @@ export const SubscriptionModal: React.FC = () => {
             <p className="text-sm text-[#5c5850] dark:text-[#b8b4aa] max-w-md mx-auto">
               Your organization has been upgraded to <strong className="text-[#d97706] dark:text-[#f59e0b]">{currentPlan.name}</strong>. Quota limits increased immediately.
             </p>
-            <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-amber-500/10 text-[#d97706] dark:text-[#f59e0b] border border-amber-500/20 text-xs font-mono">
-              <Sparkles className="w-4 h-4" />
-              <span>Redirecting to Customer Workspace...</span>
+            <div className="flex flex-col sm:flex-row items-center justify-center gap-2">
+              <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-emerald-500/10 text-emerald-700 dark:text-emerald-300 border border-emerald-500/20 text-xs font-mono">
+                <Mail className="w-3.5 h-3.5 text-emerald-500" />
+                <span>Invoice delivered to {currentUser?.email || 'your Gmail'}</span>
+              </div>
+              <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-amber-500/10 text-[#d97706] dark:text-[#f59e0b] border border-amber-500/20 text-xs font-mono">
+                <Sparkles className="w-3.5 h-3.5" />
+                <span>Redirecting...</span>
+              </div>
             </div>
           </div>
         ) : (

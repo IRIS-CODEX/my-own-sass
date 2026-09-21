@@ -41,6 +41,8 @@ import { AdminPricingManagement } from './AdminPricingManagement';
 import { FirebaseUsersTable } from './FirebaseUsersTable';
 import { CreateFirebaseUserModal } from './CreateFirebaseUserModal';
 import { CloudSqlUsersTable, CloudSqlUserRecord } from './CloudSqlUsersTable';
+import { CloudSqlDiagnosticModal } from './CloudSqlDiagnosticModal';
+import { CloudSqlDiagnosticIndicator } from './CloudSqlDiagnosticIndicator';
 import {
   fetchAllFirestoreUsers,
   firebaseSignUpWithEmail,
@@ -80,8 +82,12 @@ export const AdminPortal: React.FC = () => {
 
   const { addToast } = useAppStore();
 
+  // Cloud SQL Diagnostic Modal State
+  const [isCloudSqlDiagnosticOpen, setIsCloudSqlDiagnosticOpen] = useState(false);
+
   // Filter state for Tenants tab
   const [userFilterStatus, setUserFilterStatus] = useState<'ALL' | 'ACTIVE' | 'PAST_DUE' | 'FREE' | 'SUSPENDED'>('ALL');
+
 
   // Cloud SQL Database Users State in Users Page Section
   const [cloudSqlUsers, setCloudSqlUsers] = useState<CloudSqlUserRecord[]>([]);
@@ -404,7 +410,7 @@ export const AdminPortal: React.FC = () => {
 
       {/* Standalone Admin Content Shell */}
       <div className="flex-1 flex flex-col h-full min-w-0 overflow-hidden">
-        <AdminTopbar />
+        <AdminTopbar onOpenCloudSqlDiagnostics={() => setIsCloudSqlDiagnosticOpen(true)} />
 
         {/* Global Alert Bar if Kill Switch Tripped */}
         {globalKillSwitchActive && (
@@ -427,6 +433,40 @@ export const AdminPortal: React.FC = () => {
           {/* VIEW 1: EXECUTIVE DASHBOARD & MRR */}
           {adminActivePage === 'dashboard' && (
             <div className="space-y-6">
+              {/* Cloud SQL Live Diagnostic Health Strip */}
+              <div className="p-4 rounded-2xl bg-white dark:bg-[#211f1c] border border-[#e5e0d5] dark:border-[#33302b] shadow-xs flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+                <div className="flex items-center gap-3">
+                  <div className="w-10 h-10 rounded-xl bg-blue-500/10 dark:bg-blue-500/20 text-blue-600 dark:text-blue-400 border border-blue-500/25 flex items-center justify-center shrink-0">
+                    <Database className="w-5 h-5" />
+                  </div>
+                  <div>
+                    <div className="flex items-center gap-2">
+                      <span className="font-bold text-sm text-[#1f1e1b] dark:text-[#f5f3ef]">
+                        Google Cloud SQL Primary Storage
+                      </span>
+                      <span className="px-2 py-0.5 rounded-full text-[10px] font-mono font-bold bg-emerald-500/15 text-emerald-800 dark:text-emerald-300 border border-emerald-500/30 flex items-center gap-1">
+                        <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse" />
+                        LIVE RELATIONAL POOL
+                      </span>
+                    </div>
+                    <p className="text-xs text-[#5c5850] dark:text-[#b8b4aa] font-medium mt-0.5">
+                      PostgreSQL 16 • Autonomous Memory, Chat History &amp; Tenant Database
+                    </p>
+                  </div>
+                </div>
+
+                <div className="flex items-center gap-2">
+                  <CloudSqlDiagnosticIndicator onOpenFullModal={() => setIsCloudSqlDiagnosticOpen(true)} />
+                  <button
+                    onClick={() => setIsCloudSqlDiagnosticOpen(true)}
+                    className="px-3 py-1.5 rounded-xl bg-[#faf8f5] dark:bg-[#181715] hover:bg-[#f4f1ea] dark:hover:bg-[#282622] text-[#1f1e1b] dark:text-[#f5f3ef] border border-[#e5e0d5] dark:border-[#33302b] text-xs font-bold transition-all shadow-xs cursor-pointer flex items-center gap-1.5"
+                  >
+                    <Activity className="w-3.5 h-3.5 text-[#d97706] dark:text-[#f59e0b]" />
+                    <span>Open Diagnostics</span>
+                  </button>
+                </div>
+              </div>
+
               {/* High-Level Metrics */}
               <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
                 <div className="p-5 rounded-2xl bg-white dark:bg-[#211f1c] border border-[#e5e0d5] dark:border-[#33302b] shadow-xs">
@@ -1483,6 +1523,13 @@ export const AdminPortal: React.FC = () => {
         onClose={() => setIsNewUserModalOpen(false)}
         onUserCreated={(u) => setFirebaseUsers((prev) => [u, ...prev])}
       />
+
+      {/* Google Cloud SQL Comprehensive Live Diagnostic Modal */}
+      <CloudSqlDiagnosticModal
+        isOpen={isCloudSqlDiagnosticOpen}
+        onClose={() => setIsCloudSqlDiagnosticOpen(false)}
+      />
     </div>
   );
 };
+

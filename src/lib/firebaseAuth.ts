@@ -30,6 +30,7 @@ export async function firebaseSignInWithGoogle(chosenPlan?: string): Promise<{
   success: boolean;
   user?: FirebaseUserProfile;
   error?: string;
+  isPopupBlocked?: boolean;
 }> {
   try {
     const cred = await signInWithPopup(auth, googleAuthProvider);
@@ -83,14 +84,23 @@ export async function firebaseSignInWithGoogle(chosenPlan?: string): Promise<{
 
     return { success: true, user: profile };
   } catch (error: any) {
-    console.error('Google Sign-In Error:', error);
-    let message = error.message || 'Google authentication failed';
-    if (error.code === 'auth/popup-closed-by-user') {
+    const isPopupBlocked =
+      error?.code === 'auth/popup-blocked' ||
+      (typeof error?.message === 'string' && error.message.includes('popup-blocked'));
+
+    let message = error?.message || 'Google authentication failed';
+    if (isPopupBlocked) {
+      console.warn('[Firebase Auth] Sign-in popup was blocked by browser or iframe policy.');
+      message = 'Sign-in popup was blocked by browser or iframe settings. Please allow popups or use Instant 1-Click Sandbox Sign-In.';
+      return { success: false, isPopupBlocked: true, error: message };
+    } else if (error?.code === 'auth/popup-closed-by-user') {
+      console.warn('[Firebase Auth] Popup closed by user.');
       message = 'Sign-in popup was closed before completion.';
-    } else if (error.code === 'auth/cancelled-popup-request') {
+    } else if (error?.code === 'auth/cancelled-popup-request') {
+      console.warn('[Firebase Auth] Cancelled popup request.');
       message = 'Sign-in request was cancelled.';
-    } else if (error.code === 'auth/popup-blocked') {
-      message = 'Sign-in popup was blocked by browser. Please allow popups for this site.';
+    } else {
+      console.error('Google Sign-In Error:', error);
     }
     return { success: false, error: message };
   }

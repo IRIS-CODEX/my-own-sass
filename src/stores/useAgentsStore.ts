@@ -29,6 +29,7 @@ interface AgentsState {
   createAgentFromPrompt: (userPrompt: string) => Promise<Agent>;
   deleteAgent: (agentId: string) => Promise<void>;
   provisionDefaultFleet: () => Promise<void>;
+  provisionGmailAgent: () => Promise<Agent>;
 }
 
 export const useAgentsStore = create<AgentsState>((set, get) => ({
@@ -85,6 +86,14 @@ export const useAgentsStore = create<AgentsState>((set, get) => ({
 
     try {
       await updateAgentInFirestore(agentId, { autonomyMode: mode, status });
+      const updated = get().agents.find((a) => a.id === agentId);
+      if (updated) {
+        fetch('/api/agents', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(updated),
+        }).catch(() => {});
+      }
     } catch (err) {
       console.error('[AgentsStore] Failed to update autonomy mode in Firestore:', err);
     }
@@ -174,6 +183,12 @@ export const useAgentsStore = create<AgentsState>((set, get) => ({
 
     try {
       await saveAgentToFirestore(newAgent);
+      // Sync with Google Cloud SQL
+      fetch('/api/agents', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(newAgent),
+      }).catch((e) => console.warn('[AgentsStore] Cloud SQL sync warning:', e));
     } catch (err) {
       console.error('[AgentsStore] Failed to save new agent in Firestore:', err);
     }
@@ -240,6 +255,7 @@ export const useAgentsStore = create<AgentsState>((set, get) => ({
     }));
     try {
       await deleteAgentFromFirestore(agentId);
+      fetch(`/api/agents/${agentId}`, { method: 'DELETE' }).catch(() => {});
     } catch (err) {
       console.error('[AgentsStore] Failed to delete agent from Firestore:', err);
     }
@@ -315,10 +331,69 @@ export const useAgentsStore = create<AgentsState>((set, get) => ({
         ],
         welcomeMessage: 'Ready to inspect code. I am Python-Code-Architect. Paste your functions or PR diffs to diagnose.',
       },
+      {
+        userId,
+        orgId: 'org_enterprise_fleet',
+        name: 'Executive-Gmail-Inbox-Pilot',
+        description: 'Autonomous AI inbox copilot that reads, categorizes, drafts smart replies, and manages your personal Gmail under zero-trust governance.',
+        archetype: 'RESEARCHER',
+        autonomyMode: 'SEMI_AUTO',
+        dailyBudgetUsd: 30.0,
+        systemPrompt: 'You are the Executive Gmail Inbox Pilot. You assist the user with managing their personal Gmail inbox. You can search, read unread threads, summarize key emails, categorize inbox priorities, and draft contextual email replies. Always request explicit confirmation before sending external messages or making destructive inbox changes.',
+        model: 'gemini-3.8-flash',
+        temperature: 0.2,
+        status: 'ONLINE',
+        framework: 'LangGraph v0.2 / Gmail-API',
+        avatarIcon: 'Brain',
+        tools: ['gmail_list_messages', 'gmail_read_thread', 'gmail_draft_reply', 'gmail_send_message', 'gmail_summarize_unread', 'gmail_categorize_inbox'],
+        suggestedPrompts: [
+          'Scan my Gmail inbox and summarize my top 5 unread emails',
+          'Draft a polite follow-up email to my last conversation',
+          'Categorize my unread emails into Urgent, Inquiries, and Newsletters',
+          'Help me compose a project status update email',
+        ],
+        welcomeMessage: 'Hello! I am your Executive Gmail Inbox Pilot. Connect your personal Gmail account to let me summarize unread threads, draft smart responses, and organize your inbox.',
+      },
     ];
 
     for (const def of defaults) {
       await get().addAgent(def);
     }
+  },
+
+  provisionGmailAgent: async () => {
+    const userId = get().activeUserId || 'guest_user';
+    const existing = get().agents.find((a) => a.name.toLowerCase().includes('gmail'));
+    if (existing) {
+      set({ selectedAgent: existing });
+      return existing;
+    }
+
+    const newAgent = await get().addAgent({
+      orgId: 'org_enterprise_fleet',
+      userId,
+      name: 'Executive-Gmail-Inbox-Pilot',
+      description: 'Autonomous AI inbox copilot that reads, categorizes, drafts smart replies, and manages your personal Gmail under zero-trust governance.',
+      archetype: 'RESEARCHER',
+      autonomyMode: 'SEMI_AUTO',
+      dailyBudgetUsd: 30.0,
+      systemPrompt: 'You are the Executive Gmail Inbox Pilot. You assist the user with managing their personal Gmail inbox. You can search, read unread threads, summarize key emails, categorize inbox priorities, and draft contextual email replies. Always request explicit confirmation before sending external messages or making destructive inbox changes.',
+      model: 'gemini-3.8-flash',
+      temperature: 0.2,
+      status: 'ONLINE',
+      framework: 'LangGraph v0.2 / Gmail-API',
+      avatarIcon: 'Brain',
+      tools: ['gmail_list_messages', 'gmail_read_thread', 'gmail_draft_reply', 'gmail_send_message', 'gmail_summarize_unread', 'gmail_categorize_inbox'],
+      suggestedPrompts: [
+        'Scan my Gmail inbox and summarize my top 5 unread emails',
+        'Draft a polite follow-up email to my last conversation',
+        'Categorize my unread emails into Urgent, Inquiries, and Newsletters',
+        'Help me compose a project status update email',
+      ],
+      welcomeMessage: 'Hello! I am your Executive Gmail Inbox Pilot. Connect your personal Gmail account to let me summarize unread threads, draft smart responses, and organize your inbox.',
+    });
+
+    set({ selectedAgent: newAgent });
+    return newAgent;
   },
 }));

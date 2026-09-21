@@ -10,6 +10,7 @@ import {
   onAuthStateChanged,
 } from 'firebase/auth';
 import {
+  initializeFirestore,
   getFirestore,
   doc,
   getDoc,
@@ -25,7 +26,22 @@ import firebaseConfig from '../../firebase-applet-config.json';
 const app = !getApps().length ? initializeApp(firebaseConfig) : getApps()[0];
 
 /* CRITICAL: The app will break without specifying firestoreDatabaseId */
-export const db = getFirestore(app, firebaseConfig.firestoreDatabaseId);
+const databaseId = (firebaseConfig as any).firestoreDatabaseId || '(default)';
+
+let firestoreInstance;
+try {
+  firestoreInstance = initializeFirestore(
+    app,
+    {
+      experimentalForceLongPolling: true,
+      ignoreUndefinedProperties: true,
+    },
+    databaseId
+  );
+} catch {
+  firestoreInstance = getFirestore(app, databaseId);
+}
+export const db = firestoreInstance;
 export const auth = getAuth(app);
 export const googleAuthProvider = new GoogleAuthProvider();
 export { onAuthStateChanged };
@@ -78,19 +94,22 @@ export function handleFirestoreError(error: unknown, operationType: OperationTyp
   throw new Error(JSON.stringify(errInfo));
 }
 
-// Initial connection test
+// Initial connection test with graceful diagnostics
 export async function testConnection() {
   try {
-    await getDocFromServer(doc(db, 'test', 'connection'));
-  } catch (error) {
+    const testDocRef = doc(db, 'test', 'connection');
+    await getDocFromServer(testDocRef);
+  } catch (error: any) {
     if (error instanceof Error && error.message.includes('the client is offline')) {
-      console.error('Please check your Firebase configuration.');
+      console.warn('[Firebase] Firestore client running in offline mode. Local cache active.');
+    } else {
+      console.debug('[Firebase] Initialization status:', error?.message || error);
     }
   }
 }
 
-// Auto-run connection test on boot
-testConnection();
+// Run connection check in background without blocking
+testConnection().catch(() => {});
 
 export interface FirebaseUserProfile {
   id: string;

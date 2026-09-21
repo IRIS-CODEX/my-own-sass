@@ -314,11 +314,15 @@ export const LandingHero: React.FC = () => {
     setIsGoogleLoading(true);
     setAuthError(null);
     try {
-      const ok = await loginWithGoogle('PRO_MONTHLY');
-      if (ok) {
+      const res = await loginWithGoogle('PRO_MONTHLY');
+      if (res.success) {
         setIsLandingPage(false);
+      } else if (res.notRegistered) {
+        setAuthError(`No active subscription found for ${res.email}. Please fill out the registration form to choose your package.`);
+      } else if (res.isPopupBlocked) {
+        setAuthError('Sign-in popup was blocked by browser or iframe settings. Please use Instant Demo Access or allow popups.');
       } else {
-        setAuthError('Google sign-in was not completed.');
+        setAuthError(res.error || 'Google sign-in was not completed.');
       }
     } catch (err: any) {
       setAuthError(err.message || 'Google Auth error.');
@@ -617,53 +621,6 @@ export const LandingHero: React.FC = () => {
                   backgroundSize: '34px 34px',
                 }}
               />
-
-              {/* VIDEO CONTROLS & TIMELINE BAR AT TOP */}
-              <div className="relative z-20 flex items-center justify-between pb-4 mb-2 border-b border-[#ece8df]">
-                <div className="flex items-center gap-2">
-                  <span className="w-2 h-2 rounded-full bg-[#c15f3c] animate-ping" />
-                  <span className="text-[11px] font-mono font-semibold tracking-wider text-[#5c5850] uppercase">
-                    Interactive Product Demo: Cowork & Agent Governance
-                  </span>
-                </div>
-
-                <div className="flex items-center gap-2">
-                  {/* Play/Pause Button */}
-                  <button
-                    onClick={() => setIsVideoPlaying(!isVideoPlaying)}
-                    className="p-1.5 rounded-md hover:bg-[#ece8df] text-[#5c5850] transition-colors cursor-pointer"
-                    title={isVideoPlaying ? 'Pause Simulation' : 'Play Simulation'}
-                  >
-                    {isVideoPlaying ? <Pause className="w-3.5 h-3.5" /> : <Play className="w-3.5 h-3.5" />}
-                  </button>
-
-                  {/* Reset Demo */}
-                  <button
-                    onClick={() => {
-                      setVideoProgress(0);
-                      setVideoStep(0);
-                      setHitlDecision('PENDING');
-                    }}
-                    className="p-1.5 rounded-md hover:bg-[#ece8df] text-[#5c5850] transition-colors cursor-pointer"
-                    title="Restart Demo Loop"
-                  >
-                    <RotateCcw className="w-3.5 h-3.5" />
-                  </button>
-
-                  {/* Video Time Counter */}
-                  <span className="text-[11px] font-mono text-[#878278]">
-                    0:{videoProgress < 10 ? `0${videoProgress}` : videoProgress} / 0:42
-                  </span>
-                </div>
-              </div>
-
-              {/* Scrub timeline indicator */}
-              <div className="relative w-full h-1 bg-[#ece8df] rounded-full overflow-hidden mb-6 z-10">
-                <div
-                  className="h-full bg-[#c15f3c] transition-all duration-300 rounded-full"
-                  style={{ width: `${(videoProgress / 42) * 100}%` }}
-                />
-              </div>
 
               {/* CENTER STAGE: THE 6 ACTION TILES (MATCHING SCREENSHOT) */}
               <div className="relative z-10 space-y-4 my-auto">

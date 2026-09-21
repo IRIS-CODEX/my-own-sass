@@ -17,9 +17,11 @@ import { VirtualKeyVault } from './components/keys/VirtualKeyVault';
 import { ComplianceHub } from './components/compliance/ComplianceHub';
 import { CostAnalytics } from './components/analytics/CostAnalytics';
 import { SettingsHub } from './components/settings/SettingsHub';
+import { GmailManagerHub } from './components/gmail/GmailManagerHub';
 import { AdminPortal } from './components/admin/AdminPortal';
 import { PortfolioPage } from './components/landing/PortfolioPage';
 import { LoginPage } from './components/auth/LoginPage';
+import { WorkflowCanvasHub } from './components/workflow/WorkflowCanvasHub';
 import { onFirebaseAuthStateChanged } from './lib/firebaseAuth';
 import { CheckCircle2, AlertTriangle, Info, X, Menu } from 'lucide-react';
 
@@ -167,12 +169,16 @@ export default function App() {
     switch (activeNav) {
       case 'chat':
         return <AgentChat />;
+      case 'workflow':
+        return <WorkflowCanvasHub />;
       case 'overview':
         return <FleetOverview />;
       case 'studio':
         return <AgentStudio />;
       case 'agents':
         return <AgentRegistry />;
+      case 'gmail':
+        return <GmailManagerHub />;
       case 'live-stream':
         return <ControlTower />;
       case 'policies':
@@ -395,7 +401,13 @@ export default function App() {
         )}
 
         {/* Scrollable Viewport */}
-        <main className="flex-1 overflow-y-auto px-4 sm:px-8 py-6 max-w-7xl w-full mx-auto">
+        <main
+          className={
+            activeNav === 'workflow'
+              ? 'flex-1 overflow-hidden w-full h-full flex flex-col min-h-0'
+              : 'flex-1 overflow-y-auto px-4 sm:px-8 py-6 max-w-7xl w-full mx-auto'
+          }
+        >
           {renderCurrentView()}
         </main>
       </div>

@@ -4,6 +4,8 @@ export interface UserSubscriptionPayload {
   displayName?: string;
   organizationName?: string;
   role?: string;
+  phone?: string;
+  jobTitle?: string;
   authProvider?: string;
   planTier?: string;
   monthlyPriceUsd?: number;
@@ -15,4 +17,16 @@ export interface UserSubscriptionPayload {
   requestsUsed?: number;
   activeAgentsCount?: number;
   virtualKeysCount?: number;
+  signupDetails?: {
+    phone?: string;
+    jobTitle?: string;
+    department?: string;
+    teamSize?: string;
+    useCase?: string;
+    referralSource?: string;
+    notes?: string;
+    registeredAt?: string;
+    ipAddress?: string;
+  };
 }
+

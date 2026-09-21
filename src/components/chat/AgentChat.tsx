@@ -28,6 +28,7 @@ import { useAppStore } from '../../stores/useAppStore';
 import { usePoliciesStore } from '../../stores/usePoliciesStore';
 import { useLiveStreamStore } from '../../stores/useLiveStreamStore';
 import { Agent, AgentArchetype, AutonomyMode } from '../../types';
+import { AgentMemoryBank } from './AgentMemoryBank';
 
 export const AgentChat: React.FC = () => {
   const { agents, setAutonomyMode, toggleKillSwitch, provisionDefaultFleet } = useAgentsStore();
@@ -49,6 +50,7 @@ export const AgentChat: React.FC = () => {
   const [agentSearch, setAgentSearch] = useState('');
   const [showSystemPrompt, setShowSystemPrompt] = useState(false);
   const [showRulesDrawer, setShowRulesDrawer] = useState(false);
+  const [showMemoryBank, setShowMemoryBank] = useState(false);
   const [collapsedThoughts, setCollapsedThoughts] = useState<Record<string, boolean>>({});
 
   const messagesEndRef = useRef<HTMLDivElement>(null);
@@ -337,11 +339,33 @@ export const AgentChat: React.FC = () => {
                 {isCurrentAgentPaused ? <Play className="w-3.5 h-3.5" /> : <OctagonAlert className="w-3.5 h-3.5" />}
               </button>
 
+              {/* Memory Bank Toggle */}
+              <button
+                onClick={() => {
+                  setShowMemoryBank(!showMemoryBank);
+                  if (showSystemPrompt) setShowSystemPrompt(false);
+                  if (showRulesDrawer) setShowRulesDrawer(false);
+                }}
+                className={`p-1.5 px-2.5 rounded-xl border text-xs font-bold transition-all flex items-center gap-1.5 cursor-pointer shadow-xs ${
+                  showMemoryBank
+                    ? 'bg-[#d97706] dark:bg-[#f59e0b] text-white dark:text-[#181715] border-[#d97706] dark:border-[#f59e0b]'
+                    : 'border-[#e5e0d5] dark:border-[#33302b] text-[#1f1e1b] dark:text-[#f5f3ef] bg-white dark:bg-[#211f1c] hover:bg-[#f4f1ea] dark:hover:bg-[#282622]'
+                }`}
+                title="Google Cloud SQL Long-Term Memory Bank"
+              >
+                <Brain className="w-3.5 h-3.5 text-[#d97706] dark:text-[#f59e0b]" />
+                <span className="hidden sm:inline">Memory</span>
+                <span className="text-[10px] font-mono px-1 py-0.2 rounded-full bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 font-bold border border-emerald-500/20">
+                  SQL
+                </span>
+              </button>
+
               {/* Inspect Rules & Prompt */}
               <button
                 onClick={() => {
                   setShowRulesDrawer(!showRulesDrawer);
                   if (showSystemPrompt) setShowSystemPrompt(false);
+                  if (showMemoryBank) setShowMemoryBank(false);
                 }}
                 className={`p-1.5 px-2.5 rounded-xl border text-xs font-bold transition-all flex items-center gap-1.5 cursor-pointer shadow-xs ${
                   showRulesDrawer
@@ -762,6 +786,11 @@ export const AgentChat: React.FC = () => {
         </>
         )}
       </div>
+
+      {/* Memory Bank Panel (Google Cloud SQL) */}
+      {showMemoryBank && currentAgent && (
+        <AgentMemoryBank agent={currentAgent} onClose={() => setShowMemoryBank(false)} />
+      )}
     </div>
   );
 };

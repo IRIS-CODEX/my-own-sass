@@ -1,6 +1,26 @@
 import React, { useState } from 'react';
-import { Database, CheckCircle2, ShieldCheck, RefreshCw, Plus, CreditCard, Sparkles, Layers, ArrowUpRight, Cpu } from 'lucide-react';
+import {
+  Database,
+  CheckCircle2,
+  ShieldCheck,
+  RefreshCw,
+  Plus,
+  CreditCard,
+  Sparkles,
+  Layers,
+  ArrowUpRight,
+  Cpu,
+  Search,
+  Eye,
+  Trash2,
+  Mail,
+  Building2,
+  Check,
+  AlertTriangle,
+} from 'lucide-react';
 import { useAppStore } from '../../stores/useAppStore';
+import { UserDetailModal } from './UserDetailModal';
+import { AdminCreateUserModal } from './AdminCreateUserModal';
 
 export interface CloudSqlUserRecord {
   number: number;
@@ -11,6 +31,8 @@ export interface CloudSqlUserRecord {
   organizationName: string;
   role: string;
   authProvider: string;
+  phone?: string;
+  jobTitle?: string;
   createdAt: string;
   lastLoginAt: string;
   subscription: {
@@ -52,14 +74,60 @@ export const CloudSqlUsersTable: React.FC<CloudSqlUsersTableProps> = ({
 }) => {
   const { addToast } = useAppStore();
   const [selectedPlanFilter, setSelectedPlanFilter] = useState<string>('ALL');
+  const [searchQuery, setSearchQuery] = useState<string>('');
+  const [selectedUserForDetail, setSelectedUserForDetail] = useState<CloudSqlUserRecord | null>(null);
+  const [isDetailModalOpen, setIsDetailModalOpen] = useState(false);
+  const [isCreateModalOpen, setIsCreateModalOpen] = useState(false);
 
   const filteredUsers = users.filter((u) => {
-    if (selectedPlanFilter === 'ALL') return true;
-    return u.subscription.planTier === selectedPlanFilter;
+    const matchesPlan = selectedPlanFilter === 'ALL' || u.subscription.planTier === selectedPlanFilter;
+    if (!matchesPlan) return false;
+    if (!searchQuery.trim()) return true;
+    const q = searchQuery.toLowerCase();
+    return (
+      u.email.toLowerCase().includes(q) ||
+      u.displayName?.toLowerCase().includes(q) ||
+      u.organizationName?.toLowerCase().includes(q) ||
+      u.subscription.planTier.toLowerCase().includes(q)
+    );
   });
 
   const totalMonthlyMrr = users.reduce((acc, u) => acc + (u.subscription.monthlyPriceUsd || 0), 0);
   const googleUsersCount = users.filter((u) => u.email?.toLowerCase().endsWith('@gmail.com') || u.authProvider === 'google').length;
+
+  const handleToggleStatus = async (user: CloudSqlUserRecord) => {
+    const nextStatus = user.subscription.status === 'ACTIVE' ? 'SUSPENDED' : 'ACTIVE';
+    try {
+      await fetch(`/api/cloudsql/users/${user.id}`, {
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ status: nextStatus }),
+      });
+      addToast({
+        title: 'Status Updated',
+        description: `Set status for ${user.displayName || user.email} to ${nextStatus}.`,
+        type: 'success',
+      });
+      onRefresh();
+    } catch (e) {
+      addToast({ title: 'Update Failed', description: 'Could not update status.', type: 'error' });
+    }
+  };
+
+  const handleDeleteUser = async (user: CloudSqlUserRecord) => {
+    if (!confirm(`Are you sure you want to remove user "${user.displayName || user.email}" from Cloud SQL?`)) return;
+    try {
+      await fetch(`/api/cloudsql/users/${user.id}`, { method: 'DELETE' });
+      addToast({
+        title: 'User Removed',
+        description: `User ${user.displayName || user.email} deleted from database.`,
+        type: 'info',
+      });
+      onRefresh();
+    } catch (e) {
+      addToast({ title: 'Delete Failed', description: 'Could not delete user.', type: 'error' });
+    }
+  };
 
   return (
     <div className="space-y-4">
@@ -72,11 +140,11 @@ export const CloudSqlUsersTable: React.FC<CloudSqlUsersTableProps> = ({
           <div>
             <div className="flex items-center gap-2">
               <h3 className="text-sm font-bold text-[#1f1e1b] dark:text-[#f5f3ef]">
-                Google Cloud SQL (PostgreSQL) Connected
+                Google Cloud SQL (PostgreSQL) Live User Roster
               </h3>
               <span className="px-2 py-0.5 rounded-full text-[10px] font-mono font-bold bg-emerald-500/15 text-emerald-800 dark:text-emerald-400 border border-emerald-500/30 flex items-center gap-1">
                 <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse"></span>
-                <span>Active Pool</span>
+                <span>Enforced Sign-Up Gate</span>
               </span>
               <span className="px-2 py-0.5 rounded-full text-[10px] font-mono bg-blue-500/15 text-blue-800 dark:text-blue-300 border border-blue-500/30">
                 europe-west1
@@ -98,7 +166,7 @@ export const CloudSqlUsersTable: React.FC<CloudSqlUsersTableProps> = ({
             <span>{isLoading ? 'Querying SQL...' : 'Refresh SQL'}</span>
           </button>
           <button
-            onClick={onOpenAddModal}
+            onClick={() => setIsCreateModalOpen(true)}
             className="px-3.5 py-1.5 rounded-xl bg-blue-600 hover:bg-blue-500 text-white font-bold text-xs flex items-center gap-1.5 transition-all shadow-xs cursor-pointer"
           >
             <Plus className="w-3.5 h-3.5" />
@@ -110,8 +178,8 @@ export const CloudSqlUsersTable: React.FC<CloudSqlUsersTableProps> = ({
       {/* Metrics Row */}
       <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
         <div className="p-3.5 rounded-xl bg-white dark:bg-[#211f1c] border border-[#e5e0d5] dark:border-[#33302b] shadow-xs">
-          <div className="text-[11px] font-medium text-[#5c5850] dark:text-[#b8b4aa]">Total Registered in SQL</div>
-          <div className="text-xl font-bold font-mono text-[#1f1e1b] dark:text-[#f5f3ef] mt-0.5">{users.length} Users</div>
+          <div className="text-[11px] font-medium text-[#5c5850] dark:text-[#b8b4aa]">Total Registered Users</div>
+          <div className="text-xl font-bold font-mono text-[#1f1e1b] dark:text-[#f5f3ef] mt-0.5">{users.length} Registered</div>
           <div className="text-[10px] text-blue-600 dark:text-blue-400 font-mono mt-0.5">{googleUsersCount} Google Auth accounts</div>
         </div>
         <div className="p-3.5 rounded-xl bg-white dark:bg-[#211f1c] border border-[#e5e0d5] dark:border-[#33302b] shadow-xs">
@@ -124,43 +192,57 @@ export const CloudSqlUsersTable: React.FC<CloudSqlUsersTableProps> = ({
           <div className="text-xl font-bold font-mono text-[#1f1e1b] dark:text-[#f5f3ef] mt-0.5">
             {users.filter(u => u.subscription.status === 'ACTIVE').length} / {users.length}
           </div>
-          <div className="text-[10px] text-emerald-600 dark:text-emerald-400 font-mono mt-0.5">100% good standing</div>
+          <div className="text-[10px] text-emerald-600 dark:text-emerald-400 font-mono mt-0.5">Only registered users allowed to login</div>
         </div>
         <div className="p-3.5 rounded-xl bg-white dark:bg-[#211f1c] border border-[#e5e0d5] dark:border-[#33302b] shadow-xs">
-          <div className="text-[11px] font-medium text-[#5c5850] dark:text-[#b8b4aa]">ORM &amp; Engine</div>
-          <div className="text-sm font-bold font-mono text-indigo-600 dark:text-indigo-400 mt-1">Drizzle + pgPool</div>
-          <div className="text-[10px] text-[#878278] dark:text-[#7d7970] font-mono mt-0.5">Unix Socket Proxy</div>
+          <div className="text-[11px] font-medium text-[#5c5850] dark:text-[#b8b4aa]">Cloud Engine</div>
+          <div className="text-sm font-bold font-mono text-indigo-600 dark:text-indigo-400 mt-1">Drizzle + PostgreSQL</div>
+          <div className="text-[10px] text-[#878278] dark:text-[#7d7970] font-mono mt-0.5">High Performance Indexing</div>
         </div>
       </div>
 
       {/* Main Table Card */}
       <div className="p-6 rounded-2xl bg-white dark:bg-[#211f1c] border border-[#e5e0d5] dark:border-[#33302b] shadow-xs space-y-4">
-        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+        <div className="flex flex-col md:flex-row md:items-center justify-between gap-3">
           <div>
             <h2 className="text-sm font-bold text-[#1f1e1b] dark:text-[#f5f3ef] flex items-center gap-2">
               <Database className="w-4 h-4 text-blue-500" />
-              <span>Registered Users &amp; Chosen Subscriptions ({filteredUsers.length})</span>
+              <span>Signed-In &amp; Registered Users ({filteredUsers.length})</span>
             </h2>
             <p className="text-xs text-[#5c5850] dark:text-[#b8b4aa] mt-0.5">
-              Live records persisted in Cloud SQL PostgreSQL database with chosen package tiers and usage quotas
+              Displays users who completed sign-up with Gmail, registration detail form, and package tier
             </p>
           </div>
 
-          {/* Filter Pills */}
-          <div className="flex items-center gap-1.5 flex-wrap">
-            {['ALL', 'ENTERPRISE', 'PRO_MONTHLY', 'STARTER', 'FREE'].map((plan) => (
-              <button
-                key={plan}
-                onClick={() => setSelectedPlanFilter(plan)}
-                className={`px-2.5 py-1 rounded-lg text-[10px] font-bold font-mono transition-all cursor-pointer ${
-                  selectedPlanFilter === plan
-                    ? 'bg-[#d97706] dark:bg-[#f59e0b] text-white dark:text-[#181715] shadow-xs'
-                    : 'bg-[#faf8f5] dark:bg-[#181715] hover:bg-[#f4f1ea] text-[#5c5850] dark:text-[#b8b4aa] border border-[#e5e0d5] dark:border-[#33302b]'
-                }`}
-              >
-                {plan === 'ALL' ? 'All Packages' : plan}
-              </button>
-            ))}
+          <div className="flex flex-wrap items-center gap-2">
+            {/* Search Input */}
+            <div className="relative">
+              <Search className="w-3.5 h-3.5 text-[#878278] absolute left-3 top-1/2 -translate-y-1/2" />
+              <input
+                type="text"
+                value={searchQuery}
+                onChange={(e) => setSearchQuery(e.target.value)}
+                placeholder="Search user, Gmail, org..."
+                className="pl-8 pr-3 py-1 rounded-xl text-xs border border-[#e5e0d5] dark:border-[#33302b] bg-[#faf8f5] dark:bg-[#181715] text-[#1f1e1b] dark:text-[#f5f3ef] focus:outline-hidden focus:border-blue-500 w-48 sm:w-56"
+              />
+            </div>
+
+            {/* Filter Pills */}
+            <div className="flex items-center gap-1 flex-wrap">
+              {['ALL', 'ENTERPRISE', 'PRO_MONTHLY', 'STARTER', 'FREE'].map((plan) => (
+                <button
+                  key={plan}
+                  onClick={() => setSelectedPlanFilter(plan)}
+                  className={`px-2.5 py-1 rounded-lg text-[10px] font-bold font-mono transition-all cursor-pointer ${
+                    selectedPlanFilter === plan
+                      ? 'bg-blue-600 text-white shadow-xs'
+                      : 'bg-[#faf8f5] dark:bg-[#181715] hover:bg-[#f4f1ea] text-[#5c5850] dark:text-[#b8b4aa] border border-[#e5e0d5] dark:border-[#33302b]'
+                  }`}
+                >
+                  {plan === 'ALL' ? 'All' : plan}
+                </button>
+              ))}
+            </div>
           </div>
         </div>
 
@@ -169,12 +251,12 @@ export const CloudSqlUsersTable: React.FC<CloudSqlUsersTableProps> = ({
             <thead className="bg-[#faf8f5] dark:bg-[#181715] font-mono text-[11px] text-[#5c5850] dark:text-[#b8b4aa] uppercase border-b border-[#e5e0d5] dark:border-[#33302b]">
               <tr>
                 <th className="p-3 w-12 text-center">#</th>
-                <th className="p-3">User &amp; Gmail</th>
-                <th className="p-3">Chosen Subscription</th>
-                <th className="p-3">Monthly Billing</th>
-                <th className="p-3">Quota &amp; Fleet</th>
-                <th className="p-3">Role</th>
-                <th className="p-3">Payment &amp; Status</th>
+                <th className="p-3">User &amp; Gmail SSO</th>
+                <th className="p-3">Detail Form (Org &amp; Role)</th>
+                <th className="p-3">Package &amp; Plan</th>
+                <th className="p-3">Billing</th>
+                <th className="p-3">Quota Usage</th>
+                <th className="p-3">Status</th>
                 <th className="p-3 text-right">Actions</th>
               </tr>
             </thead>
@@ -194,7 +276,7 @@ export const CloudSqlUsersTable: React.FC<CloudSqlUsersTableProps> = ({
                       </span>
                     </td>
 
-                    {/* User & Gmail */}
+                    {/* User & Gmail SSO */}
                     <td className="p-3">
                       <div className="flex items-center gap-2.5">
                         <div className="w-8 h-8 rounded-full bg-blue-500/15 text-blue-700 dark:text-blue-400 flex items-center justify-center font-bold text-xs uppercase flex-shrink-0 border border-blue-500/30">
@@ -210,23 +292,34 @@ export const CloudSqlUsersTable: React.FC<CloudSqlUsersTableProps> = ({
                             )}
                             {isGoogle && (
                               <span className="px-1.5 py-0.2 rounded text-[9px] font-bold bg-blue-500/15 text-blue-700 dark:text-blue-400 border border-blue-500/30 font-mono">
-                                Google Auth
+                                Google SSO
                               </span>
                             )}
                           </div>
                           <div className="text-[11px] text-[#5c5850] dark:text-[#b8b4aa] font-mono flex items-center gap-1">
+                            <Mail className="w-3 h-3 text-blue-500" />
                             <span className={isGoogle ? 'font-semibold text-blue-700 dark:text-blue-300' : ''}>
                               {u.email}
                             </span>
-                          </div>
-                          <div className="text-[10px] text-[#878278] dark:text-[#7d7970] font-medium">
-                            {u.organizationName}
                           </div>
                         </div>
                       </div>
                     </td>
 
-                    {/* Chosen Subscription Package */}
+                    {/* Detail Form Info */}
+                    <td className="p-3">
+                      <div className="space-y-0.5">
+                        <div className="font-bold text-[#1f1e1b] dark:text-[#f5f3ef] flex items-center gap-1">
+                          <Building2 className="w-3 h-3 text-amber-500" />
+                          <span>{u.organizationName}</span>
+                        </div>
+                        <div className="text-[10px] text-[#878278] dark:text-[#7d7970] font-mono">
+                          Role: <span className="font-semibold text-[#1f1e1b] dark:text-[#f5f3ef] uppercase">{u.role}</span>
+                        </div>
+                      </div>
+                    </td>
+
+                    {/* Package & Plan */}
                     <td className="p-3">
                       <div className="space-y-0.5">
                         <span className={`px-2 py-0.5 rounded font-mono text-[11px] font-bold inline-block border ${
@@ -238,15 +331,15 @@ export const CloudSqlUsersTable: React.FC<CloudSqlUsersTableProps> = ({
                         }`}>
                           {sub.planTier}
                         </span>
-                        <div className="text-[10px] font-mono text-[#5c5850] dark:text-[#b8b4aa] font-semibold">
+                        <div className="text-[10px] font-mono text-[#5c5850] dark:text-[#b8b4aa]">
                           Interval: {sub.billingInterval || 'monthly'}
                         </div>
                       </div>
                     </td>
 
-                    {/* Monthly Billing */}
+                    {/* Billing */}
                     <td className="p-3 font-mono">
-                      <div className="text-xs font-bold text-[#1f1e1b] dark:text-[#f5f3ef]">
+                      <div className="text-xs font-bold text-emerald-600 dark:text-emerald-400">
                         ${sub.monthlyPriceUsd}/mo
                       </div>
                       <div className="text-[10px] text-[#878278] dark:text-[#7d7970]">
@@ -254,12 +347,12 @@ export const CloudSqlUsersTable: React.FC<CloudSqlUsersTableProps> = ({
                       </div>
                     </td>
 
-                    {/* Quota & Fleet Allocation */}
+                    {/* Quota Usage */}
                     <td className="p-3">
-                      <div className="w-36 space-y-1">
+                      <div className="w-32 space-y-1">
                         <div className="flex items-center justify-between text-[10px] font-mono text-[#5c5850] dark:text-[#b8b4aa]">
                           <span>{quota.requestsUsed.toLocaleString()}</span>
-                          <span>{quota.requestLimit.toLocaleString()} reqs</span>
+                          <span>{quota.requestLimit.toLocaleString()}</span>
                         </div>
                         <div className="w-full h-1.5 rounded-full bg-neutral-200 dark:bg-neutral-800 overflow-hidden">
                           <div
@@ -269,43 +362,54 @@ export const CloudSqlUsersTable: React.FC<CloudSqlUsersTableProps> = ({
                             style={{ width: `${percent}%` }}
                           />
                         </div>
-                        <div className="text-[10px] font-mono text-[#878278] dark:text-[#7d7970] flex items-center gap-2">
-                          <span>{quota.activeAgentsCount} Agents</span>
-                          <span>•</span>
-                          <span>{quota.virtualKeysCount} Keys</span>
+                        <div className="text-[9px] font-mono text-[#878278] dark:text-[#7d7970]">
+                          {quota.activeAgentsCount} Agents • {quota.virtualKeysCount} Keys
                         </div>
                       </div>
                     </td>
 
-                    {/* Role */}
+                    {/* Status */}
                     <td className="p-3">
-                      <span className="px-2 py-0.5 rounded text-[10px] font-bold uppercase bg-blue-500/10 text-blue-700 dark:text-blue-400 border border-blue-500/20 flex items-center gap-1 w-fit">
-                        <ShieldCheck className="w-3 h-3 text-blue-500" />
-                        {u.role}
-                      </span>
-                    </td>
-
-                    {/* Payment & Status */}
-                    <td className="p-3">
-                      <div className="space-y-0.5">
-                        <span className="px-1.5 py-0.5 rounded text-[10px] font-bold font-mono uppercase bg-emerald-500/15 text-emerald-700 dark:text-emerald-400 border border-emerald-500/30 inline-block">
-                          {sub.status}
-                        </span>
-                        <div className="text-[10px] font-mono text-[#878278] dark:text-[#7d7970] flex items-center gap-1">
-                          <CreditCard className="w-3 h-3 text-neutral-400" />
-                          <span>{sub.paymentMethod || 'MC'} •••• {sub.cardLast4 || '8812'}</span>
-                        </div>
-                      </div>
+                      <button
+                        onClick={() => handleToggleStatus(u)}
+                        title="Click to toggle status"
+                        className={`px-2 py-0.5 rounded text-[10px] font-bold font-mono uppercase border transition-all cursor-pointer ${
+                          sub.status === 'ACTIVE'
+                            ? 'bg-emerald-500/15 text-emerald-700 dark:text-emerald-400 border-emerald-500/30 hover:bg-emerald-500/25'
+                            : 'bg-rose-500/15 text-rose-700 dark:text-rose-400 border-rose-500/30 hover:bg-rose-500/25'
+                        }`}
+                      >
+                        {sub.status || 'ACTIVE'}
+                      </button>
                     </td>
 
                     {/* Actions */}
                     <td className="p-3 text-right">
-                      <button
-                        onClick={() => onSelectUserForPlanChange(u)}
-                        className="px-2.5 py-1 rounded-lg bg-[#faf8f5] hover:bg-[#f4f1ea] dark:bg-[#181715] dark:hover:bg-[#282622] text-[#1f1e1b] dark:text-[#f5f3ef] font-bold text-[11px] transition-all cursor-pointer border border-[#e5e0d5] dark:border-[#33302b] shadow-xs"
-                      >
-                        Modify Plan
-                      </button>
+                      <div className="flex items-center justify-end gap-1.5">
+                        <button
+                          onClick={() => {
+                            setSelectedUserForDetail(u);
+                            setIsDetailModalOpen(true);
+                          }}
+                          className="p-1.5 rounded-lg bg-[#faf8f5] hover:bg-[#f4f1ea] dark:bg-[#181715] dark:hover:bg-[#282622] text-blue-600 dark:text-blue-400 transition-all cursor-pointer border border-[#e5e0d5] dark:border-[#33302b]"
+                          title="View Registration Form Details"
+                        >
+                          <Eye className="w-3.5 h-3.5" />
+                        </button>
+                        <button
+                          onClick={() => onSelectUserForPlanChange(u)}
+                          className="px-2.5 py-1 rounded-lg bg-[#faf8f5] hover:bg-[#f4f1ea] dark:bg-[#181715] dark:hover:bg-[#282622] text-[#1f1e1b] dark:text-[#f5f3ef] font-bold text-[11px] transition-all cursor-pointer border border-[#e5e0d5] dark:border-[#33302b]"
+                        >
+                          Modify Plan
+                        </button>
+                        <button
+                          onClick={() => handleDeleteUser(u)}
+                          className="p-1.5 rounded-lg bg-[#faf8f5] hover:bg-rose-500/10 dark:bg-[#181715] text-rose-500 transition-all cursor-pointer border border-[#e5e0d5] dark:border-[#33302b]"
+                          title="Revoke / Delete User"
+                        >
+                          <Trash2 className="w-3.5 h-3.5" />
+                        </button>
+                      </div>
                     </td>
                   </tr>
                 );
@@ -314,6 +418,28 @@ export const CloudSqlUsersTable: React.FC<CloudSqlUsersTableProps> = ({
           </table>
         </div>
       </div>
+
+      {/* User Registration Details Modal */}
+      <UserDetailModal
+        user={selectedUserForDetail}
+        isOpen={isDetailModalOpen}
+        onClose={() => {
+          setIsDetailModalOpen(false);
+          setSelectedUserForDetail(null);
+        }}
+        onSelectPlanChange={(user) => {
+          setIsDetailModalOpen(false);
+          onSelectUserForPlanChange(user);
+        }}
+      />
+
+      {/* Admin Register User Modal */}
+      <AdminCreateUserModal
+        isOpen={isCreateModalOpen}
+        onClose={() => setIsCreateModalOpen(false)}
+        onUserCreated={onRefresh}
+      />
     </div>
   );
 };
+

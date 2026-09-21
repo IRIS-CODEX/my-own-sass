@@ -1,7 +1,7 @@
 import { db } from '../db/index.ts';
 import { users, subscriptions, usageQuotas } from '../db/schema.ts';
 import { UserSubscriptionPayload } from '../db/types.ts';
-import { eq, desc } from 'drizzle-orm';
+import { eq, desc, sql } from 'drizzle-orm';
 
 const PLAN_PRICE_MAP: Record<string, number> = {
   FREE: 0,
@@ -20,6 +20,81 @@ const PLAN_LIMIT_MAP: Record<string, number> = {
 };
 
 export class UsersService {
+  /**
+   * Check if a user with a given email is already registered in the Cloud SQL database
+   * Used for enforcing the login gate (users must sign up before logging in)
+   */
+  static async checkUserRegistrationStatus(email: string) {
+    try {
+      if (!email) return { registered: false, message: 'Email is required' };
+      const normalizedEmail = email.trim().toLowerCase();
+
+      // Ensure initial users exist
+      await this.seedInitialUsersIfEmpty();
+
+      const userRecords = await db
+        .select()
+        .from(users)
+        .where(sql`LOWER(${users.email}) = ${normalizedEmail}`)
+        .limit(1);
+
+      if (userRecords.length === 0) {
+        return {
+          registered: false,
+          email: normalizedEmail,
+          message: 'Account not found in registered database. Sign-up required before login.',
+        };
+      }
+
+      const user = userRecords[0];
+      const subRecords = await db
+        .select()
+        .from(subscriptions)
+        .where(eq(subscriptions.userId, user.id))
+        .limit(1);
+
+      const quotaRecords = await db
+        .select()
+        .from(usageQuotas)
+        .where(eq(usageQuotas.userId, user.id))
+        .limit(1);
+
+      // Update last login timestamp
+      await db
+        .update(users)
+        .set({ lastLoginAt: new Date() })
+        .where(eq(users.id, user.id));
+
+      return {
+        registered: true,
+        user: {
+          id: user.id,
+          uid: user.uid,
+          email: user.email,
+          displayName: user.displayName,
+          organizationName: user.organizationName,
+          role: user.role,
+          authProvider: user.authProvider,
+          createdAt: user.createdAt,
+          lastLoginAt: new Date(),
+        },
+        subscription: subRecords[0] || {
+          planTier: 'PRO_MONTHLY',
+          status: 'ACTIVE',
+          monthlyPriceUsd: 199,
+          billingInterval: 'monthly',
+        },
+        quota: quotaRecords[0] || {
+          requestLimit: 250000,
+          requestsUsed: 0,
+        },
+      };
+    } catch (error) {
+      console.error('UsersService.checkUserRegistrationStatus error:', error);
+      throw new Error('Database check failed', { cause: error });
+    }
+  }
+
   /**
    * Retrieves all users and their attached subscription plans & quota metrics
    */
@@ -88,6 +163,59 @@ export class UsersService {
       throw new Error('Database query failed. Please try again later.', { cause: error });
     }
   }
+
+  /**
+   * Delete a user by ID
+   */
+  static async deleteUser(userId: number) {
+    try {
+      await db.delete(subscriptions).where(eq(subscriptions.userId, userId));
+      await db.delete(usageQuotas).where(eq(usageQuotas.userId, userId));
+      const deleted = await db.delete(users).where(eq(users.id, userId)).returning();
+      return deleted[0] || null;
+    } catch (error) {
+      console.error('UsersService.deleteUser failed:', error);
+      throw new Error('Failed to delete user record', { cause: error });
+    }
+  }
+
+  /**
+   * Update user details and subscription
+   */
+  static async updateUser(userId: number, payload: Partial<UserSubscriptionPayload>) {
+    try {
+      if (payload.displayName || payload.organizationName || payload.role) {
+        await db
+          .update(users)
+          .set({
+            displayName: payload.displayName,
+            organizationName: payload.organizationName,
+            role: payload.role,
+          })
+          .where(eq(users.id, userId));
+      }
+
+      if (payload.planTier || payload.status || payload.monthlyPriceUsd) {
+        const monthlyPrice = payload.monthlyPriceUsd ?? (payload.planTier ? PLAN_PRICE_MAP[payload.planTier] : undefined);
+        await db
+          .update(subscriptions)
+          .set({
+            planTier: payload.planTier,
+            status: payload.status,
+            monthlyPriceUsd: monthlyPrice,
+            billingInterval: payload.billingInterval,
+            updatedAt: new Date(),
+          })
+          .where(eq(subscriptions.userId, userId));
+      }
+
+      return { success: true };
+    } catch (error) {
+      console.error('UsersService.updateUser failed:', error);
+      throw new Error('Failed to update user', { cause: error });
+    }
+  }
+
 
   /**
    * Upsert a user, update or insert their active subscription, and configure their quota pool

@@ -17,7 +17,9 @@ import {
   VolumeX,
   ExternalLink,
   ChevronRight,
-  Server
+  Server,
+  Mail,
+  Share2,
 } from 'lucide-react';
 import { useAppStore, NavItem } from '../../stores/useAppStore';
 import { useLiveStreamStore } from '../../stores/useLiveStreamStore';
@@ -39,7 +41,9 @@ export const Sidebar: React.FC = () => {
 
   const coreNavItems: { id: NavItem; label: string; icon: React.ComponentType<{ className?: string }>; badge?: number; tag?: string }[] = [
     { id: 'chat', label: 'Chat with Agents', icon: MessageSquare, tag: 'Live' },
+    { id: 'workflow', label: 'Flow & Integrations', icon: Share2, tag: 'n8n' },
     { id: 'agents', label: 'My AI Agents', icon: Bot, badge: totalAgentsCount },
+    { id: 'gmail', label: 'Gmail AI Hub', icon: Mail, tag: 'OAuth' },
     { id: 'keys', label: 'Proxy Gateway & Keys', icon: KeyRound, tag: 'Virtual Keys' },
   ];
 

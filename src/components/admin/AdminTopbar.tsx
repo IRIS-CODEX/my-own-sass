@@ -13,8 +13,13 @@ import {
 } from 'lucide-react';
 import { useAdminStore } from '../../stores/useAdminStore';
 import { useAppStore } from '../../stores/useAppStore';
+import { CloudSqlDiagnosticIndicator } from './CloudSqlDiagnosticIndicator';
 
-export const AdminTopbar: React.FC = () => {
+interface AdminTopbarProps {
+  onOpenCloudSqlDiagnostics?: () => void;
+}
+
+export const AdminTopbar: React.FC<AdminTopbarProps> = ({ onOpenCloudSqlDiagnostics }) => {
   const {
     adminActivePage,
     searchQuery,
@@ -59,10 +64,10 @@ export const AdminTopbar: React.FC = () => {
         </h1>
       </div>
 
-      {/* Right: Search, Health, Controls */}
-      <div className="flex items-center gap-3">
+      {/* Right: Search, Cloud SQL Diagnostic, Health, Controls */}
+      <div className="flex items-center gap-2.5">
         {/* Search */}
-        <div className="relative w-48 sm:w-64 hidden md:block">
+        <div className="relative w-40 sm:w-56 hidden xl:block">
           <Search className="w-3.5 h-3.5 absolute left-3 top-1/2 -translate-y-1/2 text-[#878278] dark:text-[#7d7970]" />
           <input
             type="text"
@@ -73,10 +78,13 @@ export const AdminTopbar: React.FC = () => {
           />
         </div>
 
+        {/* Real-time Cloud SQL Diagnostic Indicator */}
+        <CloudSqlDiagnosticIndicator onOpenFullModal={onOpenCloudSqlDiagnostics} />
+
         {/* Live Cluster Health Badge */}
-        <div className="hidden lg:flex items-center gap-2 px-2.5 py-1 rounded-xl bg-emerald-500/10 border border-emerald-500/20 text-emerald-800 dark:text-emerald-300 font-mono text-[11px] font-bold">
+        <div className="hidden lg:flex items-center gap-2 px-2.5 py-1.5 rounded-xl bg-neutral-500/10 border border-[#e5e0d5] dark:border-[#33302b] text-[#5c5850] dark:text-[#b8b4aa] font-mono text-[11px] font-bold">
           <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse" />
-          <span>Cluster: 12/12 Online (14ms)</span>
+          <span>Cluster: 12/12</span>
         </div>
 
         {/* Kill Switch Toggle */}
@@ -91,7 +99,7 @@ export const AdminTopbar: React.FC = () => {
         >
           <OctagonAlert className={`w-3.5 h-3.5 ${globalKillSwitchActive ? 'text-white' : 'text-rose-500'}`} />
           <span className="hidden sm:inline">
-            {globalKillSwitchActive ? 'Kill-Switch ON' : 'Emergency Breaker'}
+            {globalKillSwitchActive ? 'Kill-Switch ON' : 'Emergency'}
           </span>
         </button>
 
@@ -124,3 +132,4 @@ export const AdminTopbar: React.FC = () => {
     </header>
   );
 };
+

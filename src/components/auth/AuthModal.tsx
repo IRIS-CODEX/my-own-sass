@@ -53,9 +53,15 @@ export const AuthModal: React.FC = () => {
     setIsGoogleSubmitting(true);
     setErrorMessage(null);
     try {
-      const ok = await loginWithGoogle();
-      if (!ok) {
-        setErrorMessage('Google Sign-in was not completed. You can use email or one-click demo access below.');
+      const res = await loginWithGoogle();
+      if (!res.success) {
+        if (res.notRegistered) {
+          setErrorMessage(`No active package found for ${res.email}. Please register an account with your selected package.`);
+        } else if (res.isPopupBlocked) {
+          setErrorMessage('Sign-in popup was blocked by browser or iframe settings. You can use Quick Demo Access below.');
+        } else {
+          setErrorMessage(res.error || 'Google Sign-in was not completed. You can use email or one-click demo access below.');
+        }
       }
     } catch (e: any) {
       setErrorMessage(e.message || 'Google authentication error.');

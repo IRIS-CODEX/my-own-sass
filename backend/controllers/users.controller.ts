@@ -3,6 +3,69 @@ import { UsersService } from '../services/users.service.ts';
 
 export class UsersController {
   /**
+   * GET /api/cloudsql/users/check?email=...
+   * POST /api/cloudsql/users/check { email }
+   * Verify if a user is registered before allowing login
+   */
+  static async checkUser(req: Request, res: Response) {
+    try {
+      const email = (req.query.email as string) || req.body?.email;
+      if (!email) {
+        return res.status(400).json({
+          success: false,
+          error: 'Email is required for registration check',
+        });
+      }
+
+      const result = await UsersService.checkUserRegistrationStatus(email);
+      res.json({
+        success: true,
+        ...result,
+      });
+    } catch (error: any) {
+      console.error('UsersController.checkUser error:', error);
+      res.status(500).json({
+        success: false,
+        error: error.message || 'Failed to verify user registration in Cloud SQL',
+      });
+    }
+  }
+
+  /**
+   * POST /api/cloudsql/users/register
+   * Full sign up registration with detail forms and package selection
+   */
+  static async registerUser(req: Request, res: Response) {
+    try {
+      const payload = req.body;
+      if (!payload || !payload.email) {
+        return res.status(400).json({
+          success: false,
+          error: 'Email is required for registration',
+        });
+      }
+
+      const uid = payload.uid || `usr-${Date.now().toString(36)}-${Math.random().toString(36).substring(2, 6)}`;
+      const result = await UsersService.upsertUserAndSubscription({
+        ...payload,
+        uid,
+      });
+
+      res.status(201).json({
+        success: true,
+        message: 'User successfully registered and package activated in Cloud SQL',
+        data: result,
+      });
+    } catch (error: any) {
+      console.error('UsersController.registerUser error:', error);
+      res.status(500).json({
+        success: false,
+        error: error.message || 'Failed to complete registration in Cloud SQL',
+      });
+    }
+  }
+
+  /**
    * GET /api/cloudsql/users
    * Returns list of all registered users and their subscriptions
    */
@@ -59,6 +122,50 @@ export class UsersController {
   }
 
   /**
+   * PUT /api/cloudsql/users/:id
+   * Update user details or subscription
+   */
+  static async updateUser(req: Request, res: Response) {
+    try {
+      const userId = parseInt(req.params.id, 10);
+      if (isNaN(userId)) {
+        return res.status(400).json({ success: false, error: 'Invalid user ID' });
+      }
+
+      const result = await UsersService.updateUser(userId, req.body);
+      res.json({ success: true, data: result });
+    } catch (error: any) {
+      console.error('UsersController.updateUser error:', error);
+      res.status(500).json({
+        success: false,
+        error: error.message || 'Failed to update user',
+      });
+    }
+  }
+
+  /**
+   * DELETE /api/cloudsql/users/:id
+   * Delete a user from database
+   */
+  static async deleteUser(req: Request, res: Response) {
+    try {
+      const userId = parseInt(req.params.id, 10);
+      if (isNaN(userId)) {
+        return res.status(400).json({ success: false, error: 'Invalid user ID' });
+      }
+
+      const deleted = await UsersService.deleteUser(userId);
+      res.json({ success: true, deleted });
+    } catch (error: any) {
+      console.error('UsersController.deleteUser error:', error);
+      res.status(500).json({
+        success: false,
+        error: error.message || 'Failed to delete user',
+      });
+    }
+  }
+
+  /**
    * POST /api/cloudsql/sync
    * Batch synchronize users from Admin Portal to Cloud SQL
    */
@@ -109,3 +216,4 @@ export class UsersController {
     }
   }
 }
+

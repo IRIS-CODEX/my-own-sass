@@ -108,6 +108,8 @@ export const Topbar: React.FC = () => {
     switch (activeNav) {
       case 'chat':
         return { title: 'AI Agent Chat & Workspace', subtitle: 'Chat with your autonomous AI agents, execute governed tools, and inspect real-time reasoning' };
+      case 'workflow':
+        return { title: 'Agent Flow & Platform Integrations', subtitle: 'n8n-style visual graph connecting AI models, Virtual Keys, Zero-Trust AST guards, and third-party APIs' };
       case 'overview':
         return { title: 'Fleet Overview & Command Center', subtitle: 'Real-time telemetry, tool invocation metrics, and active autonomous agents' };
       case 'studio':
