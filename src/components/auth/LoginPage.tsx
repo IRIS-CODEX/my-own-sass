@@ -231,21 +231,10 @@ export const LoginPage: React.FC = () => {
         </div>
 
         <div className="flex items-center gap-3 text-xs">
-          <div className="hidden sm:flex items-center gap-2 px-3 py-1 rounded-full bg-emerald-500/10 border border-emerald-500/25 text-emerald-400 font-mono text-[11px]">
+          <div className="flex items-center gap-2 px-3 py-1 rounded-full bg-emerald-500/10 border border-emerald-500/25 text-emerald-400 font-mono text-[11px]">
             <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse" />
             <span>Cloud SQL &amp; Auth: europe-west1</span>
           </div>
-
-          <button
-            onClick={() => {
-              setIsLoginPage(false);
-              setIsAdminView(true);
-            }}
-            className="px-3 py-1.5 rounded-lg border border-amber-500/30 hover:border-amber-500/60 text-amber-300 font-mono flex items-center gap-1.5 transition-all cursor-pointer bg-amber-500/10"
-          >
-            <Crown className="w-3.5 h-3.5 text-amber-400" />
-            <span>Main Admin Management</span>
-          </button>
         </div>
       </header>
 
@@ -658,17 +647,8 @@ export const LoginPage: React.FC = () => {
                 <Flame className="w-3.5 h-3.5 text-amber-500" />
                 <span>Cloud SQL Project: tranquil-tomorrow-hrtgb</span>
               </div>
-              <div className="flex items-center gap-2">
-                <button
-                  type="button"
-                  onClick={() => {
-                    setIsLoginPage(false);
-                    setIsAdminView(true);
-                  }}
-                  className="hover:text-amber-400 cursor-pointer underline font-mono"
-                >
-                  View Live SQL Users in Admin Portal →
-                </button>
+              <div className="flex items-center gap-2 font-mono text-[10px] text-emerald-400">
+                <span>Enterprise AI Agent Workspace</span>
               </div>
             </div>
           </div>

@@ -255,6 +255,18 @@ service cloud.firestore {
       allow write: if isSuperAdmin();
     }
 
+    // --- Portal Roles & Permissions (RBAC) ---
+    match /portal_roles/{roleId} {
+      allow read: if isSignedIn();
+      allow write: if isSignedIn();
+    }
+
+    // --- Portal Admin Users ---
+    match /portal_users/{userId} {
+      allow read: if isSignedIn();
+      allow write: if isSignedIn();
+    }
+
     // --- Connection test health check ---
     match /test/{docId} {
       allow read, write: if true;

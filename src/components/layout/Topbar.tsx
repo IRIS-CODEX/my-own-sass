@@ -22,6 +22,7 @@ import {
 import { useAppStore } from '../../stores/useAppStore';
 import { useKeysStore } from '../../stores/useKeysStore';
 import { useLiveStreamStore } from '../../stores/useLiveStreamStore';
+import { useRoleManagementStore } from '../../stores/useRoleManagementStore';
 
 export const Topbar: React.FC = () => {
   const {
@@ -35,7 +36,8 @@ export const Topbar: React.FC = () => {
     isAdminView,
     setIsAdminView,
     setIsLandingPage,
-    addToast
+    addToast,
+    currentUser,
   } = useAppStore();
 
   const [searchFocused, setSearchFocused] = useState(false);
@@ -73,13 +75,31 @@ export const Topbar: React.FC = () => {
   }, []);
 
   const handleOpenMainAdmin = () => {
+    // Check if the current user is an unauthorized tenant account
+    if (currentUser && currentUser.email !== 'hamudijems4@gmail.com') {
+      const portalUsers = useRoleManagementStore.getState().portalUsers;
+      const isAuthorized = portalUsers.some(
+        (u) => u.email.toLowerCase() === currentUser.email.toLowerCase() && u.status === 'ACTIVE'
+      );
+      if (!isAuthorized) {
+        addToast({
+          title: 'Access Restricted',
+          description: `Account "${currentUser.email}" is a Tenant Client account. SaaS Central is strictly reserved for the Platform Owner.`,
+          type: 'error',
+        });
+        setSearchQuery('');
+        setSearchFocused(false);
+        return;
+      }
+    }
+
     setIsAdminView(true);
     setSearchQuery('');
     setSearchFocused(false);
     addToast({
-      title: 'Root Admin Access Granted',
-      description: 'Entered Main SaaS Super-Admin Control Panel. Managing users, subscriptions, and platform revenue.',
-      type: 'success',
+      title: 'SaaS Central Gateway Initialized',
+      description: 'Entering private platform governance and root administration.',
+      type: 'info',
     });
   };
 

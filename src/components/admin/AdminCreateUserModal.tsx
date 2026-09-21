@@ -1,6 +1,9 @@
 import React, { useState } from 'react';
-import { X, User, Mail, Building2, Phone, Briefcase, CreditCard, Sparkles, AlertCircle } from 'lucide-react';
+import { X, User, Mail, Building2, Phone, Briefcase, CreditCard, Sparkles, AlertCircle, Flame } from 'lucide-react';
 import { useAppStore } from '../../stores/useAppStore';
+import { useAdminStore } from '../../stores/useAdminStore';
+import { db, doc, setDoc } from '../../lib/firebase';
+import { FirebaseUserProfile } from '../../lib/firebaseAuth';
 
 interface AdminCreateUserModalProps {
   isOpen: boolean;
@@ -20,7 +23,7 @@ export const AdminCreateUserModal: React.FC<AdminCreateUserModalProps> = ({
   const [orgName, setOrgName] = useState('');
   const [jobTitle, setJobTitle] = useState('Lead AI Engineer');
   const [planTier, setPlanTier] = useState<'FREE' | 'STARTER' | 'PRO_MONTHLY' | 'ENTERPRISE'>('PRO_MONTHLY');
-  const [role, setRole] = useState('owner');
+  const [role, setRole] = useState<'owner' | 'super-admin' | 'user' | 'admin'>('owner');
   const [useCase, setUseCase] = useState('Production Autonomous Agent Fleet');
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -38,34 +41,45 @@ export const AdminCreateUserModal: React.FC<AdminCreateUserModalProps> = ({
     setError(null);
 
     try {
-      const resp = await fetch('/api/cloudsql/users/register', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          displayName: name.trim(),
-          email: email.trim(),
-          organizationName: orgName.trim() || `${name.trim()}'s Team`,
-          phone: phone.trim(),
-          jobTitle: jobTitle.trim(),
-          planTier,
-          role,
-          authProvider: email.toLowerCase().endsWith('@gmail.com') ? 'google' : 'email',
-          signupDetails: {
-            phone: phone.trim(),
-            jobTitle: jobTitle.trim(),
-            useCase,
-            registeredAt: new Date().toISOString(),
-          },
-        }),
+      const uid = `usr_${Date.now().toString(36)}_${Math.random().toString(36).substring(2, 7)}`;
+      const organizationName = orgName.trim() || `${name.trim()}'s Team`;
+
+      const profile: FirebaseUserProfile = {
+        id: uid,
+        email: email.trim(),
+        displayName: name.trim(),
+        organizationName,
+        planTier,
+        role: role as any,
+        phone: phone.trim() || undefined,
+        jobTitle: jobTitle.trim() || undefined,
+        useCase: useCase.trim() || undefined,
+        authProvider: email.toLowerCase().endsWith('@gmail.com') ? 'google' : 'email',
+        requestsUsed: 0,
+        requestLimit: planTier === 'ENTERPRISE' ? 2000000 : planTier === 'PRO_MONTHLY' ? 250000 : planTier === 'STARTER' ? 50000 : 10000,
+        activeAgentsCount: planTier === 'ENTERPRISE' ? 30 : planTier === 'PRO_MONTHLY' ? 10 : 3,
+        virtualKeysCount: planTier === 'ENTERPRISE' ? 25 : planTier === 'PRO_MONTHLY' ? 5 : 2,
+        monthlySpendUsd: planTier === 'ENTERPRISE' ? 599 : planTier === 'PRO_MONTHLY' ? 199 : planTier === 'STARTER' ? 49 : 0,
+        paymentMethod: 'MASTERCARD',
+        createdAt: new Date().toISOString(),
+        lastLoginAt: new Date().toISOString(),
+      };
+
+      // 1. Write directly to Firestore /users collection
+      await setDoc(doc(db, 'users', uid), profile);
+
+      // 2. Record user in Admin Store & Tenants
+      useAdminStore.getState().recordUserSignInOrSignUp({
+        email: email.trim(),
+        displayName: name.trim(),
+        organizationName,
+        planTier,
+        authProvider: email.toLowerCase().endsWith('@gmail.com') ? 'google' : 'email',
+        firebaseUid: uid,
       });
 
-      const data = await resp.json();
-      if (!resp.ok || !data.success) {
-        throw new Error(data.error || 'Failed to register user in Cloud SQL');
-      }
-
       addToast({
-        title: 'User Registered in Cloud SQL',
+        title: 'User Registered in Firebase',
         description: `Successfully registered ${name} (${email}) on ${planTier} package.`,
         type: 'success',
       });
@@ -73,7 +87,7 @@ export const AdminCreateUserModal: React.FC<AdminCreateUserModalProps> = ({
       onUserCreated();
       onClose();
     } catch (err: any) {
-      setError(err.message || 'Failed to create user in database');
+      setError(err.message || 'Failed to create user in Firebase');
     } finally {
       setIsLoading(false);
     }
@@ -85,15 +99,15 @@ export const AdminCreateUserModal: React.FC<AdminCreateUserModalProps> = ({
         {/* Header */}
         <div className="p-5 border-b border-[#e5e0d5] dark:border-[#33302b] flex items-center justify-between bg-[#faf8f5] dark:bg-[#151412]">
           <div className="flex items-center gap-2.5">
-            <div className="w-9 h-9 rounded-xl bg-blue-500/15 border border-blue-500/30 flex items-center justify-center text-blue-600 dark:text-blue-400">
-              <User className="w-5 h-5" />
+            <div className="w-9 h-9 rounded-xl bg-amber-500/15 border border-amber-500/30 flex items-center justify-center text-amber-600 dark:text-amber-400">
+              <Flame className="w-5 h-5" />
             </div>
             <div>
               <h3 className="text-base font-bold text-[#1f1e1b] dark:text-[#f5f3ef]">
-                Register User &amp; Assign Package in Database
+                Register User &amp; Assign Package in Firebase
               </h3>
               <p className="text-xs text-[#5c5850] dark:text-[#b8b4aa]">
-                Stores user profile, registration detail form, and active subscription package into Cloud SQL
+                Stores user profile, authentication credentials, and active subscription package into Firebase
               </p>
             </div>
           </div>
@@ -207,13 +221,13 @@ export const AdminCreateUserModal: React.FC<AdminCreateUserModalProps> = ({
               </label>
               <select
                 value={role}
-                onChange={(e) => setRole(e.target.value)}
+                onChange={(e) => setRole(e.target.value as any)}
                 className="w-full px-3 py-2 rounded-xl border border-[#e5e0d5] dark:border-[#33302b] bg-[#faf8f5] dark:bg-[#151412] text-xs text-[#1f1e1b] dark:text-[#f5f3ef] focus:outline-hidden focus:border-blue-500"
               >
                 <option value="owner">Owner (Full Permissions)</option>
                 <option value="super-admin">Super Admin (Root Operations)</option>
-                <option value="developer">Developer</option>
-                <option value="auditor">Compliance Auditor</option>
+                <option value="admin">Administrator</option>
+                <option value="user">Standard User</option>
               </select>
             </div>
           </div>
@@ -263,7 +277,7 @@ export const AdminCreateUserModal: React.FC<AdminCreateUserModalProps> = ({
               className="px-5 py-2 rounded-xl bg-blue-600 hover:bg-blue-500 text-white font-bold text-xs transition-all shadow-xs cursor-pointer disabled:opacity-50 flex items-center gap-1.5"
             >
               <Sparkles className="w-3.5 h-3.5" />
-              <span>{isLoading ? 'Saving to Database...' : 'Register User in SQL'}</span>
+              <span>{isLoading ? 'Saving to Firebase...' : 'Register User in Firebase'}</span>
             </button>
           </div>
         </form>

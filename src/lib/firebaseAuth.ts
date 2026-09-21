@@ -11,6 +11,7 @@ import {
   getDoc,
   setDoc,
   updateDoc,
+  deleteDoc,
   collection,
   getDocs,
   onSnapshot,
@@ -18,6 +19,7 @@ import {
   OperationType,
   FirebaseUserProfile,
   onAuthStateChanged,
+  sendPasswordResetEmail,
 } from './firebase';
 import { User } from 'firebase/auth';
 
@@ -312,3 +314,55 @@ export function onFirebaseAuthStateChanged(callback: (user: FirebaseUserProfile 
     }
   });
 }
+
+/**
+ * Deletes a user profile document from Firestore.
+ */
+export async function deleteFirestoreUser(uid: string): Promise<boolean> {
+  try {
+    const userRef = doc(db, 'users', uid);
+    await deleteDoc(userRef);
+    return true;
+  } catch (err) {
+    console.warn('Failed to delete user from Firestore:', err);
+    return false;
+  }
+}
+
+/**
+ * Updates a user subscription plan tier and organization in Firestore.
+ */
+export async function updateFirestoreUserPlan(
+  uid: string,
+  planTier: string,
+  organizationName?: string
+): Promise<boolean> {
+  try {
+    const userRef = doc(db, 'users', uid);
+    const updates: Partial<FirebaseUserProfile> = { planTier };
+    if (organizationName) {
+      updates.organizationName = organizationName;
+    }
+    await updateDoc(userRef, updates);
+    return true;
+  } catch (err) {
+    console.warn('Failed to update user plan in Firestore:', err);
+    return false;
+  }
+}
+
+/**
+ * Sends a password reset email via Firebase Auth.
+ */
+export async function dispatchPasswordReset(email: string): Promise<{ success: boolean; error?: string }> {
+  try {
+    await sendPasswordResetEmail(auth, email.trim());
+    return { success: true };
+  } catch (err: any) {
+    console.warn('Firebase sendPasswordResetEmail notice:', err);
+    return { success: false, error: err?.message || 'Failed to dispatch password reset email.' };
+  }
+}
+
+export const sendPasswordReset = dispatchPasswordReset;
+

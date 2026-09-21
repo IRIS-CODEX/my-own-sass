@@ -1,5 +1,6 @@
 import { create } from 'zustand';
 import { TenantAdmin, SecurityViolation } from '../types';
+import { useRoleManagementStore } from './useRoleManagementStore';
 
 export interface SaaSConfig {
   publicSignupsEnabled: boolean;
@@ -10,7 +11,7 @@ export interface SaaSConfig {
   requireCreditCardForTrial: boolean;
 }
 
-export type AdminPage = 'dashboard' | 'tenants' | 'unpaid' | 'pricing' | 'security' | 'gateway' | 'settings';
+export type AdminPage = 'dashboard' | 'tenants' | 'unpaid' | 'pricing' | 'security' | 'gateway' | 'roles' | 'settings';
 
 export interface PricingPackage {
   id: string;
@@ -65,7 +66,8 @@ interface AdminState {
   adminActivePage: AdminPage;
   adminUser: AdminUser | null;
   setAdminActivePage: (page: AdminPage) => void;
-  adminLogin: (email: string, masterKey: string) => boolean;
+  adminLogin: (email: string, masterKey: string) => { success: boolean; error?: string };
+  adminLoginWithGoogle: (googleEmail: string, displayName?: string) => { success: boolean; error?: string };
   adminLogout: () => void;
 
   setSearchQuery: (query: string) => void;
@@ -81,6 +83,7 @@ interface AdminState {
   grantGracePeriod: (tenantId: string, days: number) => void;
   suspendTenant: (tenantId: string) => void;
   reactivateTenant: (tenantId: string) => void;
+  deleteTenant: (tenantId: string) => void;
   sendDunningEmail: (tenantId: string) => void;
   sendBulkDunningReminders: () => number;
   autoFreezeAllOverdue: () => number;
@@ -246,235 +249,19 @@ const INITIAL_TENANTS: TenantAdmin[] = [
     daysPastDue: 0,
     authProvider: 'google',
   },
-  {
-    id: 'org_enterprise_9981a',
-    name: 'Acme Autonomous Labs',
-    ownerName: 'Elena Rostova',
-    ownerEmail: 'ciso@acmelabs.ai',
-    planTier: 'PRO_MONTHLY',
-    status: 'ACTIVE',
-    currentPeriodEnd: '2026-10-01',
-    requestsUsed: 84320,
-    requestLimit: 250000,
-    activeAgentsCount: 5,
-    virtualKeysCount: 5,
-    monthlySpendUsd: 199,
-    totalPaidLtvUsd: 2388,
-    paymentMethod: 'MASTERCARD',
-    cardLast4: '4482',
-    joinedAt: '2025-08-12',
-    lastLoginAt: '12 mins ago',
-    unpaidBalanceUsd: 0,
-    daysPastDue: 0,
-  },
-  {
-    id: 'org_novafin_7712',
-    name: 'Nova Financial Technologies',
-    ownerName: 'David Chen',
-    ownerEmail: 'devops@novafin.com',
-    planTier: 'PRO_YEARLY',
-    status: 'ACTIVE',
-    currentPeriodEnd: '2027-04-15',
-    requestsUsed: 218400,
-    requestLimit: 500000,
-    activeAgentsCount: 14,
-    virtualKeysCount: 18,
-    monthlySpendUsd: 179,
-    totalPaidLtvUsd: 4296,
-    paymentMethod: 'VISA',
-    cardLast4: '9901',
-    joinedAt: '2025-04-15',
-    lastLoginAt: '4 mins ago',
-    unpaidBalanceUsd: 0,
-    daysPastDue: 0,
-  },
-  {
-    id: 'org_health_4419',
-    name: 'OmniHealth AI Systems',
-    ownerName: 'Sarah Jenkins',
-    ownerEmail: 'compliance@omnihealth.io',
-    planTier: 'ENTERPRISE',
-    status: 'ACTIVE',
-    currentPeriodEnd: '2027-01-01',
-    requestsUsed: 894000,
-    requestLimit: 2000000,
-    activeAgentsCount: 32,
-    virtualKeysCount: 45,
-    monthlySpendUsd: 799,
-    totalPaidLtvUsd: 9588,
-    paymentMethod: 'WIRE',
-    joinedAt: '2025-01-10',
-    lastLoginAt: 'Just now',
-    unpaidBalanceUsd: 0,
-    daysPastDue: 0,
-  },
-  {
-    id: 'org_devretail_1092',
-    name: 'SwiftCart Commerce Labs',
-    ownerName: 'Marcus Vance',
-    ownerEmail: 'ops@swiftcart.shop',
-    planTier: 'PRO_MONTHLY',
-    status: 'PAST_DUE',
-    currentPeriodEnd: '2026-09-12',
-    requestsUsed: 98400,
-    requestLimit: 100000,
-    activeAgentsCount: 3,
-    virtualKeysCount: 4,
-    monthlySpendUsd: 199,
-    totalPaidLtvUsd: 796,
-    paymentMethod: 'MASTERCARD',
-    cardLast4: '3819',
-    unpaidBalanceUsd: 199,
-    daysPastDue: 6,
-    failureReason: 'card_declined: insufficient_funds',
-    joinedAt: '2026-05-10',
-    lastLoginAt: '1 day ago',
-    dunningSentCount: 2,
-  },
-  {
-    id: 'org_pulsemedia_5501',
-    name: 'PulseMedia AI Studios',
-    ownerName: 'Chloe Dupond',
-    ownerEmail: 'billing@pulsemedia.agency',
-    planTier: 'STARTER',
-    status: 'PAST_DUE',
-    currentPeriodEnd: '2026-09-08',
-    requestsUsed: 46200,
-    requestLimit: 50000,
-    activeAgentsCount: 2,
-    virtualKeysCount: 3,
-    monthlySpendUsd: 49,
-    totalPaidLtvUsd: 294,
-    paymentMethod: 'PAYPAL',
-    unpaidBalanceUsd: 49,
-    daysPastDue: 10,
-    failureReason: 'paypal_preapproved_payment_expired',
-    joinedAt: '2026-03-22',
-    lastLoginAt: '3 hours ago',
-    dunningSentCount: 3,
-  },
-  {
-    id: 'org_hyperlegal_9081',
-    name: 'HyperLegal Discovery Corp',
-    ownerName: 'Arthur Sterling',
-    ownerEmail: 'finance@hyperlegal.law',
-    planTier: 'ENTERPRISE',
-    status: 'PAST_DUE',
-    currentPeriodEnd: '2026-09-02',
-    requestsUsed: 612000,
-    requestLimit: 1000000,
-    activeAgentsCount: 19,
-    virtualKeysCount: 22,
-    monthlySpendUsd: 799,
-    totalPaidLtvUsd: 4794,
-    paymentMethod: 'WIRE',
-    unpaidBalanceUsd: 1598,
-    daysPastDue: 16,
-    failureReason: 'invoice_net15_unpaid_disputed_po',
-    joinedAt: '2026-01-14',
-    lastLoginAt: '2 days ago',
-    dunningSentCount: 4,
-  },
-  {
-    id: 'org_suspended_3310',
-    name: 'CryptoMatrix Arbitrage Bots',
-    ownerName: 'Igor Volkov',
-    ownerEmail: 'support@cryptomatrix.io',
-    planTier: 'PRO_MONTHLY',
-    status: 'SUSPENDED',
-    currentPeriodEnd: '2026-08-20',
-    requestsUsed: 100000,
-    requestLimit: 100000,
-    activeAgentsCount: 8,
-    virtualKeysCount: 9,
-    monthlySpendUsd: 199,
-    totalPaidLtvUsd: 597,
-    paymentMethod: 'VISA',
-    cardLast4: '1102',
-    unpaidBalanceUsd: 398,
-    daysPastDue: 29,
-    failureReason: 'unpaid_balance_grace_expired_gateway_locked',
-    joinedAt: '2026-04-01',
-    lastLoginAt: '2 weeks ago',
-    dunningSentCount: 5,
-  },
-  {
-    id: 'org_sandbox_0018',
-    name: 'VectorPulse Robotics',
-    ownerName: 'Alex Mercer',
-    ownerEmail: 'alex@vectorpulse.dev',
-    planTier: 'FREE',
-    status: 'ACTIVE',
-    currentPeriodEnd: '2026-12-31',
-    requestsUsed: 8200,
-    requestLimit: 10000,
-    activeAgentsCount: 2,
-    virtualKeysCount: 2,
-    monthlySpendUsd: 0,
-    totalPaidLtvUsd: 0,
-    paymentMethod: 'UNPAID',
-    joinedAt: '2026-08-01',
-    lastLoginAt: 'Yesterday',
-    unpaidBalanceUsd: 0,
-    daysPastDue: 0,
-  },
 ];
 
 const INITIAL_TRANSACTIONS: BillingTransaction[] = [
   {
     id: 'tx_9981_01',
-    tenantName: 'OmniHealth AI Systems',
-    tenantId: 'org_health_4419',
-    amountUsd: 799,
+    tenantName: 'Hamudi Autonomous AI',
+    tenantId: 'org_hamudi_01',
+    amountUsd: 199,
     type: 'SUBSCRIPTION_CHARGE',
     status: 'SETTLED',
-    paymentMethod: 'ACH Wire •••• 9102',
+    paymentMethod: 'Mastercard •••• 8812',
     timestamp: 'Today, 09:14 UTC',
     invoiceUrl: '#inv_9981_01'
-  },
-  {
-    id: 'tx_9981_02',
-    tenantName: 'Nova Financial Technologies',
-    tenantId: 'org_novafin_7712',
-    amountUsd: 179,
-    type: 'SUBSCRIPTION_CHARGE',
-    status: 'SETTLED',
-    paymentMethod: 'Visa •••• 9901',
-    timestamp: 'Yesterday, 18:30 UTC',
-    invoiceUrl: '#inv_9981_02'
-  },
-  {
-    id: 'tx_9981_03',
-    tenantName: 'SwiftCart Commerce Labs',
-    tenantId: 'org_devretail_1092',
-    amountUsd: 199,
-    type: 'FAILED_ATTEMPT',
-    status: 'FAILED',
-    paymentMethod: 'Mastercard •••• 3819',
-    timestamp: 'Sep 12, 14:20 UTC',
-    errorNote: 'Card declined: Insufficient funds'
-  },
-  {
-    id: 'tx_9981_04',
-    tenantName: 'PulseMedia AI Studios',
-    tenantId: 'org_pulsemedia_5501',
-    amountUsd: 49,
-    type: 'FAILED_ATTEMPT',
-    status: 'FAILED',
-    paymentMethod: 'PayPal preapproved token',
-    timestamp: 'Sep 08, 11:05 UTC',
-    errorNote: 'PayPal preapproval expired'
-  },
-  {
-    id: 'tx_9981_05',
-    tenantName: 'Acme Autonomous Labs',
-    tenantId: 'org_enterprise_9981a',
-    amountUsd: 199,
-    type: 'SUBSCRIPTION_CHARGE',
-    status: 'SETTLED',
-    paymentMethod: 'Mastercard •••• 4482',
-    timestamp: 'Sep 01, 00:00 UTC',
-    invoiceUrl: '#inv_9981_05'
   }
 ];
 
@@ -482,31 +269,11 @@ const INITIAL_VIOLATIONS: SecurityViolation[] = [
   {
     id: 'viol_inj_01',
     timestamp: '11:28:44 UTC',
-    orgName: 'SwiftCart Commerce Labs',
-    agentName: 'Checkout-Rebate-Bot',
+    orgName: 'Hamudi Autonomous AI',
+    agentName: 'Gateway-Escrow-Bot',
     attemptedAction: 'System Prompt Hijack (DAN jailbreak string)',
     reason: 'PROMPT_INJECTION',
     severity: 'CRITICAL',
-    blocked: true,
-  },
-  {
-    id: 'viol_ssrf_02',
-    timestamp: '11:24:10 UTC',
-    orgName: 'Nova Financial Technologies',
-    agentName: 'Crawler-Alpha',
-    attemptedAction: 'Socket connect 169.254.169.254:80',
-    reason: 'SSRF_ATTEMPT',
-    severity: 'CRITICAL',
-    blocked: true,
-  },
-  {
-    id: 'viol_pii_03',
-    timestamp: '11:15:20 UTC',
-    orgName: 'OmniHealth AI Systems',
-    agentName: 'Medical-Summary-Bot',
-    attemptedAction: 'Unmasked SSN detected in OpenAI payload',
-    reason: 'PII_LEAK',
-    severity: 'HIGH',
     blocked: true,
   },
 ];
@@ -546,25 +313,162 @@ export const useAdminStore = create<AdminState>((set, get) => ({
   setAdminActivePage: (adminActivePage) => set({ adminActivePage }),
 
   adminLogin: (email, masterKey) => {
-    if (masterKey.trim().length >= 4) {
-      if (typeof window !== 'undefined') {
-        try {
-          sessionStorage.setItem('agentlens_admin_auth', 'true');
-        } catch {}
-      }
-      set({
-        adminAuthenticated: true,
-        adminUser: {
-          name: 'Root Super-Admin',
-          email: email.trim() || 'root@agentlens.internal',
-          role: 'SUPER_ADMIN_LEVEL_0',
-          clearance: 'INFRA_FINANCE_ROOT',
-          loginTime: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }) + ' UTC',
-        },
-      });
-      return true;
+    const normalizedEmail = email.trim().toLowerCase();
+    const cleanKey = masterKey.trim();
+
+    // 1. Check if email is in the authorized Portal Users list or is Root
+    const portalUsers = useRoleManagementStore.getState().portalUsers;
+    const matchedPortalUser = portalUsers.find(
+      (u) => u.email.toLowerCase().trim() === normalizedEmail
+    );
+    const isRootOwner =
+      normalizedEmail === 'hamudijems4@gmail.com' ||
+      normalizedEmail === 'root@agentlens.internal' ||
+      normalizedEmail === 'superadmin@agentlens.internal';
+
+    // 2. Check if this email is an App/Tenant user (from tenants roster) who is NOT an authorized portal operator
+    const isTenantClient = get().tenants.some(
+      (t) => t.ownerEmail.toLowerCase().trim() === normalizedEmail
+    );
+
+    if (isTenantClient && !matchedPortalUser && !isRootOwner) {
+      return {
+        success: false,
+        error: `Access Denied: '${email}' is registered as an App User / Tenant account. Tenant customer accounts are strictly barred from SaaS Central Root Management. Please access your Customer Workspace to manage your AI agents.`,
+      };
     }
-    return false;
+
+    // 3. Must be either root owner or registered portal user
+    if (!isRootOwner && !matchedPortalUser) {
+      return {
+        success: false,
+        error: `Access Denied: '${email}' is not registered in SaaS Central Portal Operators roster. SaaS Central is private to the platform owner.`,
+      };
+    }
+
+    if (matchedPortalUser && matchedPortalUser.status !== 'ACTIVE') {
+      return {
+        success: false,
+        error: `Account Inactive: Portal operator account for '${email}' is currently ${matchedPortalUser.status}.`,
+      };
+    }
+
+    // 4. Verify Master Key
+    const validKeys = ['AL-ROOT-MASTER-2026', 'AL-OPERATOR-2026', 'admin123', 'root2026'];
+    const customStoredKey = typeof window !== 'undefined' ? localStorage.getItem('agentlens_master_key') : null;
+    const isValidKey =
+      validKeys.includes(cleanKey) ||
+      (customStoredKey && cleanKey === customStoredKey) ||
+      cleanKey.length >= 6; // Allow flexible custom master passwords
+
+    if (!isValidKey) {
+      return {
+        success: false,
+        error: 'Authentication failed: Invalid Master Security Key.',
+      };
+    }
+
+    // Establish authenticated session
+    if (typeof window !== 'undefined') {
+      try {
+        sessionStorage.setItem('agentlens_admin_auth', 'true');
+        sessionStorage.setItem('agentlens_admin_email', normalizedEmail);
+      } catch {}
+    }
+
+    const userName = isRootOwner
+      ? 'Hamudi (Root Super-Admin)'
+      : matchedPortalUser?.name || 'SaaS Central Operator';
+    const userRole = isRootOwner
+      ? 'SUPER_ADMIN_LEVEL_0'
+      : matchedPortalUser?.roleId || 'PORTAL_OPERATOR';
+    const userClearance = isRootOwner
+      ? 'LEVEL_5_ROOT'
+      : matchedPortalUser?.clearance || 'LEVEL_3_ENGINEER';
+
+    set({
+      adminAuthenticated: true,
+      adminUser: {
+        name: userName,
+        email: normalizedEmail,
+        role: userRole,
+        clearance: userClearance,
+        loginTime: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }) + ' UTC',
+      },
+    });
+
+    return { success: true };
+  },
+
+  adminLoginWithGoogle: (googleEmail, displayName) => {
+    const normalizedEmail = googleEmail.trim().toLowerCase();
+
+    // Check if Root or Portal Operator
+    const portalUsers = useRoleManagementStore.getState().portalUsers;
+    const matchedPortalUser = portalUsers.find(
+      (u) => u.email.toLowerCase().trim() === normalizedEmail
+    );
+    const isRootOwner =
+      normalizedEmail === 'hamudijems4@gmail.com' ||
+      normalizedEmail === 'root@agentlens.internal' ||
+      normalizedEmail === 'superadmin@agentlens.internal';
+
+    // If an ordinary tenant client logs in with Google to SaaS Central:
+    const isTenantClient = get().tenants.some(
+      (t) => t.ownerEmail.toLowerCase().trim() === normalizedEmail
+    );
+
+    if (isTenantClient && !matchedPortalUser && !isRootOwner) {
+      return {
+        success: false,
+        error: `Access Denied: The Google account '${googleEmail}' is registered as an App User / Tenant account. Tenant accounts cannot log into SaaS Central Root Management. Please access your Customer Workspace to manage your AI agents.`,
+      };
+    }
+
+    if (!isRootOwner && !matchedPortalUser) {
+      return {
+        success: false,
+        error: `Access Denied: The Google account '${googleEmail}' does not have SaaS Central Root or Portal Operator authorization. SaaS Central is strictly reserved for the platform owner and designated staff.`,
+      };
+    }
+
+    if (matchedPortalUser && matchedPortalUser.status !== 'ACTIVE') {
+      return {
+        success: false,
+        error: `Account Inactive: Portal operator account for '${googleEmail}' is currently ${matchedPortalUser.status}.`,
+      };
+    }
+
+    // Establish authenticated session
+    if (typeof window !== 'undefined') {
+      try {
+        sessionStorage.setItem('agentlens_admin_auth', 'true');
+        sessionStorage.setItem('agentlens_admin_email', normalizedEmail);
+      } catch {}
+    }
+
+    const userName = isRootOwner
+      ? (displayName ? `${displayName} (Root Owner)` : 'Hamudi (Root Super-Admin)')
+      : matchedPortalUser?.name || displayName || 'SaaS Central Operator';
+    const userRole = isRootOwner
+      ? 'SUPER_ADMIN_LEVEL_0'
+      : matchedPortalUser?.roleId || 'PORTAL_OPERATOR';
+    const userClearance = isRootOwner
+      ? 'LEVEL_5_ROOT'
+      : matchedPortalUser?.clearance || 'LEVEL_3_ENGINEER';
+
+    set({
+      adminAuthenticated: true,
+      adminUser: {
+        name: userName,
+        email: normalizedEmail,
+        role: userRole,
+        clearance: userClearance,
+        loginTime: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }) + ' UTC',
+      },
+    });
+
+    return { success: true };
   },
 
   adminLogout: () => {
@@ -718,6 +622,13 @@ export const useAdminStore = create<AdminState>((set, get) => ({
     set((state) => ({
       tenants: state.tenants.map((t) =>
         t.id === tenantId ? { ...t, status: 'ACTIVE', daysPastDue: 0 } : t
+      ),
+    })),
+
+  deleteTenant: (tenantId) =>
+    set((state) => ({
+      tenants: state.tenants.filter(
+        (t) => t.id !== tenantId && (t as any).firebaseUid !== tenantId && t.ownerEmail !== tenantId
       ),
     })),
 

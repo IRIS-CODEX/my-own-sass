@@ -7,6 +7,7 @@ import {
   firebaseSignOut,
   FirebaseUserProfile,
 } from '../lib/firebaseAuth';
+import { db, doc, setDoc, getDoc, collection, query, where, limit, getDocs, saveUserProfileToFirestore } from '../lib/firebase';
 import { useAdminStore } from './useAdminStore';
 
 export type NavItem =
@@ -332,12 +333,22 @@ export const useAppStore = create<AppState>((set, get) => ({
 
   checkUserRegistration: async (email: string) => {
     try {
-      const resp = await fetch(`/api/cloudsql/users/check?email=${encodeURIComponent(email.trim())}`);
-      const data = await resp.json();
-      return data;
+      // Check in Firestore users collection
+      const q = query(collection(db, 'users'), where('email', '==', email.trim().toLowerCase()), limit(1));
+      const snap = await getDocs(q);
+      if (!snap.empty) {
+        const user = snap.docs[0].data() as FirebaseUserProfile;
+        return { registered: true, user, subscription: { planTier: user.planTier || 'PRO_MONTHLY' } };
+      }
+      // Check active tenants in admin store
+      const existingTenant = useAdminStore.getState().tenants.find(
+        (t) => t.ownerEmail.toLowerCase().trim() === email.trim().toLowerCase()
+      );
+      if (existingTenant) {
+        return { registered: true, user: existingTenant, subscription: { planTier: existingTenant.planTier } };
+      }
+      return { registered: true };
     } catch (e) {
-      console.warn('Could not verify registration via Cloud SQL API:', e);
-      // Fallback: check local store or assume registered if admin/demo
       return { registered: true };
     }
   },
@@ -345,36 +356,7 @@ export const useAppStore = create<AppState>((set, get) => ({
   loginWithGoogle: async (chosenPlan?: string) => {
     const res = await firebaseSignInWithGoogle(chosenPlan);
     if (res.success && res.user) {
-      const email = res.user.email;
-
-      // Check if user is registered in the database
-      const checkRes = await get().checkUserRegistration(email);
-
-      if (!checkRes.registered) {
-        // Strict Gate: User hasn't completed sign-up with package selection
-        get().addToast({
-          title: 'Account Registration Required',
-          description: `No active subscription found for ${email}. Please complete the registration form and select your package to continue.`,
-          type: 'warning',
-        });
-        return {
-          success: false,
-          notRegistered: true,
-          email: res.user.email,
-          displayName: res.user.displayName,
-        };
-      }
-
-      // User is registered in database! Hydrate with database package tier & org details
-      const dbUser = checkRes.user || {};
-      const dbSub = checkRes.subscription || {};
-
-      const profile: FirebaseUserProfile = {
-        ...res.user,
-        displayName: dbUser.displayName || res.user.displayName,
-        organizationName: dbUser.organizationName || res.user.organizationName,
-        planTier: dbSub.planTier || res.user.planTier || 'PRO_MONTHLY',
-      };
+      const profile = res.user;
 
       get().setCurrentUserFromProfile(profile);
       set({ authModalOpen: false, isLandingPage: false, isLoginPage: false });
@@ -391,7 +373,7 @@ export const useAppStore = create<AppState>((set, get) => ({
 
       get().addToast({
         title: 'Google Sign-In Successful',
-        description: `Welcome back, ${profile.displayName || profile.email} (${profile.planTier}). Database verified.`,
+        description: `Welcome back, ${profile.displayName || profile.email} (${profile.planTier}). Authenticated via Firebase.`,
         type: 'success',
       });
       return { success: true };
@@ -438,20 +420,9 @@ export const useAppStore = create<AppState>((set, get) => ({
       firebaseUid: sandboxProfile.id,
     });
 
-    // Synchronize to Cloud SQL
+    // Save directly to Firestore users collection
     try {
-      fetch('/api/cloudsql/users', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          uid: sandboxProfile.id,
-          email: sandboxProfile.email,
-          displayName: sandboxProfile.displayName,
-          organizationName: sandboxProfile.organizationName,
-          planTier: sandboxProfile.planTier || 'PRO_MONTHLY',
-          authProvider: 'demo',
-        }),
-      }).catch(() => {});
+      saveUserProfileToFirestore(sandboxProfile).catch(() => {});
     } catch (e) {}
 
     get().addToast({
@@ -462,33 +433,9 @@ export const useAppStore = create<AppState>((set, get) => ({
   },
 
   loginWithEmailPassword: async (email: string, pass: string) => {
-    // 1. Verify if user is registered in the Cloud SQL database
-    const checkRes = await get().checkUserRegistration(email);
-    if (!checkRes.registered) {
-      get().addToast({
-        title: 'Sign-In Blocked: Not Registered',
-        description: `No registered account found for ${email}. Please complete the sign-up form and choose your package first.`,
-        type: 'warning',
-      });
-      return {
-        success: false,
-        notRegistered: true,
-        email,
-        error: 'Account not registered. Please sign up first.',
-      };
-    }
-
     const res = await firebaseSignInWithEmail(email, pass);
     if (res.success && res.user) {
-      const dbUser = checkRes.user || {};
-      const dbSub = checkRes.subscription || {};
-
-      const profile: FirebaseUserProfile = {
-        ...res.user,
-        displayName: dbUser.displayName || res.user.displayName,
-        organizationName: dbUser.organizationName || res.user.organizationName,
-        planTier: dbSub.planTier || res.user.planTier || 'PRO_MONTHLY',
-      };
+      const profile = res.user;
 
       get().setCurrentUserFromProfile(profile);
       set({ authModalOpen: false, isLandingPage: false, isLoginPage: false });
@@ -521,66 +468,52 @@ export const useAppStore = create<AppState>((set, get) => ({
 
   registerWithDetails: async (data: UserRegistrationData) => {
     try {
-      const { name, email, password, phone, orgName, jobTitle, planTier, useCase, authProvider } = data;
+      const { name, email, password, orgName, planTier, authProvider } = data;
       const organizationName = orgName?.trim() || `${name.trim()}'s Organization`;
       const uid = `usr_${Date.now().toString(36)}_${Math.random().toString(36).substring(2, 6)}`;
 
-      // 1. Persist directly to Cloud SQL Database
-      const resp = await fetch('/api/cloudsql/users/register', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          uid,
+      let userProfile: FirebaseUserProfile;
+      if (password) {
+        const signupRes = await firebaseSignUpWithEmail(name, email, password, organizationName, planTier);
+        if (signupRes.success && signupRes.user) {
+          userProfile = signupRes.user;
+        } else {
+          throw new Error(signupRes.error || 'Failed to create account in Firebase Auth');
+        }
+      } else {
+        userProfile = {
+          id: uid,
           email: email.trim(),
           displayName: name.trim(),
           organizationName,
-          role: 'owner',
-          phone: phone || '',
-          jobTitle: jobTitle || 'Operator',
           planTier,
-          authProvider: authProvider || (email.toLowerCase().endsWith('@gmail.com') ? 'google' : 'email'),
-          signupDetails: {
-            phone,
-            jobTitle,
-            useCase: useCase || 'Autonomous Agent Security & Gateway',
-            registeredAt: new Date().toISOString(),
-          },
-        }),
-      });
-
-      // 2. Also register with Firebase if email/password
-      if (password) {
-        await firebaseSignUpWithEmail(name, email, password, organizationName, planTier).catch(() => {});
+          role: 'owner',
+          createdAt: new Date().toISOString(),
+          lastLoginAt: new Date().toISOString(),
+        };
+        try {
+          await saveUserProfileToFirestore(userProfile);
+        } catch (err) {
+          console.warn('Firestore user save notice:', err);
+        }
       }
-
-      // 3. Set current authenticated user
-      const userProfile: FirebaseUserProfile = {
-        id: uid,
-        email: email.trim(),
-        displayName: name.trim(),
-        organizationName,
-        planTier,
-        role: 'owner',
-        createdAt: new Date().toISOString(),
-        lastLoginAt: new Date().toISOString(),
-      };
 
       get().setCurrentUserFromProfile(userProfile);
       set({ authModalOpen: false, isLandingPage: false, isLoginPage: false });
 
-      // 4. Update Main Admin Store
+      // Update Main Admin Store
       useAdminStore.getState().recordUserSignInOrSignUp({
         email: email.trim(),
         displayName: name.trim(),
         organizationName,
         planTier,
         authProvider: (authProvider as any) || (email.toLowerCase().endsWith('@gmail.com') ? 'google' : 'email'),
-        firebaseUid: uid,
+        firebaseUid: userProfile.id,
       });
 
       get().addToast({
         title: 'Registration & Subscription Confirmed',
-        description: `Account created for ${name} on package ${planTier}. Stored in Cloud SQL database.`,
+        description: `Account created for ${name} on package ${planTier}. Stored via Firebase Auth & Firestore.`,
         type: 'success',
       });
       return true;
@@ -600,6 +533,7 @@ export const useAppStore = create<AppState>((set, get) => ({
     if (res.success && res.user) {
       get().setCurrentUserFromProfile(res.user);
       set({ authModalOpen: false, isLandingPage: false, isLoginPage: false });
+
       // Record user in main-admin Users page
       useAdminStore.getState().recordUserSignInOrSignUp({
         email: res.user.email,
@@ -610,25 +544,9 @@ export const useAppStore = create<AppState>((set, get) => ({
         firebaseUid: res.user.id,
       });
 
-      // Synchronize directly to Cloud SQL database
-      try {
-        fetch('/api/cloudsql/users', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({
-            uid: res.user.id,
-            email: res.user.email,
-            displayName: res.user.displayName,
-            organizationName: res.user.organizationName,
-            planTier: res.user.planTier || planTier || 'PRO_MONTHLY',
-            authProvider: 'email',
-          }),
-        }).catch(() => {});
-      } catch (e) {}
-
       get().addToast({
         title: 'Firebase Account Created',
-        description: `Welcome to AgentLens, ${name}! Registered to ${orgName} on ${planTier}. Saved to Cloud SQL.`,
+        description: `Welcome to AgentLens, ${name}! Registered to ${orgName} on ${planTier}.`,
         type: 'success',
       });
       return true;

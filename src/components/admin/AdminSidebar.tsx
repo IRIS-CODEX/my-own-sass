@@ -11,7 +11,8 @@ import {
   BadgeAlert,
   Zap,
   Lock,
-  Tag
+  Tag,
+  ShieldCheck,
 } from 'lucide-react';
 import { useAdminStore, AdminPage } from '../../stores/useAdminStore';
 import { useAppStore } from '../../stores/useAppStore';
@@ -42,7 +43,7 @@ export const AdminSidebar: React.FC = () => {
     },
     {
       id: 'tenants',
-      label: 'Users & Tenant Roster',
+      label: 'Tenant Customers & Users',
       icon: Users,
       badge: `${tenants.length} orgs`,
     },
@@ -68,6 +69,12 @@ export const AdminSidebar: React.FC = () => {
       id: 'gateway',
       label: 'Gateway Fleet & Cluster',
       icon: Server,
+    },
+    {
+      id: 'roles',
+      label: 'SaaS Staff & Roles (RBAC)',
+      icon: ShieldCheck,
+      badge: 'Internal',
     },
     {
       id: 'settings',

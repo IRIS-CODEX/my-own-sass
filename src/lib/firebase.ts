@@ -8,6 +8,7 @@ import {
   createUserWithEmailAndPassword,
   updateProfile,
   onAuthStateChanged,
+  sendPasswordResetEmail,
 } from 'firebase/auth';
 import {
   initializeFirestore,
@@ -17,9 +18,13 @@ import {
   getDocFromServer,
   setDoc,
   updateDoc,
+  deleteDoc,
   collection,
   getDocs,
   onSnapshot,
+  query,
+  where,
+  limit,
 } from 'firebase/firestore';
 import firebaseConfig from '../../firebase-applet-config.json';
 
@@ -120,6 +125,16 @@ export interface FirebaseUserProfile {
   role: 'user' | 'admin' | 'owner' | 'super-admin';
   createdAt?: string;
   lastLoginAt?: string;
+  phone?: string;
+  jobTitle?: string;
+  useCase?: string;
+  authProvider?: string;
+  requestsUsed?: number;
+  requestLimit?: number;
+  activeAgentsCount?: number;
+  virtualKeysCount?: number;
+  monthlySpendUsd?: number;
+  paymentMethod?: string;
 }
 
 // Helper to save or update user profile in Firestore
@@ -162,11 +177,16 @@ export {
   signInWithEmailAndPassword,
   createUserWithEmailAndPassword,
   updateProfile,
+  sendPasswordResetEmail,
   doc,
   getDoc,
   setDoc,
   updateDoc,
+  deleteDoc,
   collection,
   getDocs,
   onSnapshot,
+  query,
+  where,
+  limit,
 };

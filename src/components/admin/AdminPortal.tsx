@@ -30,9 +30,11 @@ import {
   Copy,
   ShieldCheck,
   Database,
+  Eye,
 } from 'lucide-react';
 import { useAdminStore } from '../../stores/useAdminStore';
 import { useAppStore } from '../../stores/useAppStore';
+import { useRoleManagementStore } from '../../stores/useRoleManagementStore';
 import { TenantAdmin } from '../../types';
 import { AdminLogin } from './AdminLogin';
 import { AdminSidebar } from './AdminSidebar';
@@ -40,7 +42,8 @@ import { AdminTopbar } from './AdminTopbar';
 import { AdminPricingManagement } from './AdminPricingManagement';
 import { FirebaseUsersTable } from './FirebaseUsersTable';
 import { CreateFirebaseUserModal } from './CreateFirebaseUserModal';
-import { CloudSqlUsersTable, CloudSqlUserRecord } from './CloudSqlUsersTable';
+import { UserDetailModal } from './UserDetailModal';
+import { UserAndRoleManagement } from './roles/UserAndRoleManagement';
 import { CloudSqlDiagnosticModal } from './CloudSqlDiagnosticModal';
 import { CloudSqlDiagnosticIndicator } from './CloudSqlDiagnosticIndicator';
 import {
@@ -89,12 +92,8 @@ export const AdminPortal: React.FC = () => {
   const [userFilterStatus, setUserFilterStatus] = useState<'ALL' | 'ACTIVE' | 'PAST_DUE' | 'FREE' | 'SUSPENDED'>('ALL');
 
 
-  // Cloud SQL Database Users State in Users Page Section
-  const [cloudSqlUsers, setCloudSqlUsers] = useState<CloudSqlUserRecord[]>([]);
-  const [isLoadingCloudSql, setIsLoadingCloudSql] = useState(false);
-  const [userViewTab, setUserViewTab] = useState<'cloudsql' | 'tenants' | 'firebase'>('cloudsql');
-
   // Firebase Users State in Users Page Section
+  const [userViewTab, setUserViewTab] = useState<'firebase' | 'tenants'>('firebase');
   const [firebaseUsers, setFirebaseUsers] = useState<FirebaseUserProfile[]>([]);
   const [isLoadingFirebaseUsers, setIsLoadingFirebaseUsers] = useState(false);
   const [isNewUserModalOpen, setIsNewUserModalOpen] = useState(false);
@@ -111,72 +110,8 @@ export const AdminPortal: React.FC = () => {
   const [newQuotaLimit, setNewQuotaLimit] = useState(300000);
   const [extraDays, setExtraDays] = useState(14);
   const [announcementInput, setAnnouncementInput] = useState(globalAnnouncement || '');
-
-  // Fetch Cloud SQL users
-  const fetchCloudSqlUsers = async () => {
-    setIsLoadingCloudSql(true);
-    try {
-      const res = await fetch('/api/cloudsql/users');
-      const data = await res.json();
-      if (data.success && Array.isArray(data.users)) {
-        setCloudSqlUsers(data.users);
-      }
-    } catch (e: any) {
-      console.warn('Could not query Cloud SQL users:', e);
-    } finally {
-      setIsLoadingCloudSql(false);
-    }
-  };
-
-  // Sync Tenants & registered accounts to Cloud SQL
-  const handleSyncTenantsToCloudSql = async () => {
-    setIsLoadingCloudSql(true);
-    try {
-      const payload = tenants.map((t) => ({
-        uid: t.id,
-        email: t.ownerEmail,
-        displayName: t.ownerName || t.name,
-        organizationName: t.name,
-        role: 'owner',
-        authProvider: t.authProvider || (t.ownerEmail.toLowerCase().endsWith('@gmail.com') ? 'google' : 'email'),
-        planTier: t.planTier,
-        monthlyPriceUsd: t.monthlySpendUsd || 0,
-        billingInterval: 'monthly',
-        status: t.status,
-        requestLimit: t.requestLimit,
-        requestsUsed: t.requestsUsed,
-        activeAgentsCount: t.activeAgentsCount,
-        virtualKeysCount: t.virtualKeysCount,
-      }));
-
-      const res = await fetch('/api/cloudsql/sync', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ users: payload }),
-      });
-      const data = await res.json();
-      if (data.success) {
-        setCloudSqlUsers(data.users);
-        addToast({
-          title: 'Synced to Cloud SQL',
-          description: `Successfully synchronized ${data.syncedCount} tenant records into Cloud SQL PostgreSQL.`,
-          type: 'success',
-        });
-      }
-    } catch (e: any) {
-      addToast({
-        title: 'Sync Error',
-        description: e.message || 'Could not sync to Cloud SQL',
-        type: 'error',
-      });
-    } finally {
-      setIsLoadingCloudSql(false);
-    }
-  };
-
-  useEffect(() => {
-    fetchCloudSqlUsers();
-  }, []);
+  const [selectedTenantForDetail, setSelectedTenantForDetail] = useState<FirebaseUserProfile | null>(null);
+  const [isTenantDetailModalOpen, setIsTenantDetailModalOpen] = useState(false);
 
   // Sync users from Firestore
   const handleSyncFirestoreUsers = async () => {
@@ -200,7 +135,11 @@ export const AdminPortal: React.FC = () => {
     }
   };
 
-  // Create & Register User directly with Firebase
+  useEffect(() => {
+    handleSyncFirestoreUsers();
+  }, []);
+
+  // Create & Register User directly with Firebase Auth & Firestore
   const handleCreateFirebaseUserSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!newUserName.trim() || !newUserEmail.trim() || !newUserPassword.trim() || !newUserOrg.trim()) {
@@ -224,25 +163,6 @@ export const AdminPortal: React.FC = () => {
           amountUsd: newUserPlan === 'ENTERPRISE' ? 599 : newUserPlan === 'PRO_MONTHLY' ? 199 : 49,
           paymentMethod: 'MASTERCARD',
         });
-        // Also persist user & subscription directly to Cloud SQL
-        try {
-          await fetch('/api/cloudsql/users', {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({
-              uid: res.user?.id || `usr-${Date.now()}`,
-              email: newUserEmail,
-              displayName: newUserName,
-              organizationName: newUserOrg,
-              planTier: newUserPlan,
-              role: 'owner',
-              authProvider: newUserEmail.toLowerCase().endsWith('@gmail.com') ? 'google' : 'email',
-            }),
-          });
-          fetchCloudSqlUsers();
-        } catch (e) {
-          console.warn('Cloud SQL sync notice:', e);
-        }
 
         setFirebaseUsers((prev) => [res.user!, ...prev]);
         setIsNewUserModalOpen(false);
@@ -251,29 +171,11 @@ export const AdminPortal: React.FC = () => {
         setNewUserPassword('');
         setNewUserOrg('');
         addToast({
-          title: 'User Registered in Cloud SQL & Firebase',
-          description: `User ${newUserName} (${newUserEmail}) saved into Cloud SQL database and Firebase Auth.`,
+          title: 'User Registered in Firebase',
+          description: `User ${newUserName} (${newUserEmail}) saved into Firebase Auth & Firestore.`,
           type: 'success',
         });
       } else {
-        // Fallback: register locally & Cloud SQL
-        try {
-          await fetch('/api/cloudsql/users', {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({
-              uid: `usr-${Date.now()}`,
-              email: newUserEmail,
-              displayName: newUserName,
-              organizationName: newUserOrg,
-              planTier: newUserPlan,
-              role: 'owner',
-              authProvider: newUserEmail.toLowerCase().endsWith('@gmail.com') ? 'google' : 'email',
-            }),
-          });
-          fetchCloudSqlUsers();
-        } catch (e) {}
-
         useAdminStore.getState().recordNewSubscription({
           tenantName: newUserOrg,
           email: newUserEmail,
@@ -283,8 +185,8 @@ export const AdminPortal: React.FC = () => {
         });
         setIsNewUserModalOpen(false);
         addToast({
-          title: 'User Created in Cloud SQL',
-          description: res.error || `User ${newUserName} registered into Cloud SQL PostgreSQL database.`,
+          title: 'User Account Provisioned',
+          description: res.error || `User ${newUserName} registered into Firebase Auth.`,
           type: 'success',
         });
       }
@@ -299,17 +201,55 @@ export const AdminPortal: React.FC = () => {
     }
   };
 
-  // Auto-sync Cloud SQL and Firestore users when on tenants page
+  // Auto-sync Firestore users when on tenants page
   React.useEffect(() => {
     if (adminActivePage === 'tenants') {
-      fetchCloudSqlUsers();
       handleSyncFirestoreUsers();
     }
   }, [adminActivePage]);
 
+  // Dedicated check: Customer accounts cannot access SaaS Central
+  const { currentUser } = useAppStore();
+  const portalUsers = useRoleManagementStore((s) => s.portalUsers);
+  
+  const isAuthorizedOperator = 
+    !currentUser || 
+    currentUser.email === 'hamudijems4@gmail.com' ||
+    portalUsers.some((u) => u.email.toLowerCase() === currentUser.email.toLowerCase() && u.status === 'ACTIVE');
+
   // If not authenticated, show dedicated Admin Security Login
   if (!adminAuthenticated) {
     return <AdminLogin />;
+  }
+
+  // If a tenant client user is signed in, prevent them from accessing SaaS Central
+  if (!isAuthorizedOperator) {
+    return (
+      <div className="min-h-screen w-screen flex flex-col justify-center items-center bg-[#faf8f5] dark:bg-[#181715] p-6 text-center">
+        <div className="max-w-md w-full p-8 rounded-3xl bg-white dark:bg-[#211f1c] border border-rose-500/30 shadow-xl space-y-6">
+          <div className="w-14 h-14 rounded-2xl bg-rose-500/10 text-rose-600 flex items-center justify-center mx-auto">
+            <ShieldAlert className="w-8 h-8" />
+          </div>
+          <div className="space-y-2">
+            <h1 className="text-xl font-bold text-[#1f1e1b] dark:text-[#f5f3ef]">
+              Tenant Customer Account Detected
+            </h1>
+            <p className="text-xs text-[#5c5850] dark:text-[#b8b4aa] leading-relaxed">
+              You are signed in as <span className="font-mono font-semibold text-rose-600 dark:text-rose-400">{currentUser?.email}</span>. This is a Customer Workspace account for running AI Agents.
+            </p>
+            <p className="text-xs text-[#5c5850] dark:text-[#b8b4aa] leading-relaxed">
+              SaaS Central is the private infrastructure management deck reserved exclusively for the platform owner. Tenant customer accounts are strictly barred from root administration.
+            </p>
+          </div>
+          <button
+            onClick={() => useAppStore.getState().setIsAdminView(false)}
+            className="w-full py-2.5 px-4 rounded-xl bg-[#d97706] hover:bg-[#b45309] text-white text-xs font-semibold cursor-pointer transition-all shadow-xs"
+          >
+            ← Return to Customer AI Workspace
+          </button>
+        </div>
+      </div>
+    );
   }
 
   // Financial Calculations
@@ -382,18 +322,21 @@ export const AdminPortal: React.FC = () => {
     return true;
   });
 
-  const displayFirebaseUsers: FirebaseUserProfile[] =
-    firebaseUsers.length > 0
-      ? firebaseUsers.filter((u) => {
-          const q = searchQuery.toLowerCase();
-          return (
-            u.email.toLowerCase().includes(q) ||
-            (u.displayName && u.displayName.toLowerCase().includes(q)) ||
-            (u.organizationName && u.organizationName.toLowerCase().includes(q))
-          );
-        })
-      : tenants.map((t) => ({
-          id: `fb_${t.id.replace('org_', '')}`,
+  const displayFirebaseUsers: FirebaseUserProfile[] = React.useMemo(() => {
+    const userMap = new Map<string, FirebaseUserProfile>();
+
+    // 1. Add all Firestore users
+    for (const u of firebaseUsers) {
+      if (u.email) {
+        userMap.set(u.email.toLowerCase(), u);
+      }
+    }
+
+    // 2. Fallback / merge with tenant accounts
+    for (const t of tenants) {
+      if (t.ownerEmail && !userMap.has(t.ownerEmail.toLowerCase())) {
+        userMap.set(t.ownerEmail.toLowerCase(), {
+          id: (t as any).firebaseUid || `fb_${t.id.replace('org_', '')}`,
           email: t.ownerEmail,
           displayName: t.ownerName || t.name,
           organizationName: t.name,
@@ -401,7 +344,24 @@ export const AdminPortal: React.FC = () => {
           role: 'owner',
           createdAt: t.joinedAt,
           lastLoginAt: t.lastLoginAt,
-        }));
+        });
+      }
+    }
+
+    let list = Array.from(userMap.values());
+    if (searchQuery.trim()) {
+      const q = searchQuery.toLowerCase();
+      list = list.filter((u) => {
+        return (
+          u.email.toLowerCase().includes(q) ||
+          (u.displayName && u.displayName.toLowerCase().includes(q)) ||
+          (u.organizationName && u.organizationName.toLowerCase().includes(q)) ||
+          u.id.toLowerCase().includes(q)
+        );
+      });
+    }
+    return list;
+  }, [firebaseUsers, tenants, searchQuery]);
 
   return (
     <div className="flex h-screen w-screen overflow-hidden bg-[#faf8f5] dark:bg-[#181715] text-[#1f1e1b] dark:text-[#f5f3ef] font-sans selection:bg-[#d97706]/20 selection:text-[#b45309]">
@@ -631,6 +591,26 @@ export const AdminPortal: React.FC = () => {
           {/* VIEW 2: TENANTS & USER DIRECTORY */}
           {adminActivePage === 'tenants' && (
             <div className="space-y-6">
+              {/* Tenant Customer Context Banner */}
+              <div className="p-4 rounded-2xl bg-blue-500/10 border border-blue-500/25 flex items-start gap-3 text-xs shadow-xs">
+                <div className="w-9 h-9 rounded-xl bg-blue-500/20 text-blue-600 dark:text-blue-400 flex items-center justify-center shrink-0">
+                  <Users className="w-5 h-5" />
+                </div>
+                <div>
+                  <div className="flex items-center gap-2">
+                    <span className="font-bold text-sm text-[#1f1e1b] dark:text-[#f5f3ef]">
+                      Tenant Customers &amp; App Users Roster
+                    </span>
+                    <span className="px-2 py-0.5 rounded-full text-[10px] font-mono font-bold bg-blue-500/20 text-blue-700 dark:text-blue-300">
+                      External Clients
+                    </span>
+                  </div>
+                  <p className="text-[11px] text-[#5c5850] dark:text-[#b8b4aa] mt-0.5 leading-relaxed">
+                    This directory lists the <span className="font-semibold text-blue-600 dark:text-blue-400">customer accounts, subscribers, and external organizations</span> who signed up to use the AI Agent features (Fleet, Virtual Keys, Policies). These accounts are strictly isolated and cannot log into SaaS Central.
+                  </p>
+                </div>
+              </div>
+
               {/* Firebase Live Cloud Integration Strip */}
               <div className="p-4 rounded-2xl bg-amber-500/10 dark:bg-amber-950/20 border border-amber-500/20 flex flex-col md:flex-row md:items-center justify-between gap-4 text-xs shadow-xs">
                 <div className="flex items-center gap-3">
@@ -655,15 +635,6 @@ export const AdminPortal: React.FC = () => {
 
                 <div className="flex items-center gap-2">
                   <button
-                    onClick={handleSyncTenantsToCloudSql}
-                    disabled={isLoadingCloudSql}
-                    className="px-3 py-1.5 rounded-xl border border-[#e5e0d5] dark:border-[#33302b] hover:bg-[#f4f1ea] dark:hover:bg-[#282622] text-[#1f1e1b] dark:text-[#f5f3ef] font-semibold flex items-center gap-1.5 transition-all cursor-pointer shadow-xs bg-white dark:bg-[#211f1c]"
-                    title="Synchronize registered accounts into Cloud SQL (PostgreSQL)"
-                  >
-                    <Database className={`w-3.5 h-3.5 text-blue-600 dark:text-blue-400 ${isLoadingCloudSql ? 'animate-spin' : ''}`} />
-                    <span>{isLoadingCloudSql ? 'Syncing SQL...' : 'Sync to Cloud SQL'}</span>
-                  </button>
-                  <button
                     onClick={handleSyncFirestoreUsers}
                     disabled={isLoadingFirebaseUsers}
                     className="px-3 py-1.5 rounded-xl border border-[#e5e0d5] dark:border-[#33302b] hover:bg-[#f4f1ea] dark:hover:bg-[#282622] text-[#1f1e1b] dark:text-[#f5f3ef] font-semibold flex items-center gap-1.5 transition-all cursor-pointer shadow-xs bg-white dark:bg-[#211f1c]"
@@ -687,27 +658,6 @@ export const AdminPortal: React.FC = () => {
                 <div className="flex items-center gap-3">
                   <div className="flex p-1 rounded-xl bg-[#faf8f5] dark:bg-[#181715] border border-[#e5e0d5] dark:border-[#33302b]">
                     <button
-                      onClick={() => setUserViewTab('cloudsql')}
-                      className={`px-3 py-1.5 rounded-lg text-xs font-bold transition-all cursor-pointer flex items-center gap-1.5 ${
-                        userViewTab === 'cloudsql'
-                          ? 'bg-white dark:bg-[#211f1c] text-[#1f1e1b] dark:text-[#f5f3ef] shadow-xs border border-[#e5e0d5] dark:border-[#33302b]'
-                          : 'text-[#5c5850] dark:text-[#b8b4aa] hover:text-[#1f1e1b] dark:hover:text-[#f5f3ef]'
-                      }`}
-                    >
-                      <Database className="w-3.5 h-3.5 text-blue-600 dark:text-blue-400" />
-                      <span>Cloud SQL Database ({cloudSqlUsers.length})</span>
-                    </button>
-                    <button
-                      onClick={() => setUserViewTab('tenants')}
-                      className={`px-3 py-1.5 rounded-lg text-xs font-bold transition-all cursor-pointer ${
-                        userViewTab === 'tenants'
-                          ? 'bg-white dark:bg-[#211f1c] text-[#1f1e1b] dark:text-[#f5f3ef] shadow-xs border border-[#e5e0d5] dark:border-[#33302b]'
-                          : 'text-[#5c5850] dark:text-[#b8b4aa] hover:text-[#1f1e1b] dark:hover:text-[#f5f3ef]'
-                      }`}
-                    >
-                      Organization Tenants ({tenants.length})
-                    </button>
-                    <button
                       onClick={() => setUserViewTab('firebase')}
                       className={`px-3 py-1.5 rounded-lg text-xs font-bold transition-all cursor-pointer flex items-center gap-1.5 ${
                         userViewTab === 'firebase'
@@ -716,7 +666,18 @@ export const AdminPortal: React.FC = () => {
                       }`}
                     >
                       <Flame className="w-3.5 h-3.5 text-[#d97706] dark:text-[#f59e0b]" />
-                      <span>Firebase Auth Users ({firebaseUsers.length || tenants.length})</span>
+                      <span>Firebase Auth Users ({displayFirebaseUsers.length})</span>
+                    </button>
+                    <button
+                      onClick={() => setUserViewTab('tenants')}
+                      className={`px-3 py-1.5 rounded-lg text-xs font-bold transition-all cursor-pointer flex items-center gap-1.5 ${
+                        userViewTab === 'tenants'
+                          ? 'bg-white dark:bg-[#211f1c] text-[#1f1e1b] dark:text-[#f5f3ef] shadow-xs border border-[#e5e0d5] dark:border-[#33302b]'
+                          : 'text-[#5c5850] dark:text-[#b8b4aa] hover:text-[#1f1e1b] dark:hover:text-[#f5f3ef]'
+                      }`}
+                    >
+                      <Users className="w-3.5 h-3.5 text-blue-600 dark:text-blue-400" />
+                      <span>Organization Tenants ({tenants.length})</span>
                     </button>
                   </div>
 
@@ -758,20 +719,8 @@ export const AdminPortal: React.FC = () => {
                 </div>
               </div>
 
-              {/* Table Switch: Cloud SQL vs Firebase vs Organization Tenants */}
-              {userViewTab === 'cloudsql' ? (
-                <CloudSqlUsersTable
-                  users={cloudSqlUsers}
-                  isLoading={isLoadingCloudSql}
-                  onRefresh={fetchCloudSqlUsers}
-                  onOpenAddModal={() => setIsNewUserModalOpen(true)}
-                  onSelectUserForPlanChange={(u) => {
-                    const matchTenant = tenants.find((t) => t.ownerEmail === u.email) || tenants[0];
-                    setPlanModalTenant(matchTenant);
-                    setTargetPlan(u.subscription.planTier as any);
-                  }}
-                />
-              ) : userViewTab === 'firebase' ? (
+              {/* Table Switch: Firebase Auth Users vs Organization Tenants */}
+              {userViewTab === 'firebase' ? (
                 <FirebaseUsersTable
                   users={displayFirebaseUsers}
                   isLoading={isLoadingFirebaseUsers}
@@ -904,6 +853,33 @@ export const AdminPortal: React.FC = () => {
 
                             <td className="p-3 text-right">
                               <div className="flex items-center justify-end gap-1.5">
+                                <button
+                                  onClick={() => {
+                                    setSelectedTenantForDetail({
+                                      id: (t as any).firebaseUid || t.id,
+                                      email: t.ownerEmail,
+                                      displayName: t.ownerName || t.name,
+                                      organizationName: t.name,
+                                      planTier: t.planTier,
+                                      role: 'owner',
+                                      createdAt: t.joinedAt,
+                                      lastLoginAt: t.lastLoginAt,
+                                      requestsUsed: t.requestsUsed,
+                                      requestLimit: t.requestLimit,
+                                      activeAgentsCount: t.activeAgentsCount,
+                                      virtualKeysCount: t.virtualKeysCount,
+                                      monthlySpendUsd: t.monthlySpendUsd,
+                                      paymentMethod: t.paymentMethod,
+                                      authProvider: (t as any).authProvider || (t.ownerEmail.endsWith('@gmail.com') ? 'google' : 'email'),
+                                    });
+                                    setIsTenantDetailModalOpen(true);
+                                  }}
+                                  className="px-2.5 py-1 rounded-lg bg-blue-500/10 hover:bg-blue-500/20 text-blue-700 dark:text-blue-400 font-bold text-[11px] transition-all cursor-pointer border border-blue-500/20 flex items-center gap-1 shadow-2xs"
+                                  title="View User & Tenant Details"
+                                >
+                                  <Eye className="w-3.5 h-3.5 text-blue-500" />
+                                  <span>Detail</span>
+                                </button>
                                 <button
                                   onClick={() => {
                                     setPlanModalTenant(t);
@@ -1384,6 +1360,11 @@ export const AdminPortal: React.FC = () => {
               </div>
             </div>
           )}
+
+          {/* VIEW 7: USER & ROLE MANAGEMENT (DETAILED RBAC) */}
+          {adminActivePage === 'roles' && (
+            <UserAndRoleManagement />
+          )}
         </main>
       </div>
 
@@ -1528,6 +1509,23 @@ export const AdminPortal: React.FC = () => {
       <CloudSqlDiagnosticModal
         isOpen={isCloudSqlDiagnosticOpen}
         onClose={() => setIsCloudSqlDiagnosticOpen(false)}
+      />
+
+      {/* User & Tenant Details Inspection Modal */}
+      <UserDetailModal
+        user={selectedTenantForDetail}
+        isOpen={isTenantDetailModalOpen}
+        onClose={() => {
+          setIsTenantDetailModalOpen(false);
+          setSelectedTenantForDetail(null);
+        }}
+        onSelectPlanChange={(u) => {
+          const matched = tenants.find((item) => item.ownerEmail?.toLowerCase() === u.email.toLowerCase() || item.id === u.id);
+          if (matched) {
+            setPlanModalTenant(matched);
+            setTargetPlan(matched.planTier);
+          }
+        }}
       />
     </div>
   );
