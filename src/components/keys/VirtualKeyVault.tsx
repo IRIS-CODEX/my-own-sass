@@ -92,7 +92,8 @@ export const VirtualKeyVault: React.FC = () => {
     revokeVirtualKey,
     reactivateVirtualKey,
     deleteVirtualKey,
-    simulateProxyRequest
+    simulateProxyRequest,
+    provisionDefaultKeys
   } = useKeysStore();
 
   const { agents } = useAgentsStore();
@@ -131,7 +132,7 @@ export const VirtualKeyVault: React.FC = () => {
     addToast({ title: 'Key Copied', description: 'Virtual key copied to clipboard.', type: 'info' });
   };
 
-  const handleCreateVirtualKey = (e: React.FormEvent) => {
+  const handleCreateVirtualKey = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!upstreamApiKey.trim()) {
       addToast({ title: 'API Key Required', description: 'Please provide your external platform API key.', type: 'error' });
@@ -145,7 +146,7 @@ export const VirtualKeyVault: React.FC = () => {
 
     const finalName = keyName.trim() || `${upstreamProvider} Governed Bridge`;
 
-    const { fullSecret } = createVirtualKey({
+    const { fullSecret } = await createVirtualKey({
       name: finalName,
       agentId: selectedAgentId,
       agentName,
@@ -478,6 +479,34 @@ export const VirtualKeyVault: React.FC = () => {
                 </div>
               );
             })}
+            {filteredKeys.length === 0 && (
+              <div className="col-span-full p-8 text-center bg-white dark:bg-[#211f1c] rounded-2xl border border-[#e5e0d5] dark:border-[#33302b] space-y-3">
+                <KeyRound className="w-8 h-8 mx-auto text-[#d97706] dark:text-[#f59e0b]" />
+                <div className="space-y-1">
+                  <h4 className="text-sm font-bold text-[#1f1e1b] dark:text-[#f5f3ef]">No Virtual API Keys Provisioned</h4>
+                  <p className="text-xs text-[#5c5850] dark:text-[#b8b4aa] font-medium max-w-sm mx-auto">
+                    Provision virtual gateway keys with daily budget quotas, prompt-injection defense, and PII masking.
+                  </p>
+                </div>
+                <div className="flex items-center justify-center gap-2 pt-2">
+                  <button
+                    onClick={() => setNewKeyModalOpen(true)}
+                    className="px-3.5 py-1.5 bg-[#d97706] hover:bg-[#b45309] dark:bg-[#f59e0b] dark:hover:bg-[#fbbf24] text-white dark:text-[#181715] rounded-xl text-xs font-bold cursor-pointer transition-all shadow-xs"
+                  >
+                    Provision New Virtual Key
+                  </button>
+                  <button
+                    onClick={async () => {
+                      await provisionDefaultKeys();
+                      addToast({ title: 'Keys Provisioned', description: 'Starter virtual keys created in your database.', type: 'success' });
+                    }}
+                    className="px-3.5 py-1.5 bg-white dark:bg-[#282622] hover:bg-[#faf8f5] dark:hover:bg-[#33302b] border border-[#e5e0d5] dark:border-[#33302b] text-[#1f1e1b] dark:text-[#f5f3ef] rounded-xl text-xs font-bold cursor-pointer transition-all shadow-xs"
+                  >
+                    Quickstart Default Keys
+                  </button>
+                </div>
+              </div>
+            )}
           </div>
         </div>
       )}

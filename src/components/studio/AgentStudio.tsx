@@ -106,9 +106,9 @@ export const AgentStudio: React.FC = () => {
 
     setCreatedAgent(null);
 
-    startGeneration(() => {
+    startGeneration(async () => {
       // Once build sequence completes, create the permanent agent
-      const agent = createAgentFromPrompt(prompt);
+      const agent = await createAgentFromPrompt(prompt);
       setCreatedAgent(agent);
       addToast({
         title: 'Agent Synthesized & Saved',

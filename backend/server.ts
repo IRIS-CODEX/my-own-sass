@@ -21,7 +21,7 @@ export async function createServer() {
   // Vite middleware in dev or static files in production
   if (!config.isProduction) {
     const vite = await createViteServer({
-      server: { middlewareMode: true },
+      server: { middlewareMode: true, hmr: false },
       appType: 'spa',
     });
     app.use(vite.middlewares);

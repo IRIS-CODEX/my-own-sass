@@ -8,6 +8,7 @@ export type StepType = 'THOUGHT' | 'TOOL_INVOCATION' | 'EVALUATION' | 'OUTPUT' |
 
 export interface Agent {
   id: string;
+  userId?: string;
   orgId: string;
   name: string;
   description: string;
@@ -64,6 +65,7 @@ export type UpstreamAIProvider =
 
 export interface VirtualKey {
   id: string;
+  userId?: string;
   orgId: string;
   agentId: string;
   agentName?: string;
@@ -95,6 +97,7 @@ export interface MasterSecret {
 
 export interface ToolPolicy {
   id: string;
+  userId?: string;
   orgId: string;
   agentId?: string;
   toolName: string;
@@ -112,6 +115,7 @@ export interface ToolPolicy {
 
 export interface AgentPromptRule {
   id: string;
+  userId?: string;
   agentId?: string; // 'ALL' or specific agent ID
   agentName?: string;
   sourcePrompt: string;
@@ -127,6 +131,7 @@ export interface AgentPromptRule {
 
 export interface PendingAction {
   actionId: string;
+  userId?: string;
   orgId: string;
   agentId: string;
   agentName: string;
@@ -142,6 +147,7 @@ export interface PendingAction {
 
 export interface TraceEvent {
   id: string;
+  userId?: string;
   orgId: string;
   agentId: string;
   agentName: string;

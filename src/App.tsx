@@ -1,5 +1,8 @@
 import React, { useEffect, useState } from 'react';
 import { useAppStore } from './stores/useAppStore';
+import { useAgentsStore } from './stores/useAgentsStore';
+import { useKeysStore } from './stores/useKeysStore';
+import { usePoliciesStore } from './stores/usePoliciesStore';
 import { useLiveStreamStore } from './stores/useLiveStreamStore';
 import { useAdminStore } from './stores/useAdminStore';
 import { Sidebar } from './components/layout/Sidebar';
@@ -106,6 +109,23 @@ export default function App() {
     });
     return () => unsubscribe();
   }, []);
+
+  // Synchronize Firestore collections in real-time
+  const currentUser = useAppStore((s) => s.currentUser);
+  useEffect(() => {
+    const uid = currentUser?.id || 'demo_workspace_tenant';
+    const unsubAgents = useAgentsStore.getState().initUserAgents(uid);
+    const unsubKeys = useKeysStore.getState().initUserKeys(uid);
+    const unsubPolicies = usePoliciesStore.getState().initUserPolicies(uid);
+    const unsubLive = useLiveStreamStore.getState().initLiveStream(uid);
+
+    return () => {
+      unsubAgents();
+      unsubKeys();
+      unsubPolicies();
+      unsubLive();
+    };
+  }, [currentUser?.id]);
 
   // Audio Chime with Web Audio API synthesizer for approvals
   useEffect(() => {

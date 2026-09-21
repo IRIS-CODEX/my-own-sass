@@ -45,7 +45,8 @@ export const PolicyStudio: React.FC = () => {
     setPiiMaskingEnabled,
     setPromptInjectionDefense,
     setCanaryTokenDefense,
-    setSsrfFirewall
+    setSsrfFirewall,
+    provisionDefaultPolicies
   } = usePoliciesStore();
 
   const { addToast } = useAppStore();
@@ -348,6 +349,32 @@ export const PolicyStudio: React.FC = () => {
                       </td>
                     </tr>
                   ))}
+                  {policies.length === 0 && (
+                    <tr>
+                      <td colSpan={5} className="py-8 px-4 text-center">
+                        <div className="max-w-md mx-auto space-y-2">
+                          <p className="text-xs text-[#5c5850] dark:text-[#b8b4aa] font-medium">No tool policies registered in risk matrix yet.</p>
+                          <div className="flex items-center justify-center gap-2 pt-1">
+                            <button
+                              onClick={() => setNewToolModal(true)}
+                              className="px-3 py-1.5 bg-[#d97706] hover:bg-[#b45309] dark:bg-[#f59e0b] text-white dark:text-[#181715] rounded-xl text-xs font-bold cursor-pointer"
+                            >
+                              Enroll Tool
+                            </button>
+                            <button
+                              onClick={async () => {
+                                await provisionDefaultPolicies();
+                                addToast({ title: 'Policies Initialized', description: 'Standard starter policies loaded.', type: 'success' });
+                              }}
+                              className="px-3 py-1.5 bg-white dark:bg-[#282622] hover:bg-[#faf8f5] dark:hover:bg-[#33302b] border border-[#e5e0d5] dark:border-[#33302b] text-[#1f1e1b] dark:text-[#f5f3ef] rounded-xl text-xs font-bold cursor-pointer"
+                            >
+                              Quickstart Default Matrix
+                            </button>
+                          </div>
+                        </div>
+                      </td>
+                    </tr>
+                  )}
                 </tbody>
               </table>
             </div>

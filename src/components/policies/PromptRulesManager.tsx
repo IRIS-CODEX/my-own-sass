@@ -131,17 +131,17 @@ export const PromptRulesManager: React.FC = () => {
     }
   ];
 
-  const handleSynthesize = (e: React.FormEvent) => {
+  const handleSynthesize = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!promptText.trim()) return;
 
     setIsSynthesizing(true);
 
-    setTimeout(() => {
+    try {
       const selectedAgentObj = agents.find((a) => a.id === selectedAgentId);
       const agentName = selectedAgentId === 'ALL' ? 'All Autonomous Agents' : selectedAgentObj?.name || 'Assigned Agent';
 
-      const result = createRuleFromPrompt(promptText.trim(), selectedAgentId, agentName);
+      const result = await createRuleFromPrompt(promptText.trim(), selectedAgentId, agentName);
       setLastSynthesized(result);
       setIsSynthesizing(false);
       setPromptText('');
@@ -151,10 +151,12 @@ export const PromptRulesManager: React.FC = () => {
         description: `Created "${result.rule.ruleName}" mapped to ${result.rule.riskLevel} tier.`,
         type: 'success'
       });
-    }, 450);
+    } catch (e) {
+      setIsSynthesizing(false);
+    }
   };
 
-  const handleCreateStructuredRule = (e: React.FormEvent) => {
+  const handleCreateStructuredRule = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!structRuleName.trim()) {
       addToast({
@@ -168,7 +170,7 @@ export const PromptRulesManager: React.FC = () => {
     const selectedAgentObj = agents.find((a) => a.id === selectedAgentId);
     const agentName = selectedAgentId === 'ALL' ? 'All Autonomous Agents' : selectedAgentObj?.name || 'Assigned Agent';
 
-    const newRule = addCustomPromptRule({
+    const newRule = await addCustomPromptRule({
       agentId: selectedAgentId,
       agentName,
       sourcePrompt: `Structured Rule: ${structRuleName}`,

@@ -7,7 +7,7 @@ service cloud.firestore {
       allow read, write: if false;
     }
 
-    // Helper functions
+    // Common Helper Functions
     function isSignedIn() {
       return request.auth != null;
     }
@@ -35,6 +35,7 @@ service cloud.firestore {
       return resource.data;
     }
 
+    // 1. User Validation
     function isValidUser(data) {
       return data.keys().hasAll(['id', 'email', 'organizationName', 'planTier', 'createdAt']) &&
         data.id is string && data.id.size() <= 128 &&
@@ -44,36 +45,217 @@ service cloud.firestore {
         data.createdAt is string && data.createdAt.size() <= 40;
     }
 
-    // Users Collection
+    // 2. Agent Validation
+    function isValidAgent(data) {
+      return data.keys().hasAll(['id', 'userId', 'name', 'archetype', 'autonomyMode', 'dailyBudgetUsd', 'model', 'status', 'createdAt']) &&
+        data.id is string && data.id.size() <= 128 &&
+        data.userId is string && data.userId.size() <= 128 &&
+        data.name is string && data.name.size() <= 100 &&
+        data.archetype is string && data.archetype.size() <= 30 &&
+        data.autonomyMode is string && data.autonomyMode.size() <= 30 &&
+        data.dailyBudgetUsd is number &&
+        data.model is string && data.model.size() <= 100 &&
+        data.status is string && data.status.size() <= 30 &&
+        data.createdAt is string && data.createdAt.size() <= 40;
+    }
+
+    // 3. Virtual Key Validation
+    function isValidVirtualKey(data) {
+      return data.keys().hasAll(['id', 'userId', 'name', 'keyPrefix', 'isActive', 'upstreamProvider', 'dailyBudgetUsd', 'createdAt']) &&
+        data.id is string && data.id.size() <= 128 &&
+        data.userId is string && data.userId.size() <= 128 &&
+        data.name is string && data.name.size() <= 100 &&
+        data.keyPrefix is string && data.keyPrefix.size() <= 40 &&
+        data.isActive is bool &&
+        data.upstreamProvider is string && data.upstreamProvider.size() <= 30 &&
+        data.dailyBudgetUsd is number &&
+        data.createdAt is string && data.createdAt.size() <= 40;
+    }
+
+    // 4. Policy Validation
+    function isValidPolicy(data) {
+      return data.keys().hasAll(['id', 'userId', 'toolName', 'riskLevel', 'createdAt']) &&
+        data.id is string && data.id.size() <= 128 &&
+        data.userId is string && data.userId.size() <= 128 &&
+        data.toolName is string && data.toolName.size() <= 100 &&
+        data.riskLevel is string && data.riskLevel.size() <= 20 &&
+        data.createdAt is string && data.createdAt.size() <= 40;
+    }
+
+    // 5. Prompt Rule Validation
+    function isValidPromptRule(data) {
+      return data.keys().hasAll(['id', 'userId', 'ruleName', 'category', 'riskLevel', 'isEnabled', 'createdAt']) &&
+        data.id is string && data.id.size() <= 128 &&
+        data.userId is string && data.userId.size() <= 128 &&
+        data.ruleName is string && data.ruleName.size() <= 100 &&
+        data.category is string && data.category.size() <= 40 &&
+        data.riskLevel is string && data.riskLevel.size() <= 20 &&
+        data.isEnabled is bool &&
+        data.createdAt is string && data.createdAt.size() <= 40;
+    }
+
+    // 6. Trace Event Validation
+    function isValidTrace(data) {
+      return data.keys().hasAll(['id', 'userId', 'agentId', 'stepType', 'status', 'timestamp']) &&
+        data.id is string && data.id.size() <= 128 &&
+        data.userId is string && data.userId.size() <= 128 &&
+        data.agentId is string && data.agentId.size() <= 128 &&
+        data.stepType is string && data.stepType.size() <= 40 &&
+        data.status is string && data.status.size() <= 30 &&
+        data.timestamp is string && data.timestamp.size() <= 40;
+    }
+
+    // 7. Pending Action Validation
+    function isValidPendingAction(data) {
+      return data.keys().hasAll(['actionId', 'userId', 'agentId', 'toolName', 'riskLevel', 'status', 'createdAt']) &&
+        data.actionId is string && data.actionId.size() <= 128 &&
+        data.userId is string && data.userId.size() <= 128 &&
+        data.agentId is string && data.agentId.size() <= 128 &&
+        data.toolName is string && data.toolName.size() <= 100 &&
+        data.riskLevel is string && data.riskLevel.size() <= 20 &&
+        data.status is string && data.status.size() <= 30 &&
+        data.createdAt is string && data.createdAt.size() <= 40;
+    }
+
+    // --- Users Collection ---
     match /users/{userId} {
-      // Individual users can read their profile; super admins can read all profiles
       allow get: if isOwner(userId) || isSuperAdmin();
       allow list: if isSuperAdmin();
 
-      // Users can create their own profile during initial signup
       allow create: if isOwner(userId) &&
         isValidId(userId) &&
         isValidUser(incoming()) &&
         incoming().id == request.auth.uid;
 
-      // Users can update non-critical profile fields; admins can manage accounts
       allow update: if (isOwner(userId) || isSuperAdmin()) &&
         isValidUser(incoming()) &&
         incoming().id == existing().id &&
         incoming().createdAt == existing().createdAt &&
         incoming().diff(existing()).affectedKeys().hasOnly(['displayName', 'organizationName', 'planTier', 'lastLoginAt', 'role']);
 
-      // Only super admin can delete accounts
       allow delete: if isSuperAdmin();
     }
 
-    // Admins Collection
+    // --- Agents Collection ---
+    match /agents/{agentId} {
+      allow get: if isSignedIn() && (existing().userId == request.auth.uid || isSuperAdmin());
+      allow list: if isSignedIn() && (resource.data.userId == request.auth.uid || isSuperAdmin());
+
+      allow create: if isSignedIn() &&
+        isValidId(agentId) &&
+        isValidAgent(incoming()) &&
+        incoming().userId == request.auth.uid;
+
+      allow update: if isSignedIn() &&
+        (existing().userId == request.auth.uid || isSuperAdmin()) &&
+        isValidAgent(incoming()) &&
+        incoming().id == existing().id &&
+        incoming().userId == existing().userId &&
+        incoming().createdAt == existing().createdAt;
+
+      allow delete: if isSignedIn() && (existing().userId == request.auth.uid || isSuperAdmin());
+    }
+
+    // --- Virtual Keys Collection ---
+    match /virtualKeys/{keyId} {
+      allow get: if isSignedIn() && (existing().userId == request.auth.uid || isSuperAdmin());
+      allow list: if isSignedIn() && (resource.data.userId == request.auth.uid || isSuperAdmin());
+
+      allow create: if isSignedIn() &&
+        isValidId(keyId) &&
+        isValidVirtualKey(incoming()) &&
+        incoming().userId == request.auth.uid;
+
+      allow update: if isSignedIn() &&
+        (existing().userId == request.auth.uid || isSuperAdmin()) &&
+        isValidVirtualKey(incoming()) &&
+        incoming().id == existing().id &&
+        incoming().userId == existing().userId &&
+        incoming().createdAt == existing().createdAt;
+
+      allow delete: if isSignedIn() && (existing().userId == request.auth.uid || isSuperAdmin());
+    }
+
+    // --- Policies Collection ---
+    match /policies/{policyId} {
+      allow get: if isSignedIn() && (existing().userId == request.auth.uid || isSuperAdmin());
+      allow list: if isSignedIn() && (resource.data.userId == request.auth.uid || isSuperAdmin());
+
+      allow create: if isSignedIn() &&
+        isValidId(policyId) &&
+        isValidPolicy(incoming()) &&
+        incoming().userId == request.auth.uid;
+
+      allow update: if isSignedIn() &&
+        (existing().userId == request.auth.uid || isSuperAdmin()) &&
+        isValidPolicy(incoming()) &&
+        incoming().id == existing().id &&
+        incoming().userId == existing().userId &&
+        incoming().createdAt == existing().createdAt;
+
+      allow delete: if isSignedIn() && (existing().userId == request.auth.uid || isSuperAdmin());
+    }
+
+    // --- Prompt Rules Collection ---
+    match /promptRules/{ruleId} {
+      allow get: if isSignedIn() && (existing().userId == request.auth.uid || isSuperAdmin());
+      allow list: if isSignedIn() && (resource.data.userId == request.auth.uid || isSuperAdmin());
+
+      allow create: if isSignedIn() &&
+        isValidId(ruleId) &&
+        isValidPromptRule(incoming()) &&
+        incoming().userId == request.auth.uid;
+
+      allow update: if isSignedIn() &&
+        (existing().userId == request.auth.uid || isSuperAdmin()) &&
+        isValidPromptRule(incoming()) &&
+        incoming().id == existing().id &&
+        incoming().userId == existing().userId &&
+        incoming().createdAt == existing().createdAt;
+
+      allow delete: if isSignedIn() && (existing().userId == request.auth.uid || isSuperAdmin());
+    }
+
+    // --- Trace Events Collection ---
+    match /traceEvents/{traceId} {
+      allow get: if isSignedIn() && (existing().userId == request.auth.uid || isSuperAdmin());
+      allow list: if isSignedIn() && (resource.data.userId == request.auth.uid || isSuperAdmin());
+
+      allow create: if isSignedIn() &&
+        isValidId(traceId) &&
+        isValidTrace(incoming()) &&
+        incoming().userId == request.auth.uid;
+
+      allow delete: if isSignedIn() && (existing().userId == request.auth.uid || isSuperAdmin());
+    }
+
+    // --- Pending Actions Collection ---
+    match /pendingActions/{actionId} {
+      allow get: if isSignedIn() && (existing().userId == request.auth.uid || isSuperAdmin());
+      allow list: if isSignedIn() && (resource.data.userId == request.auth.uid || isSuperAdmin());
+
+      allow create: if isSignedIn() &&
+        isValidId(actionId) &&
+        isValidPendingAction(incoming()) &&
+        incoming().userId == request.auth.uid;
+
+      allow update: if isSignedIn() &&
+        (existing().userId == request.auth.uid || isSuperAdmin()) &&
+        isValidPendingAction(incoming()) &&
+        incoming().actionId == existing().actionId &&
+        incoming().userId == existing().userId &&
+        incoming().createdAt == existing().createdAt;
+
+      allow delete: if isSignedIn() && (existing().userId == request.auth.uid || isSuperAdmin());
+    }
+
+    // --- Admins Collection ---
     match /admins/{adminId} {
       allow read: if isSignedIn();
       allow write: if isSuperAdmin();
     }
 
-    // Connection test collection for initialization health check
+    // --- Connection test health check ---
     match /test/{docId} {
       allow read, write: if true;
     }

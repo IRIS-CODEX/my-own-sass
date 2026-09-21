@@ -30,7 +30,7 @@ import { useLiveStreamStore } from '../../stores/useLiveStreamStore';
 import { Agent, AgentArchetype, AutonomyMode } from '../../types';
 
 export const AgentChat: React.FC = () => {
-  const { agents, setAutonomyMode, toggleKillSwitch } = useAgentsStore();
+  const { agents, setAutonomyMode, toggleKillSwitch, provisionDefaultFleet } = useAgentsStore();
   const {
     activeAgentId,
     setActiveAgentId,
@@ -243,9 +243,42 @@ export const AgentChat: React.FC = () => {
 
       {/* Right Column: Chat Canvas */}
       <div className="flex-1 flex flex-col h-full min-w-0 bg-white dark:bg-[#211f1c]">
-        {/* Top Chat Header */}
-        {currentAgent && (
-          <div className="px-4 py-3 border-b border-[#e5e0d5] dark:border-[#33302b] bg-[#faf8f5]/80 dark:bg-[#181715]/80 backdrop-blur-md flex items-center justify-between z-10">
+        {!currentAgent ? (
+          <div className="flex-1 flex flex-col items-center justify-center p-8 text-center space-y-4">
+            <div className="w-16 h-16 rounded-3xl bg-amber-500/10 text-[#d97706] dark:text-[#f59e0b] border border-amber-500/20 flex items-center justify-center shadow-xs">
+              <Bot className="w-8 h-8" />
+            </div>
+            <div className="space-y-1.5 max-w-md">
+              <h3 className="text-base font-bold text-[#1f1e1b] dark:text-[#f5f3ef]">No Autonomous Agents Ready</h3>
+              <p className="text-xs text-[#5c5850] dark:text-[#b8b4aa] leading-relaxed font-medium">
+                Initialize the standard fleet or write a prompt in the Agent Studio to create and chat with autonomous agents under active governance.
+              </p>
+            </div>
+            <div className="flex items-center gap-3 pt-2">
+              <button
+                type="button"
+                onClick={async () => {
+                  await provisionDefaultFleet();
+                  addToast({ title: 'Agent Fleet Initialized', description: 'Sample agents created and ready for testing.', type: 'success' });
+                }}
+                className="px-4 py-2.5 rounded-xl bg-[#d97706] hover:bg-[#b45309] text-white text-xs font-bold transition-all shadow-xs flex items-center gap-2 cursor-pointer"
+              >
+                <Sparkles className="w-4 h-4" />
+                <span>Provision Starter Fleet</span>
+              </button>
+              <button
+                type="button"
+                onClick={() => setActiveNav('studio')}
+                className="px-4 py-2.5 rounded-xl border border-[#e5e0d5] dark:border-[#33302b] bg-white dark:bg-[#211f1c] text-[#1f1e1b] dark:text-[#f5f3ef] text-xs font-bold hover:bg-[#faf8f5] dark:hover:bg-[#181715] transition-colors cursor-pointer shadow-xs"
+              >
+                Create in Studio
+              </button>
+            </div>
+          </div>
+        ) : (
+          <>
+            {/* Top Chat Header */}
+            <div className="px-4 py-3 border-b border-[#e5e0d5] dark:border-[#33302b] bg-[#faf8f5]/80 dark:bg-[#181715]/80 backdrop-blur-md flex items-center justify-between z-10">
             <div className="flex items-center gap-3 min-w-0">
               {React.createElement(getAgentIcon(currentAgent.archetype, currentAgent.avatarIcon), {
                 className: `w-5 h-5 flex-shrink-0 ${
@@ -352,7 +385,6 @@ export const AgentChat: React.FC = () => {
               </button>
             </div>
           </div>
-        )}
 
         {/* Collapsible System Prompt Drawer */}
         {showSystemPrompt && currentAgent && (
@@ -727,6 +759,8 @@ export const AgentChat: React.FC = () => {
             <span>Shift + Enter for new line</span>
           </div>
         </div>
+        </>
+        )}
       </div>
     </div>
   );

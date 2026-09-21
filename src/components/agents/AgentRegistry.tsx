@@ -38,7 +38,8 @@ export const AgentRegistry: React.FC = () => {
     updateBudget,
     updateSystemPrompt,
     updateModel,
-    deleteAgent
+    deleteAgent,
+    provisionDefaultFleet
   } = useAgentsStore();
 
   const { addToast, setActiveNav, startChatWithAgent } = useAppStore();
@@ -309,15 +310,31 @@ export const AgentRegistry: React.FC = () => {
         })}
 
         {filteredAgents.length === 0 && (
-          <div className="p-8 text-center bg-white dark:bg-[#211f1c] rounded-2xl border border-[#e5e0d5] dark:border-[#33302b] space-y-2">
+          <div className="p-8 text-center bg-white dark:bg-[#211f1c] rounded-2xl border border-[#e5e0d5] dark:border-[#33302b] space-y-3">
             <Bot className="w-8 h-8 mx-auto text-[#d97706] dark:text-[#f59e0b]" />
-            <p className="text-xs text-[#5c5850] dark:text-[#b8b4aa] font-medium">No agents match your filter criteria.</p>
-            <button
-              onClick={() => setActiveNav('studio')}
-              className="px-3.5 py-1.5 bg-[#d97706] hover:bg-[#b45309] dark:bg-[#f59e0b] dark:hover:bg-[#fbbf24] text-white dark:text-[#181715] rounded-xl text-xs font-bold cursor-pointer"
-            >
-              Build New Agent
-            </button>
+            <div className="space-y-1">
+              <h4 className="text-sm font-bold text-[#1f1e1b] dark:text-[#f5f3ef]">No Registered Agents in Fleet</h4>
+              <p className="text-xs text-[#5c5850] dark:text-[#b8b4aa] font-medium max-w-sm mx-auto">
+                Synthesize custom AI agents from a prompt, or instantly provision the starter template fleet to your live database.
+              </p>
+            </div>
+            <div className="flex items-center justify-center gap-2 pt-2">
+              <button
+                onClick={() => setActiveNav('studio')}
+                className="px-3.5 py-1.5 bg-[#d97706] hover:bg-[#b45309] dark:bg-[#f59e0b] dark:hover:bg-[#fbbf24] text-white dark:text-[#181715] rounded-xl text-xs font-bold cursor-pointer transition-all shadow-xs"
+              >
+                Synthesize New Agent
+              </button>
+              <button
+                onClick={async () => {
+                  await provisionDefaultFleet();
+                  addToast({ title: 'Fleet Provisioned', description: 'Starter agents created in your database.', type: 'success' });
+                }}
+                className="px-3.5 py-1.5 bg-white dark:bg-[#282622] hover:bg-[#faf8f5] dark:hover:bg-[#33302b] border border-[#e5e0d5] dark:border-[#33302b] text-[#1f1e1b] dark:text-[#f5f3ef] rounded-xl text-xs font-bold cursor-pointer transition-all shadow-xs"
+              >
+                Quickstart Starter Fleet
+              </button>
+            </div>
           </div>
         )}
       </div>

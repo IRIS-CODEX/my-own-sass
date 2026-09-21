@@ -33,7 +33,7 @@
         "role": {
           "type": "string",
           "description": "User permission role",
-          "enum": ["user", "admin", "owner"]
+          "enum": ["user", "admin", "owner", "super-admin"]
         },
         "createdAt": {
           "type": "string",
@@ -45,12 +45,479 @@
         }
       },
       "required": ["id", "email", "organizationName", "planTier", "createdAt"]
+    },
+    "agent": {
+      "title": "Autonomous Agent",
+      "description": "Autonomous AI Agent registered in the fleet",
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string",
+          "description": "Unique identifier of the agent",
+          "maxLength": 128
+        },
+        "userId": {
+          "type": "string",
+          "description": "Owner user UID",
+          "maxLength": 128
+        },
+        "orgId": {
+          "type": "string",
+          "description": "Organization ID",
+          "maxLength": 128
+        },
+        "name": {
+          "type": "string",
+          "description": "Name of the agent",
+          "maxLength": 100
+        },
+        "description": {
+          "type": "string",
+          "description": "Description of agent mission and duties",
+          "maxLength": 500
+        },
+        "archetype": {
+          "type": "string",
+          "description": "Agent operational archetype",
+          "enum": ["SUPPORT", "OUTREACH", "RESEARCHER", "DB_REPORTER", "CODING", "CUSTOM"]
+        },
+        "autonomyMode": {
+          "type": "string",
+          "description": "Current autonomy mode",
+          "enum": ["READ_ONLY", "SEMI_AUTO", "FULL_AUTO", "PAUSED"]
+        },
+        "dailyBudgetUsd": {
+          "type": "number",
+          "description": "Daily spend limit in USD"
+        },
+        "spendTodayUsd": {
+          "type": "number",
+          "description": "Today spend in USD"
+        },
+        "totalExecutions": {
+          "type": "number",
+          "description": "Total execution count"
+        },
+        "systemPrompt": {
+          "type": "string",
+          "description": "Master system prompt instructions",
+          "maxLength": 4000
+        },
+        "model": {
+          "type": "string",
+          "description": "LLM model identifier",
+          "maxLength": 100
+        },
+        "temperature": {
+          "type": "number",
+          "description": "Sampling temperature"
+        },
+        "status": {
+          "type": "string",
+          "description": "Current status",
+          "enum": ["ONLINE", "BUSY", "PAUSED", "ERROR"]
+        },
+        "framework": {
+          "type": "string",
+          "description": "Agent framework",
+          "maxLength": 100
+        },
+        "avatarIcon": {
+          "type": "string",
+          "description": "Icon identifier",
+          "maxLength": 50
+        },
+        "welcomeMessage": {
+          "type": "string",
+          "description": "Agent introductory message",
+          "maxLength": 500
+        },
+        "createdAt": {
+          "type": "string",
+          "description": "ISO timestamp of creation"
+        },
+        "lastActiveAt": {
+          "type": "string",
+          "description": "Human readable or ISO last active"
+        }
+      },
+      "required": ["id", "userId", "name", "archetype", "autonomyMode", "dailyBudgetUsd", "model", "status", "createdAt"]
+    },
+    "virtualKey": {
+      "title": "Virtual Key",
+      "description": "Virtual API key provisioned for agent gateway proxy",
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string",
+          "description": "Unique key ID",
+          "maxLength": 128
+        },
+        "userId": {
+          "type": "string",
+          "description": "Owner user UID",
+          "maxLength": 128
+        },
+        "orgId": {
+          "type": "string",
+          "description": "Organization ID",
+          "maxLength": 128
+        },
+        "agentId": {
+          "type": "string",
+          "description": "Target agent ID",
+          "maxLength": 128
+        },
+        "agentName": {
+          "type": "string",
+          "description": "Target agent name",
+          "maxLength": 100
+        },
+        "name": {
+          "type": "string",
+          "description": "Key label name",
+          "maxLength": 100
+        },
+        "keyPrefix": {
+          "type": "string",
+          "description": "Prefix visible to user",
+          "maxLength": 30
+        },
+        "fullKeySecret": {
+          "type": "string",
+          "description": "Full secret token for gateway authentication",
+          "maxLength": 120
+        },
+        "isActive": {
+          "type": "boolean",
+          "description": "Whether the key is currently active"
+        },
+        "upstreamProvider": {
+          "type": "string",
+          "description": "Upstream AI provider",
+          "enum": ["OPENAI", "ANTHROPIC", "GEMINI", "GROQ", "MISTRAL", "COHERE"]
+        },
+        "upstreamKeyMasked": {
+          "type": "string",
+          "description": "Masked representation of secret key",
+          "maxLength": 100
+        },
+        "dailyBudgetUsd": {
+          "type": "number",
+          "description": "Daily hard budget limit in USD"
+        },
+        "spendTodayUsd": {
+          "type": "number",
+          "description": "Cumulative USD spend today"
+        },
+        "promptInjectionDefense": {
+          "type": "boolean",
+          "description": "Enable active prompt injection filter"
+        },
+        "piiRedaction": {
+          "type": "boolean",
+          "description": "Enable PII masking"
+        },
+        "totalRequests": {
+          "type": "number",
+          "description": "Total proxy requests served"
+        },
+        "blockedRequests": {
+          "type": "number",
+          "description": "Total requests blocked by firewall"
+        },
+        "createdAt": {
+          "type": "string",
+          "description": "Creation date"
+        },
+        "lastUsedAt": {
+          "type": "string",
+          "description": "Last invocation time"
+        }
+      },
+      "required": ["id", "userId", "name", "keyPrefix", "isActive", "upstreamProvider", "dailyBudgetUsd", "createdAt"]
+    },
+    "policy": {
+      "title": "Tool Policy",
+      "description": "Security policy regulating agent tool invocations",
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string",
+          "description": "Unique policy ID",
+          "maxLength": 128
+        },
+        "userId": {
+          "type": "string",
+          "description": "Owner user UID",
+          "maxLength": 128
+        },
+        "orgId": {
+          "type": "string",
+          "description": "Organization ID",
+          "maxLength": 128
+        },
+        "toolName": {
+          "type": "string",
+          "description": "Target tool name",
+          "maxLength": 100
+        },
+        "description": {
+          "type": "string",
+          "description": "Policy purpose and scope",
+          "maxLength": 300
+        },
+        "riskLevel": {
+          "type": "string",
+          "description": "Risk classification",
+          "enum": ["GREEN", "YELLOW", "RED"]
+        },
+        "autoApprovalCount": {
+          "type": "number",
+          "description": "Count of automatically passed actions"
+        },
+        "interceptedCount": {
+          "type": "number",
+          "description": "Count of intercepted actions"
+        },
+        "createdAt": {
+          "type": "string",
+          "description": "Creation timestamp"
+        }
+      },
+      "required": ["id", "userId", "toolName", "riskLevel", "createdAt"]
+    },
+    "promptRule": {
+      "title": "Prompt Guardrail Rule",
+      "description": "Natural language or pattern-based prompt guardrail rule",
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string",
+          "description": "Unique rule ID",
+          "maxLength": 128
+        },
+        "userId": {
+          "type": "string",
+          "description": "Owner user UID",
+          "maxLength": 128
+        },
+        "agentId": {
+          "type": "string",
+          "description": "Target agent ID or ALL",
+          "maxLength": 128
+        },
+        "agentName": {
+          "type": "string",
+          "description": "Target agent name",
+          "maxLength": 100
+        },
+        "sourcePrompt": {
+          "type": "string",
+          "description": "Original user guardrail instruction",
+          "maxLength": 500
+        },
+        "ruleName": {
+          "type": "string",
+          "description": "Synthesized rule name",
+          "maxLength": 100
+        },
+        "category": {
+          "type": "string",
+          "description": "Rule category",
+          "enum": ["FINANCIAL", "SECURITY", "OPERATIONAL", "PII_PRIVACY", "CUSTOM"]
+        },
+        "riskLevel": {
+          "type": "string",
+          "description": "Risk level",
+          "enum": ["GREEN", "YELLOW", "RED"]
+        },
+        "targetTool": {
+          "type": "string",
+          "description": "Affected tool name",
+          "maxLength": 100
+        },
+        "conditionExpression": {
+          "type": "string",
+          "description": "Evaluation expression",
+          "maxLength": 200
+        },
+        "systemInstructionAddition": {
+          "type": "string",
+          "description": "Injected system instruction",
+          "maxLength": 1000
+        },
+        "isEnabled": {
+          "type": "boolean",
+          "description": "Active status"
+        },
+        "createdAt": {
+          "type": "string",
+          "description": "Creation timestamp"
+        }
+      },
+      "required": ["id", "userId", "ruleName", "category", "riskLevel", "isEnabled", "createdAt"]
+    },
+    "traceEvent": {
+      "title": "Live Trace Event",
+      "description": "Execution trace event for observability",
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string",
+          "description": "Unique trace event ID",
+          "maxLength": 128
+        },
+        "userId": {
+          "type": "string",
+          "description": "Owner user UID",
+          "maxLength": 128
+        },
+        "orgId": {
+          "type": "string",
+          "description": "Organization ID",
+          "maxLength": 128
+        },
+        "agentId": {
+          "type": "string",
+          "description": "Agent identifier",
+          "maxLength": 128
+        },
+        "agentName": {
+          "type": "string",
+          "description": "Agent name",
+          "maxLength": 100
+        },
+        "stepType": {
+          "type": "string",
+          "description": "Type of execution step",
+          "enum": ["THOUGHT", "TOOL_INVOCATION", "POLICY_EVALUATION", "HUMAN_INPUT", "OUTPUT"]
+        },
+        "toolName": {
+          "type": "string",
+          "description": "Tool name if applicable",
+          "maxLength": 100
+        },
+        "latencyMs": {
+          "type": "number",
+          "description": "Execution latency in ms"
+        },
+        "tokenCostUsd": {
+          "type": "number",
+          "description": "Token cost in USD"
+        },
+        "riskLevel": {
+          "type": "string",
+          "description": "Risk rating",
+          "enum": ["GREEN", "YELLOW", "RED"]
+        },
+        "timestamp": {
+          "type": "string",
+          "description": "Time string or timestamp"
+        },
+        "status": {
+          "type": "string",
+          "description": "Execution outcome",
+          "enum": ["SUCCESS", "PAUSED", "BLOCKED", "ERROR"]
+        }
+      },
+      "required": ["id", "userId", "agentId", "stepType", "status", "timestamp"]
+    },
+    "pendingAction": {
+      "title": "Pending Approval Action",
+      "description": "Human-in-the-loop pending approval item",
+      "type": "object",
+      "properties": {
+        "actionId": {
+          "type": "string",
+          "description": "Action ID",
+          "maxLength": 128
+        },
+        "userId": {
+          "type": "string",
+          "description": "Owner user UID",
+          "maxLength": 128
+        },
+        "orgId": {
+          "type": "string",
+          "description": "Organization ID",
+          "maxLength": 128
+        },
+        "agentId": {
+          "type": "string",
+          "description": "Agent ID",
+          "maxLength": 128
+        },
+        "agentName": {
+          "type": "string",
+          "description": "Agent Name",
+          "maxLength": 100
+        },
+        "toolName": {
+          "type": "string",
+          "description": "Tool Name",
+          "maxLength": 100
+        },
+        "agentReasoning": {
+          "type": "string",
+          "description": "Agent justification",
+          "maxLength": 1000
+        },
+        "riskLevel": {
+          "type": "string",
+          "description": "Risk Level",
+          "enum": ["GREEN", "YELLOW", "RED"]
+        },
+        "status": {
+          "type": "string",
+          "description": "Approval Status",
+          "enum": ["PENDING", "APPROVED", "REJECTED"]
+        },
+        "humanDecisionNote": {
+          "type": "string",
+          "description": "Feedback from human reviewer",
+          "maxLength": 500
+        },
+        "createdAt": {
+          "type": "string",
+          "description": "Creation timestamp"
+        },
+        "expiresAt": {
+          "type": "string",
+          "description": "Expiration timestamp"
+        }
+      },
+      "required": ["actionId", "userId", "agentId", "toolName", "riskLevel", "status", "createdAt"]
     }
   },
   "firestore": {
     "/users/{userId}": {
       "schema": "user",
       "description": "Stores user profile data, sign-up organization details, and plan tier"
+    },
+    "/agents/{agentId}": {
+      "schema": "agent",
+      "description": "Stores autonomous agents configured by users and organizations"
+    },
+    "/virtualKeys/{keyId}": {
+      "schema": "virtualKey",
+      "description": "Stores virtual API keys with security guardrails and rate limits"
+    },
+    "/policies/{policyId}": {
+      "schema": "policy",
+      "description": "Stores tool execution policies, risk thresholds, and rule parameters"
+    },
+    "/promptRules/{ruleId}": {
+      "schema": "promptRule",
+      "description": "Stores prompt guardrails and natural language safety rules"
+    },
+    "/traceEvents/{traceId}": {
+      "schema": "traceEvent",
+      "description": "Stores execution telemetry and audit trace logs"
+    },
+    "/pendingActions/{actionId}": {
+      "schema": "pendingAction",
+      "description": "Stores human-in-the-loop pending approval actions"
     }
   }
 }

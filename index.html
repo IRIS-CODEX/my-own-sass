@@ -25,10 +25,21 @@
             document.documentElement.classList.add('light');
           }
         } catch (e) {}
+
+        // Gracefully ignore benign Vite dev server websocket disconnection messages in sandbox
+        window.addEventListener('unhandledrejection', function(event) {
+          if (event && event.reason && (
+            String(event.reason).includes('WebSocket') ||
+            String(event.reason).includes('failed to connect to websocket') ||
+            String(event.reason).includes('WebSocket closed without opened')
+          )) {
+            event.preventDefault();
+          }
+        });
       })();
     </script>
   </head>
-  <body class="bg-[#f8fafc] dark:bg-[#08090f] text-slate-900 dark:text-slate-100 antialiased selection:bg-yellow-400 selection:text-slate-950 min-h-screen">
+  <body class="bg-[#faf8f5] dark:bg-[#181715] text-[#1f1e1b] dark:text-[#f5f3ef] antialiased selection:bg-amber-500/20 selection:text-amber-900 min-h-screen">
     <div id="root"></div>
     <script type="module" src="/src/main.tsx"></script>
   </body>
