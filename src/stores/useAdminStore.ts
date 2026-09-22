@@ -326,15 +326,16 @@ export const useAdminStore = create<AdminState>((set, get) => ({
       normalizedEmail === 'root@agentlens.internal' ||
       normalizedEmail === 'superadmin@agentlens.internal';
 
-    // 2. Check if this email is an App/Tenant user (from tenants roster) who is NOT an authorized portal operator
-    const isTenantClient = get().tenants.some(
-      (t) => t.ownerEmail.toLowerCase().trim() === normalizedEmail
-    );
+    // 2. Check if this email is an App/Tenant user (from tenants roster or active customer session) who is NOT an authorized portal operator
+    const currentAppUser = typeof window !== 'undefined' ? (window as any).__agentlens_app_user : null;
+    const isTenantClient =
+      get().tenants.some((t) => t.ownerEmail.toLowerCase().trim() === normalizedEmail) ||
+      (currentAppUser && currentAppUser.toLowerCase().trim() === normalizedEmail);
 
     if (isTenantClient && !matchedPortalUser && !isRootOwner) {
       return {
         success: false,
-        error: `Access Denied: '${email}' is registered as an App User / Tenant account. Tenant customer accounts are strictly barred from SaaS Central Root Management. Please access your Customer Workspace to manage your AI agents.`,
+        error: `Access Denied: '${email}' is registered as an App User / Tenant account. Tenant customer accounts are strictly barred from SaaS Central Root Management. Please access your Customer Workspace at /login to manage your AI agents.`,
       };
     }
 

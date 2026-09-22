@@ -19,7 +19,20 @@ import {
   Image as ImageIcon,
   CheckCircle2,
   FileJson,
+  Mail,
+  Inbox,
+  Send,
 } from 'lucide-react';
+import { useAppStore } from '../../stores/useAppStore';
+import {
+  connectGmailAccount,
+  disconnectGmailAccount,
+  isGmailConnected,
+  getConnectedGmailEmail,
+  fetchGmailMessages,
+  createGmailDraft,
+  GmailMessageSummary,
+} from '../../lib/gmailService';
 
 export const WorkflowInspector: React.FC = () => {
   const {
@@ -35,8 +48,104 @@ export const WorkflowInspector: React.FC = () => {
   const [activeTab, setActiveTab] = useState<'config' | 'payload' | 'credentials' | 'code'>('config');
   const [testOutput, setTestOutput] = useState<string | null>(null);
   const [isTestingScript, setIsTestingScript] = useState(false);
+  const { addToast } = useAppStore();
+
+  const [gmailMessages, setGmailMessages] = useState<GmailMessageSummary[]>([]);
+  const [isLoadingGmail, setIsLoadingGmail] = useState(false);
+  const [draftingForId, setDraftingForId] = useState<string | null>(null);
 
   const selectedNode = nodes.find((n) => n.id === selectedNodeId);
+
+  const handleGmailConnect = async () => {
+    try {
+      const res = await connectGmailAccount();
+      if (res.success) {
+        addToast({
+          title: 'Google Account Connected',
+          description: `Authorized management for ${res.email}`,
+          type: 'success',
+        });
+      }
+    } catch (err: any) {
+      addToast({
+        title: 'Connection Error',
+        description: err.message || 'Failed to authenticate Google account',
+        type: 'error',
+      });
+    }
+  };
+
+  const handleGmailDisconnect = () => {
+    disconnectGmailAccount();
+    setGmailMessages([]);
+    addToast({
+      title: 'Google Account Disconnected',
+      description: 'Gmail session disconnected.',
+      type: 'info',
+    });
+  };
+
+  const handleFetchGmail = async () => {
+    setIsLoadingGmail(true);
+    try {
+      const filter = selectedNode?.config?.queryFilter || 'is:unread category:primary';
+      const res = await fetchGmailMessages({ q: filter, maxResults: 5 });
+      setGmailMessages(res.messages);
+      addToast({
+        title: 'Inbox Polled Successfully',
+        description: `Retrieved ${res.messages.length} thread(s) (${res.unreadCount} unread).`,
+        type: 'success',
+      });
+    } catch (err: any) {
+      addToast({
+        title: 'Sync Error',
+        description: err.message || 'Failed to poll inbox.',
+        type: 'error',
+      });
+    } finally {
+      setIsLoadingGmail(false);
+    }
+  };
+
+  const handleCreateDraftForMessage = async (msg: GmailMessageSummary) => {
+    setDraftingForId(msg.id);
+    try {
+      const subject = `Re: ${msg.subject}`;
+      const htmlContent = `<div style="font-family: sans-serif; line-height: 1.6; color: #1f1e1b;">
+<p>Hello,</p>
+<p>Thank you for reaching out. This is an automated response synthesized by your Executive Gmail Manager Agent.</p>
+<p><em>Regarding: "${msg.snippet.slice(0, 100)}..."</em></p>
+<p>We have logged your request and prioritized it accordingly under zero-trust governance.</p>
+<p>Best regards,<br><strong>Executive AI Agent</strong></p>
+</div>`;
+      const res = await createGmailDraft({
+        to: msg.from,
+        subject,
+        htmlContent,
+      });
+      if (res.success) {
+        addToast({
+          title: 'AI Draft Created in Gmail',
+          description: `Draft created for "${msg.subject}" (Draft ID: ${res.draftId})`,
+          type: 'success',
+        });
+      } else {
+        addToast({
+          title: 'Draft Creation Failed',
+          description: res.error || 'Could not save draft to Gmail.',
+          type: 'error',
+        });
+      }
+    } catch (err: any) {
+      addToast({
+        title: 'Error Creating Draft',
+        description: err.message || 'Draft synthesis failed.',
+        type: 'error',
+      });
+    } finally {
+      setDraftingForId(null);
+    }
+  };
 
   // Generate fallback script if node doesn't have one
   const getNodeScript = () => {
@@ -356,6 +465,124 @@ export async function transformData(item: Record<string, any>) {
                   }
                   className="w-full p-2.5 rounded-xl border border-[#e5e0d5] dark:border-[#33302b] bg-white dark:bg-[#211f1c] text-xs text-[#1f1e1b] dark:text-[#f5f3ef] font-mono leading-relaxed resize-none"
                 />
+              </div>
+            )}
+
+            {/* Gmail Platform Integration & Live Enclave Operations */}
+            {selectedNode.platform === 'gmail' && (
+              <div className="pt-3 border-t border-[#e5e0d5] dark:border-[#33302b] space-y-3.5">
+                <div className="flex items-center justify-between">
+                  <div className="flex items-center gap-1.5">
+                    <Mail className="w-4 h-4 text-[#d97706] dark:text-[#f59e0b]" />
+                    <span className="font-bold text-xs text-[#1f1e1b] dark:text-[#f5f3ef]">
+                      Google Workspace Integration
+                    </span>
+                  </div>
+                  <span className="text-[10px] font-mono px-2 py-0.5 rounded-full font-bold bg-amber-500/15 text-[#b45309] dark:text-[#fbbf24] border border-amber-500/25">
+                    {isGmailConnected() ? 'OAuth Active' : 'OAuth Required'}
+                  </span>
+                </div>
+
+                {/* OAuth Connect Banner */}
+                <div className="p-3 rounded-xl bg-[#f4f1ea] dark:bg-[#211f1c] border border-[#e5e0d5] dark:border-[#33302b] flex items-center justify-between gap-2">
+                  <div className="truncate">
+                    <span className="text-[11px] font-bold text-[#1f1e1b] dark:text-[#f5f3ef] block truncate">
+                      {isGmailConnected() ? getConnectedGmailEmail() : 'No Google Account Linked'}
+                    </span>
+                    <span className="text-[10px] text-[#878278]">
+                      {isGmailConnected() ? 'Direct token delegation' : 'Sign in to poll & draft emails'}
+                    </span>
+                  </div>
+                  {isGmailConnected() ? (
+                    <button
+                      type="button"
+                      onClick={handleGmailDisconnect}
+                      className="px-2.5 py-1 text-[11px] font-bold text-[#878278] hover:text-[#1f1e1b] dark:hover:text-white rounded-lg border border-[#e5e0d5] dark:border-[#33302b] hover:bg-white dark:hover:bg-[#282622] transition-colors cursor-pointer"
+                    >
+                      Disconnect
+                    </button>
+                  ) : (
+                    <button
+                      type="button"
+                      onClick={handleGmailConnect}
+                      className="px-2.5 py-1 text-[11px] font-bold text-white bg-[#d97706] hover:bg-[#b45309] rounded-lg transition-colors cursor-pointer shadow-xs flex items-center gap-1"
+                    >
+                      <Lock className="w-3 h-3" />
+                      <span>Authorize</span>
+                    </button>
+                  )}
+                </div>
+
+                {/* Query Filter (if trigger or inbox node) */}
+                {selectedNode.config.queryFilter !== undefined && (
+                  <div>
+                    <label className="block text-[11px] font-bold text-[#878278] dark:text-[#7d7970] uppercase tracking-wider mb-1 font-mono">
+                      Gmail Search Filter
+                    </label>
+                    <input
+                      type="text"
+                      value={selectedNode.config.queryFilter}
+                      onChange={(e) =>
+                        updateNodeConfig(selectedNode.id, { queryFilter: e.target.value })
+                      }
+                      placeholder="is:unread category:primary"
+                      className="w-full px-2.5 py-1.5 rounded-xl border border-[#e5e0d5] dark:border-[#33302b] bg-white dark:bg-[#211f1c] text-xs font-mono"
+                    />
+                  </div>
+                )}
+
+                {/* Live Inbox Tester Button */}
+                <div className="space-y-2">
+                  <div className="flex items-center justify-between">
+                    <span className="text-[11px] font-bold text-[#5c5850] dark:text-[#b8b4aa]">
+                      Live Inbox Testing
+                    </span>
+                    <button
+                      type="button"
+                      onClick={handleFetchGmail}
+                      disabled={isLoadingGmail}
+                      className="px-2.5 py-1 rounded-lg bg-amber-500/15 hover:bg-amber-500/25 text-[#b45309] dark:text-[#fbbf24] text-[11px] font-bold transition-colors flex items-center gap-1 cursor-pointer"
+                    >
+                      <RefreshCw className={`w-3 h-3 ${isLoadingGmail ? 'animate-spin' : ''}`} />
+                      <span>{isLoadingGmail ? 'Polling...' : 'Fetch Unread'}</span>
+                    </button>
+                  </div>
+
+                  {gmailMessages.length > 0 && (
+                    <div className="space-y-1.5 max-h-56 overflow-y-auto pr-1">
+                      {gmailMessages.map((msg) => (
+                        <div
+                          key={msg.id}
+                          className="p-2 rounded-xl bg-white dark:bg-[#1e1d1a] border border-[#e5e0d5] dark:border-[#33302b] text-[11px] space-y-1"
+                        >
+                          <div className="flex items-center justify-between">
+                            <span className="font-bold text-[#1f1e1b] dark:text-[#f5f3ef] truncate max-w-[140px]">
+                              {msg.from.split('<')[0]}
+                            </span>
+                            <span className="text-[9px] text-[#878278]">{msg.date}</span>
+                          </div>
+                          <p className="font-medium text-[#1f1e1b] dark:text-[#f5f3ef] truncate">
+                            {msg.subject}
+                          </p>
+                          <p className="text-[10px] text-[#5c5850] dark:text-[#b8b4aa] line-clamp-1">
+                            {msg.snippet}
+                          </p>
+                          <div className="pt-1 flex items-center justify-end">
+                            <button
+                              type="button"
+                              onClick={() => handleCreateDraftForMessage(msg)}
+                              disabled={draftingForId === msg.id}
+                              className="px-2 py-0.5 rounded text-[10px] font-bold bg-[#c15f3c] hover:bg-[#a94f30] text-white flex items-center gap-1 cursor-pointer transition-colors"
+                            >
+                              <Send className="w-2.5 h-2.5" />
+                              <span>{draftingForId === msg.id ? 'Drafting...' : 'Save AI Draft'}</span>
+                            </button>
+                          </div>
+                        </div>
+                      ))}
+                    </div>
+                  )}
+                </div>
               </div>
             )}
           </div>

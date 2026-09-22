@@ -43,9 +43,8 @@ export const AdminSidebar: React.FC = () => {
     },
     {
       id: 'tenants',
-      label: 'Tenant Customers & Users',
+      label: 'App Users & Customer Tenants',
       icon: Users,
-      badge: `${tenants.length} orgs`,
     },
     {
       id: 'unpaid',
@@ -58,7 +57,6 @@ export const AdminSidebar: React.FC = () => {
       id: 'pricing',
       label: 'Package & Price Studio',
       icon: Tag,
-      badge: `${pricingPackages?.length || 4} tiers`,
     },
     {
       id: 'security',
@@ -72,9 +70,8 @@ export const AdminSidebar: React.FC = () => {
     },
     {
       id: 'roles',
-      label: 'SaaS Staff & Roles (RBAC)',
+      label: 'SaaS Staff & Admin Roles (RBAC)',
       icon: ShieldCheck,
-      badge: 'Internal',
     },
     {
       id: 'settings',

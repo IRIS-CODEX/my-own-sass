@@ -14,7 +14,6 @@ export type NavItem =
   | 'chat'
   | 'workflow'
   | 'agents'
-  | 'gmail'
   | 'studio'
   | 'overview'
   | 'live-stream'

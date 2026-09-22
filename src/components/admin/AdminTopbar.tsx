@@ -1,31 +1,22 @@
 import React from 'react';
 import {
-  ShieldAlert,
-  Server,
   Sun,
   Moon,
   Search,
   ArrowLeft,
-  Bell,
-  CheckCircle2,
-  Lock,
-  OctagonAlert
 } from 'lucide-react';
 import { useAdminStore } from '../../stores/useAdminStore';
 import { useAppStore } from '../../stores/useAppStore';
-import { CloudSqlDiagnosticIndicator } from './CloudSqlDiagnosticIndicator';
 
 interface AdminTopbarProps {
   onOpenCloudSqlDiagnostics?: () => void;
 }
 
-export const AdminTopbar: React.FC<AdminTopbarProps> = ({ onOpenCloudSqlDiagnostics }) => {
+export const AdminTopbar: React.FC<AdminTopbarProps> = () => {
   const {
     adminActivePage,
     searchQuery,
     setSearchQuery,
-    globalKillSwitchActive,
-    toggleGlobalKillSwitch,
   } = useAdminStore();
 
   const { theme, toggleTheme, setIsAdminView, addToast } = useAppStore();
@@ -64,10 +55,10 @@ export const AdminTopbar: React.FC<AdminTopbarProps> = ({ onOpenCloudSqlDiagnost
         </h1>
       </div>
 
-      {/* Right: Search, Cloud SQL Diagnostic, Health, Controls */}
+      {/* Right: Search, Theme Toggle, Controls */}
       <div className="flex items-center gap-2.5">
         {/* Search */}
-        <div className="relative w-40 sm:w-56 hidden xl:block">
+        <div className="relative w-40 sm:w-56 hidden md:block">
           <Search className="w-3.5 h-3.5 absolute left-3 top-1/2 -translate-y-1/2 text-[#878278] dark:text-[#7d7970]" />
           <input
             type="text"
@@ -77,31 +68,6 @@ export const AdminTopbar: React.FC<AdminTopbarProps> = ({ onOpenCloudSqlDiagnost
             className="w-full bg-white dark:bg-[#211f1c] border border-[#e5e0d5] dark:border-[#33302b] rounded-xl pl-8 pr-3 py-1.5 text-xs text-[#1f1e1b] dark:text-[#f5f3ef] placeholder-[#878278] dark:placeholder-[#7d7970] focus:outline-hidden focus:border-[#d97706] dark:focus:border-[#f59e0b] font-medium shadow-xs"
           />
         </div>
-
-        {/* Real-time Cloud SQL Diagnostic Indicator */}
-        <CloudSqlDiagnosticIndicator onOpenFullModal={onOpenCloudSqlDiagnostics} />
-
-        {/* Live Cluster Health Badge */}
-        <div className="hidden lg:flex items-center gap-2 px-2.5 py-1.5 rounded-xl bg-neutral-500/10 border border-[#e5e0d5] dark:border-[#33302b] text-[#5c5850] dark:text-[#b8b4aa] font-mono text-[11px] font-bold">
-          <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse" />
-          <span>Cluster: 12/12</span>
-        </div>
-
-        {/* Kill Switch Toggle */}
-        <button
-          onClick={toggleGlobalKillSwitch}
-          className={`px-3 py-1.5 rounded-xl text-xs font-semibold transition-all flex items-center gap-1.5 cursor-pointer shadow-xs ${
-            globalKillSwitchActive
-              ? 'bg-rose-600 text-white animate-pulse'
-              : 'bg-white hover:bg-rose-50 dark:bg-[#211f1c] dark:hover:bg-rose-950/40 text-[#1f1e1b] dark:text-[#f5f3ef] border border-[#e5e0d5] dark:border-[#33302b] hover:border-rose-400'
-          }`}
-          title={globalKillSwitchActive ? 'Disengage Circuit Breaker' : 'Engage Emergency Kill-Switch'}
-        >
-          <OctagonAlert className={`w-3.5 h-3.5 ${globalKillSwitchActive ? 'text-white' : 'text-rose-500'}`} />
-          <span className="hidden sm:inline">
-            {globalKillSwitchActive ? 'Kill-Switch ON' : 'Emergency'}
-          </span>
-        </button>
 
         {/* Theme Toggle */}
         <button

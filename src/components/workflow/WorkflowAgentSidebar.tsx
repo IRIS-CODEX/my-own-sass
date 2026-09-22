@@ -282,98 +282,48 @@ export const WorkflowAgentSidebar: React.FC = () => {
 
       {/* 1. Header: Agent Selector & Tab Bar */}
       <div className="p-3 border-b border-[#e5e0d5] dark:border-[#33302b] bg-[#faf8f5]/90 dark:bg-[#181715]/90 flex-shrink-0">
-        <div className="flex items-center justify-between gap-2 mb-2.5">
-          <div className="flex items-center gap-2 flex-1 min-w-0">
-            <div className="w-7 h-7 rounded-lg bg-[#c15f3c] text-white flex items-center justify-center flex-shrink-0 shadow-xs">
+        <div className="flex items-center justify-between gap-2 mb-2">
+          <div className="flex items-center gap-2 min-w-0">
+            <div className="w-7 h-7 rounded-lg bg-[#c15f3c] text-white flex items-center justify-center flex-shrink-0 shadow-2xs">
               <Bot className="w-4 h-4" />
             </div>
-            <div className="flex-1 min-w-0">
-              <div className="flex items-center gap-1.5">
-                <select
-                  value={selectedAgentId}
-                  onChange={(e) => setSelectedAgentId(e.target.value)}
-                  className="text-xs font-bold text-[#1f1e1b] dark:text-[#f5f3ef] bg-transparent border-none focus:outline-none cursor-pointer truncate max-w-[160px]"
-                >
-                  {combinedAgents.map((ag) => (
-                    <option key={ag.id} value={ag.id} className="dark:bg-[#211f1c]">
-                      {ag.name}
-                    </option>
-                  ))}
-                </select>
-              </div>
-              <div className="flex items-center gap-1.5 text-[10px] text-emerald-600 dark:text-emerald-400 font-mono">
-                <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse" />
-                <span className="truncate">Active Builder • {currentAgent.model}</span>
+            <div className="min-w-0">
+              <select
+                value={selectedAgentId}
+                onChange={(e) => setSelectedAgentId(e.target.value)}
+                className="text-xs font-bold text-[#1f1e1b] dark:text-[#f5f3ef] bg-transparent border-none focus:outline-none cursor-pointer truncate max-w-[170px] block"
+              >
+                {combinedAgents.map((ag) => (
+                  <option key={ag.id} value={ag.id} className="dark:bg-[#211f1c]">
+                    {ag.name}
+                  </option>
+                ))}
+              </select>
+              <div className="text-[10px] text-emerald-600 dark:text-emerald-400 font-mono truncate">
+                {currentAgent.model}
               </div>
             </div>
           </div>
 
           <div className="flex items-center gap-1">
-            {/* Quick Size Preset Toggles */}
-            <div className="flex items-center bg-[#f4f1ea] dark:bg-[#262421] rounded-lg p-0.5 border border-[#e5e0d5] dark:border-[#33302b]">
-              <button
-                onClick={() => setPresetWidth(300)}
-                className={`px-1.5 py-0.5 rounded text-[10px] font-mono cursor-pointer transition-colors ${
-                  sidebarWidth <= 320
-                    ? 'bg-[#c15f3c] text-white font-bold'
-                    : 'text-[#878278] hover:text-[#1f1e1b] dark:hover:text-[#f5f3ef]'
-                }`}
-                title="Compact Width (300px)"
-              >
-                S
-              </button>
-              <button
-                onClick={() => setPresetWidth(400)}
-                className={`px-1.5 py-0.5 rounded text-[10px] font-mono cursor-pointer transition-colors ${
-                  sidebarWidth > 320 && sidebarWidth <= 460
-                    ? 'bg-[#c15f3c] text-white font-bold'
-                    : 'text-[#878278] hover:text-[#1f1e1b] dark:hover:text-[#f5f3ef]'
-                }`}
-                title="Standard Width (400px)"
-              >
-                M
-              </button>
-              <button
-                onClick={() => setPresetWidth(580)}
-                className={`px-1.5 py-0.5 rounded text-[10px] font-mono cursor-pointer transition-colors ${
-                  sidebarWidth > 460
-                    ? 'bg-[#c15f3c] text-white font-bold'
-                    : 'text-[#878278] hover:text-[#1f1e1b] dark:hover:text-[#f5f3ef]'
-                }`}
-                title="Wide Expanded Width (580px)"
-              >
-                L
-              </button>
-            </div>
-
             <button
               onClick={() => setGitHubModalOpen(true)}
-              className="p-1 px-1.5 rounded-lg bg-[#24292e] hover:bg-[#32383f] text-white transition-colors cursor-pointer flex items-center gap-1 font-semibold text-[10px] shadow-2xs"
+              className="w-7 h-7 rounded-lg hover:bg-[#e5e0d5]/50 dark:hover:bg-[#33302b] text-[#5c5850] dark:text-[#b8b4aa] flex items-center justify-center transition-colors cursor-pointer"
               title={`Sync AI Agent Code to GitHub (${owner}/${repo}@${branch})`}
             >
               <Github className="w-3.5 h-3.5" />
-              <span>GitHub</span>
             </button>
-
             <button
               onClick={clearAgentMessages}
-              className="p-1 rounded-lg text-[#878278] hover:text-[#1f1e1b] dark:hover:text-[#f5f3ef] hover:bg-[#e5e0d5]/40 dark:hover:bg-[#33302b] transition-colors cursor-pointer"
+              className="w-7 h-7 rounded-lg hover:bg-[#e5e0d5]/50 dark:hover:bg-[#33302b] text-[#5c5850] dark:text-[#b8b4aa] flex items-center justify-center transition-colors cursor-pointer"
               title="Clear conversation history"
             >
               <Trash2 className="w-3.5 h-3.5" />
             </button>
             <button
               onClick={() => setAgentSidebarOpen(false)}
-              className="p-1 px-1.5 rounded-lg text-[#878278] hover:text-[#c15f3c] hover:bg-[#c15f3c]/10 dark:hover:bg-[#c15f3c]/20 transition-colors cursor-pointer flex items-center gap-1 font-semibold text-[10px]"
-              title="Hide AI Builder sidebar (Shortcut: Ctrl+B or Cmd+B)"
-            >
-              <PanelRightClose className="w-3.5 h-3.5" />
-              <span>Hide</span>
-            </button>
-            <button
-              onClick={() => setAgentSidebarOpen(false)}
-              className="p-1 rounded-lg text-[#878278] hover:text-[#1f1e1b] dark:hover:text-[#f5f3ef] hover:bg-[#e5e0d5]/40 dark:hover:bg-[#33302b] transition-colors cursor-pointer"
-              title="Close AI Agent Panel"
+              className="w-7 h-7 rounded-lg hover:bg-[#e5e0d5]/50 dark:hover:bg-[#33302b] text-[#5c5850] dark:text-[#b8b4aa] flex items-center justify-center transition-colors cursor-pointer"
+              title="Close sidebar"
             >
               <X className="w-3.5 h-3.5" />
             </button>
@@ -381,34 +331,34 @@ export const WorkflowAgentSidebar: React.FC = () => {
         </div>
 
         {/* Tab Buttons */}
-        <div className="flex items-center p-0.5 rounded-xl bg-[#f4f1ea] dark:bg-[#24221f] text-[11px] font-semibold text-[#878278] dark:text-[#9e998f]">
+        <div className="flex items-center p-0.5 rounded-xl bg-[#f4f1ea] dark:bg-[#24221f] text-[11px] font-medium text-[#878278] dark:text-[#9e998f]">
           <button
             onClick={() => setAgentSidebarTab('chat')}
             className={`flex-1 py-1 px-2 rounded-lg flex items-center justify-center gap-1.5 transition-all cursor-pointer ${
               agentSidebarTab === 'chat'
-                ? 'bg-white dark:bg-[#1c1b18] text-[#1f1e1b] dark:text-[#f5f3ef] shadow-2xs font-bold'
+                ? 'bg-white dark:bg-[#1c1b18] text-[#1f1e1b] dark:text-[#f5f3ef] shadow-2xs font-semibold'
                 : 'hover:text-[#1f1e1b] dark:hover:text-[#f5f3ef]'
             }`}
           >
             <Sparkles className="w-3 h-3 text-[#c15f3c]" />
-            <span>AI Builder</span>
+            <span>Builder</span>
           </button>
           <button
             onClick={() => setAgentSidebarTab('builds')}
             className={`flex-1 py-1 px-2 rounded-lg flex items-center justify-center gap-1.5 transition-all cursor-pointer ${
               agentSidebarTab === 'builds'
-                ? 'bg-white dark:bg-[#1c1b18] text-[#1f1e1b] dark:text-[#f5f3ef] shadow-2xs font-bold'
+                ? 'bg-white dark:bg-[#1c1b18] text-[#1f1e1b] dark:text-[#f5f3ef] shadow-2xs font-semibold'
                 : 'hover:text-[#1f1e1b] dark:hover:text-[#f5f3ef]'
             }`}
           >
             <History className="w-3 h-3 text-[#d97706]" />
-            <span>Built ({aiBuildHistory.length})</span>
+            <span>History ({aiBuildHistory.length})</span>
           </button>
           <button
             onClick={() => setAgentSidebarTab('fleet')}
             className={`flex-1 py-1 px-2 rounded-lg flex items-center justify-center gap-1.5 transition-all cursor-pointer ${
               agentSidebarTab === 'fleet'
-                ? 'bg-white dark:bg-[#1c1b18] text-[#1f1e1b] dark:text-[#f5f3ef] shadow-2xs font-bold'
+                ? 'bg-white dark:bg-[#1c1b18] text-[#1f1e1b] dark:text-[#f5f3ef] shadow-2xs font-semibold'
                 : 'hover:text-[#1f1e1b] dark:hover:text-[#f5f3ef]'
             }`}
           >
@@ -512,18 +462,24 @@ export const WorkflowAgentSidebar: React.FC = () => {
                   )}
                 </div>
 
-                {/* Quick Prompts for this message */}
+                {/* Clean Suggested Starters */}
                 {msg.suggestedPrompts && msg.suggestedPrompts.length > 0 && (
-                  <div className="mt-2 flex flex-wrap gap-1.5 max-w-[92%]">
-                    {msg.suggestedPrompts.map((prompt, idx) => (
-                      <button
-                        key={idx}
-                        onClick={() => handleSend(prompt)}
-                        className="text-[10px] px-2 py-1 rounded-lg bg-[#f4f1ea] hover:bg-[#e5e0d5] dark:bg-[#262421] dark:hover:bg-[#33302b] text-[#5c5850] dark:text-[#b8b4aa] border border-[#e5e0d5] dark:border-[#33302b] cursor-pointer transition-colors"
-                      >
-                        {prompt}
-                      </button>
-                    ))}
+                  <div className="mt-2 flex flex-col gap-1 w-full max-w-[92%]">
+                    <span className="text-[10px] font-mono text-[#878278] dark:text-[#9e998f] px-0.5">
+                      Suggested actions:
+                    </span>
+                    <div className="grid grid-cols-1 gap-1">
+                      {msg.suggestedPrompts.map((prompt, idx) => (
+                        <button
+                          key={idx}
+                          onClick={() => handleSend(prompt)}
+                          className="text-left text-[11px] px-2.5 py-1.5 rounded-lg bg-white/70 dark:bg-[#211f1c]/70 hover:bg-[#c15f3c]/10 hover:border-[#c15f3c]/30 text-[#1f1e1b] dark:text-[#f5f3ef] border border-[#e5e0d5] dark:border-[#33302b] cursor-pointer transition-all flex items-center justify-between group shadow-2xs"
+                        >
+                          <span className="truncate">{prompt}</span>
+                          <ChevronRight className="w-3 h-3 text-[#878278] group-hover:text-[#c15f3c] transition-colors flex-shrink-0 ml-1" />
+                        </button>
+                      ))}
+                    </div>
                   </div>
                 )}
               </div>
@@ -547,65 +503,60 @@ export const WorkflowAgentSidebar: React.FC = () => {
             <div ref={messagesEndRef} />
           </div>
 
-          {/* Quick Action Chips Strip */}
-          <div className="px-3 py-1.5 bg-[#faf8f5] dark:bg-[#181715] border-t border-[#e5e0d5] dark:border-[#33302b] flex items-center gap-1.5 overflow-x-auto text-[10px] no-scrollbar">
-            <button
-              onClick={() => handleSend('Add Google Gemini 2.0 Flash node')}
-              className="px-2 py-0.5 rounded-full bg-white dark:bg-[#211f1c] border border-[#e5e0d5] dark:border-[#33302b] text-[#5c5850] dark:text-[#b8b4aa] hover:border-[#c15f3c] whitespace-nowrap cursor-pointer transition-colors font-medium flex items-center gap-1"
-            >
-              <Sparkles className="w-2.5 h-2.5 text-[#c15f3c]" />
-              + Gemini Node
-            </button>
-            <button
-              onClick={() => handleSend('Add Google Imagen 3 node')}
-              className="px-2 py-0.5 rounded-full bg-white dark:bg-[#211f1c] border border-[#e5e0d5] dark:border-[#33302b] text-[#5c5850] dark:text-[#b8b4aa] hover:border-[#c15f3c] whitespace-nowrap cursor-pointer transition-colors font-medium flex items-center gap-1"
-            >
-              <Palette className="w-2.5 h-2.5 text-[#d97706]" />
-              + Imagen 3
-            </button>
-            <button
-              onClick={() => handleSend('Add Stripe Treasury node')}
-              className="px-2 py-0.5 rounded-full bg-white dark:bg-[#211f1c] border border-[#e5e0d5] dark:border-[#33302b] text-[#5c5850] dark:text-[#b8b4aa] hover:border-[#c15f3c] whitespace-nowrap cursor-pointer transition-colors font-medium flex items-center gap-1"
-            >
-              <CreditCard className="w-2.5 h-2.5 text-emerald-600" />
-              + Stripe Payout
-            </button>
-            <button
-              onClick={() => handleSend('Add AST Zero-Trust Policy Filter')}
-              className="px-2 py-0.5 rounded-full bg-white dark:bg-[#211f1c] border border-[#e5e0d5] dark:border-[#33302b] text-[#5c5850] dark:text-[#b8b4aa] hover:border-[#c15f3c] whitespace-nowrap cursor-pointer transition-colors font-medium flex items-center gap-1"
-            >
-              <ShieldCheck className="w-2.5 h-2.5 text-indigo-500" />
-              + Security Filter
-            </button>
-            <button
-              onClick={() => handleSend('Run workflow simulation')}
-              className="px-2 py-0.5 rounded-full bg-white dark:bg-[#211f1c] border border-[#e5e0d5] dark:border-[#33302b] text-[#5c5850] dark:text-[#b8b4aa] hover:border-[#c15f3c] whitespace-nowrap cursor-pointer transition-colors font-medium flex items-center gap-1"
-            >
-              <Play className="w-2.5 h-2.5 text-emerald-500" />
-              Run Flow
-            </button>
-          </div>
+          {/* Unified Composer Container with Quick Insert */}
+          <div className="p-3 border-t border-[#e5e0d5] dark:border-[#33302b] bg-white dark:bg-[#1c1b18] flex-shrink-0 space-y-2">
+            {/* Quick Insert Shortcuts */}
+            <div className="flex items-center gap-1 overflow-x-auto text-[10px] no-scrollbar">
+              <span className="text-[#878278] dark:text-[#7d7970] font-mono flex-shrink-0 mr-1">Insert:</span>
+              <button
+                onClick={() => handleSend('Add Google Gemini 2.0 Flash node')}
+                className="px-2 py-0.5 rounded-md bg-[#faf8f5] dark:bg-[#211f1c] hover:bg-[#f0ebe1] dark:hover:bg-[#2a2824] text-[#5c5850] dark:text-[#b8b4aa] hover:text-[#c15f3c] cursor-pointer transition-colors font-medium flex items-center gap-1 border border-[#e5e0d5]/70 dark:border-[#33302b]/70 flex-shrink-0"
+              >
+                <Sparkles className="w-2.5 h-2.5 text-[#c15f3c]" />
+                Gemini
+              </button>
+              <button
+                onClick={() => handleSend('Add Google Imagen 3 node')}
+                className="px-2 py-0.5 rounded-md bg-[#faf8f5] dark:bg-[#211f1c] hover:bg-[#f0ebe1] dark:hover:bg-[#2a2824] text-[#5c5850] dark:text-[#b8b4aa] hover:text-[#c15f3c] cursor-pointer transition-colors font-medium flex items-center gap-1 border border-[#e5e0d5]/70 dark:border-[#33302b]/70 flex-shrink-0"
+              >
+                <Palette className="w-2.5 h-2.5 text-[#d97706]" />
+                Imagen
+              </button>
+              <button
+                onClick={() => handleSend('Add Stripe Treasury node')}
+                className="px-2 py-0.5 rounded-md bg-[#faf8f5] dark:bg-[#211f1c] hover:bg-[#f0ebe1] dark:hover:bg-[#2a2824] text-[#5c5850] dark:text-[#b8b4aa] hover:text-[#c15f3c] cursor-pointer transition-colors font-medium flex items-center gap-1 border border-[#e5e0d5]/70 dark:border-[#33302b]/70 flex-shrink-0"
+              >
+                <CreditCard className="w-2.5 h-2.5 text-emerald-600" />
+                Stripe
+              </button>
+              <button
+                onClick={() => handleSend('Add AST Zero-Trust Policy Filter')}
+                className="px-2 py-0.5 rounded-md bg-[#faf8f5] dark:bg-[#211f1c] hover:bg-[#f0ebe1] dark:hover:bg-[#2a2824] text-[#5c5850] dark:text-[#b8b4aa] hover:text-[#c15f3c] cursor-pointer transition-colors font-medium flex items-center gap-1 border border-[#e5e0d5]/70 dark:border-[#33302b]/70 flex-shrink-0"
+              >
+                <ShieldCheck className="w-2.5 h-2.5 text-indigo-500" />
+                Policy
+              </button>
+            </div>
 
-          {/* Chat Input Container */}
-          <div className="p-3 border-t border-[#e5e0d5] dark:border-[#33302b] bg-white dark:bg-[#1c1b18] flex-shrink-0">
-            <div className="relative rounded-2xl border border-[#e5e0d5] dark:border-[#33302b] bg-[#faf8f5] dark:bg-[#211f1c] focus-within:border-[#c15f3c] focus-within:ring-1 focus-within:ring-[#c15f3c] transition-all p-1.5">
+            {/* Chat Input Field */}
+            <div className="relative rounded-xl border border-[#e5e0d5] dark:border-[#33302b] bg-[#faf8f5] dark:bg-[#211f1c] focus-within:border-[#c15f3c] focus-within:ring-1 focus-within:ring-[#c15f3c] transition-all p-1.5">
               <textarea
                 ref={inputRef}
                 value={inputVal}
                 onChange={(e) => setInputVal(e.target.value)}
                 onKeyDown={handleKeyDown}
-                placeholder={`Tell ${currentAgent.name.split(' ')[0]} what to build or modify...`}
+                placeholder={`Ask ${currentAgent.name.split(' ')[0]} to build or modify flow...`}
                 rows={2}
-                className="w-full bg-transparent border-none text-xs text-[#1f1e1b] dark:text-[#f5f3ef] placeholder-[#878278] dark:placeholder-[#7d7970] focus:outline-none resize-none p-1.5"
+                className="w-full bg-transparent border-none text-xs text-[#1f1e1b] dark:text-[#f5f3ef] placeholder-[#878278] dark:placeholder-[#7d7970] focus:outline-none resize-none p-1.5 leading-relaxed"
               />
-              <div className="flex items-center justify-between px-1 pt-1 border-t border-[#e5e0d5]/40 dark:border-[#33302b]/40">
+              <div className="flex items-center justify-between px-1.5 pt-1 border-t border-[#e5e0d5]/40 dark:border-[#33302b]/40">
                 <span className="text-[10px] font-mono text-[#878278] dark:text-[#7d7970]">
-                  Press Enter ↵ to build
+                  Enter ↵ to build
                 </span>
                 <button
                   onClick={() => handleSend()}
                   disabled={!inputVal.trim() || isAgentThinking}
-                  className="px-3 py-1 rounded-xl bg-[#c15f3c] hover:bg-[#ad5232] disabled:opacity-40 disabled:cursor-not-allowed text-white text-xs font-bold flex items-center gap-1 transition-colors cursor-pointer shadow-xs"
+                  className="px-3 py-1 rounded-lg bg-[#c15f3c] hover:bg-[#ad5232] disabled:opacity-40 disabled:cursor-not-allowed text-white text-xs font-bold flex items-center gap-1 transition-colors cursor-pointer shadow-xs"
                 >
                   <span>Build</span>
                   <Send className="w-3 h-3" />

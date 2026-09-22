@@ -35,6 +35,7 @@ interface WorkflowState {
   inspectorOpen: boolean;
   logsDrawerOpen: boolean;
   addNodeModalOpen: boolean;
+  buildAgentModalOpen: boolean;
   selectedCategoryFilter: string;
 
   // AI Agent Builder Sidebar State
@@ -74,6 +75,7 @@ interface WorkflowState {
   setInspectorOpen: (open: boolean) => void;
   setLogsDrawerOpen: (open: boolean) => void;
   setAddNodeModalOpen: (open: boolean) => void;
+  setBuildAgentModalOpen: (open: boolean) => void;
   setSelectedCategoryFilter: (cat: string) => void;
   clearLogs: () => void;
 
@@ -94,14 +96,12 @@ const INITIAL_AGENT_MESSAGES: WorkflowAgentMessage[] = [
     agentId: 'archon-workflow',
     agentName: 'Archon (Workflow Architect)',
     timestamp: new Date().toISOString(),
-    content: `👋 **Hello! I'm your AI Workflow & Coding Agent.**\n\nI can build, wire, modify, and optimize your flow in real-time. Tell me what you'd like to create, or try one of the quick actions below!`,
+    content: `I am your workflow co-pilot. I can architect, wire, and modify your agent graph in real-time. Describe what you want to build or select a quick starter below.`,
     suggestedPrompts: [
-      '✨ Add Gemini 2.0 Flash Node',
-      '🎨 Add Imagen 3 Diffusion Node',
-      '🛡️ Add AST Zero-Trust Policy Gate',
-      '💳 Add Stripe HITL Escrow Node',
-      '🚀 Run Simulation',
-      '⚡ Optimize Workflow Latency',
+      'Build WhatsApp AI Agent',
+      'Build Gmail Manager Agent',
+      'Add Gemini 2.0 Flash Node',
+      'Add AST Zero-Trust Policy Gate',
     ],
   },
 ];
@@ -146,6 +146,7 @@ export const useWorkflowStore = create<WorkflowState>((set, get) => ({
   inspectorOpen: false,
   logsDrawerOpen: false,
   addNodeModalOpen: false,
+  buildAgentModalOpen: false,
   selectedCategoryFilter: 'ALL',
 
   // AI Agent Sidebar Initial State
@@ -432,6 +433,7 @@ export const useWorkflowStore = create<WorkflowState>((set, get) => ({
   setInspectorOpen: (open: boolean) => set({ inspectorOpen: open }),
   setLogsDrawerOpen: (open: boolean) => set({ logsDrawerOpen: open }),
   setAddNodeModalOpen: (open: boolean) => set({ addNodeModalOpen: open }),
+  setBuildAgentModalOpen: (open: boolean) => set({ buildAgentModalOpen: open }),
   setSelectedCategoryFilter: (cat: string) => set({ selectedCategoryFilter: cat }),
   clearLogs: () => set({ logs: [] }),
 
@@ -507,8 +509,372 @@ export const useWorkflowStore = create<WorkflowState>((set, get) => ({
       if (n.position.y > maxY) maxY = n.position.y;
     });
 
+    // 0A. BUILD WHATSAPP AI AGENT SWARM
+    if (lower.includes('whatsapp')) {
+      const ts = Date.now();
+      const trigId = `node_trig_wa_${ts}`;
+      const policyId = `node_policy_wa_${ts}`;
+      const aiId = `node_ai_wa_${ts}`;
+      const dispatchId = `node_dispatch_wa_${ts}`;
+
+      const waTrigNode: WorkflowNode = {
+        id: trigId,
+        name: 'WhatsApp Cloud Ingress',
+        type: 'trigger',
+        platform: 'whatsapp',
+        category: 'Ingress & Triggers',
+        position: { x: maxX + 100, y: 120 },
+        status: 'idle',
+        icon: 'MessageCircle',
+        description: 'Receives customer messages and webhook verification events from Meta Cloud API.',
+        inputs: [],
+        outputs: [{ id: 'out_wa_msg', name: 'customer_message', type: 'data', description: 'Incoming customer text and metadata' }],
+        config: {
+          phoneId: '104829104829104',
+          verifyToken: 'agentlens_wa_secret_token_99',
+          recipientPhone: '+1 555 019 2834',
+        },
+        metrics: { latencyMs: 1.2, tokens: 0, costUsd: 0, executions: 0, errorRate: 0 },
+        livePayload: {
+          output: { sender: '+15550192834', message: 'Hello! Can you help me check my order status?', timestamp: new Date().toISOString() },
+          statusSummary: 'Webhook Handshake Verified',
+        },
+      };
+
+      const waPolicyNode: WorkflowNode = {
+        id: policyId,
+        name: 'AST Zero-Trust & PII Filter',
+        type: 'policy_gate',
+        platform: 'aws_nitro',
+        category: 'Zero-Trust Security',
+        position: { x: maxX + 380, y: 90 },
+        status: 'idle',
+        icon: 'ShieldCheck',
+        description: 'Redacts customer credit cards/SSNs and scans against prompt injection jailbreaks.',
+        inputs: [{ id: 'in_raw', name: 'customer_message', type: 'data' }],
+        outputs: [{ id: 'out_sanitized', name: 'sanitized_msg', type: 'data' }],
+        config: { policyRuleId: 'SEC-WHATSAPP-01', piiRedaction: true, fido2Required: false },
+        metrics: { latencyMs: 0.8, tokens: 60, costUsd: 0.0001, executions: 0, errorRate: 0 },
+      };
+
+      const waAiNode: WorkflowNode = {
+        id: aiId,
+        name: 'WhatsApp Support Agent',
+        type: 'ai_model',
+        platform: 'gemini',
+        category: 'AI Models',
+        position: { x: maxX + 660, y: 120 },
+        status: 'idle',
+        icon: 'Sparkles',
+        description: 'Gemini 2.0 Flash customer support reasoning with sub-second response streaming.',
+        inputs: [
+          { id: 'in_context', name: 'sanitized_msg', type: 'data' },
+          { id: 'in_key', name: 'Virtual Proxy Key', type: 'token' },
+        ],
+        outputs: [
+          { id: 'out_reply', name: 'support_reply', type: 'data' },
+          { id: 'out_sig', name: 'dispatch_signal', type: 'signal' },
+        ],
+        config: {
+          model: 'gemini-2.0-flash',
+          systemPrompt: 'You are an autonomous WhatsApp customer support agent. Answer customer inquiries politely, concisely, and helpfully. Keep messages under 300 characters when possible.',
+          temperature: 0.3,
+          budgetCapUsd: 25.0,
+        },
+        metrics: { latencyMs: 290, tokens: 940, costUsd: 0.0005, executions: 0, errorRate: 0 },
+        credentials: { type: 'Meta Cloud API Proxy Key', status: 'CONNECTED', keyMask: 'EAAGm...9281' },
+      };
+
+      const waDispatchNode: WorkflowNode = {
+        id: dispatchId,
+        name: 'WhatsApp Cloud Dispatcher',
+        type: 'integration',
+        platform: 'whatsapp',
+        category: 'Integrations',
+        position: { x: maxX + 940, y: 130 },
+        status: 'idle',
+        icon: 'MessageCircle',
+        description: 'Sends authorized interactive message replies back to the customer on WhatsApp.',
+        inputs: [
+          { id: 'in_reply', name: 'support_reply', type: 'data' },
+          { id: 'in_sig', name: 'dispatch_signal', type: 'signal' },
+        ],
+        outputs: [{ id: 'out_receipt', name: 'meta_receipt', type: 'data' }],
+        config: { phoneId: '104829104829104', messagingType: 'CUSTOMER_SERVICE' },
+        metrics: { latencyMs: 180, tokens: 0, costUsd: 0.001, executions: 0, errorRate: 0 },
+      };
+
+      const e1: WorkflowEdge = { id: `e_${trigId}_${policyId}`, sourceNodeId: trigId, sourcePortId: 'out_wa_msg', targetNodeId: policyId, targetPortId: 'in_raw', animated: true, status: 'idle', dataType: 'data' };
+      const e2: WorkflowEdge = { id: `e_${policyId}_${aiId}`, sourceNodeId: policyId, sourcePortId: 'out_sanitized', targetNodeId: aiId, targetPortId: 'in_context', animated: true, status: 'idle', dataType: 'data' };
+      const e3: WorkflowEdge = { id: `e_${aiId}_${dispatchId}`, sourceNodeId: aiId, sourcePortId: 'out_reply', targetNodeId: dispatchId, targetPortId: 'in_reply', animated: true, status: 'idle', dataType: 'data' };
+
+      set((s) => ({
+        nodes: [...s.nodes, waTrigNode, waPolicyNode, waAiNode, waDispatchNode],
+        edges: [...s.edges, e1, e2, e3],
+        selectedNodeId: aiId,
+        inspectorOpen: true,
+      }));
+
+      const action: AIBuildAction = {
+        id: `act-${ts}-wa`,
+        timestamp: new Date().toISOString(),
+        agentId: state.selectedAgentId,
+        agentName: customAgentName || 'Archon (Workflow Architect)',
+        actionType: 'ADD_NODE',
+        title: 'Provisioned WhatsApp Autonomous Agent Swarm',
+        description: 'Built and connected WhatsApp Cloud Ingress -> AST Zero-Trust -> Gemini 2.0 Flash -> WhatsApp Cloud Dispatcher.',
+        nodeIds: [trigId, policyId, aiId, dispatchId],
+        edgeIds: [e1.id, e2.id, e3.id],
+        diffSummary: '+ 4 Nodes (WhatsApp Swarm) & 3 Wires',
+      };
+      actionsTaken.push(action);
+
+      thoughtText = 'Constructed complete WhatsApp Cloud API agent swarm with ingress webhook, AST PII redaction, Gemini 2.0 Flash support engine, and Meta dispatch API.';
+      responseText = `📱 **WhatsApp AI Agent Swarm Deployed!**\n\nI have built and wired a complete 4-node WhatsApp integration pipeline:\n1. **WhatsApp Cloud Ingress**: Webhook listener for incoming customer chats.\n2. **AST Zero-Trust Guard**: Sanitizes customer inputs and redacts sensitive PII.\n3. **WhatsApp Support Agent**: Gemini 2.0 Flash reasoning core with sub-second streaming.\n4. **WhatsApp Cloud Dispatcher**: Sends authorized replies to Meta's servers under proxy key governance.`;
+      suggestedPrompts.push('🚀 Run Simulation', '✉️ Build Gmail Manager Agent', '✈️ Build Telegram Bot Agent');
+    }
+    // 0B. BUILD GMAIL AI AGENT SWARM
+    else if (lower.includes('gmail') || lower.includes('email') || lower.includes('inbox')) {
+      const ts = Date.now();
+      const trigId = `node_trig_gmail_${ts}`;
+      const policyId = `node_policy_gmail_${ts}`;
+      const aiId = `node_ai_gmail_${ts}`;
+      const dispatchId = `node_dispatch_gmail_${ts}`;
+
+      const gmailTrigNode: WorkflowNode = {
+        id: trigId,
+        name: 'Gmail Inbox Trigger',
+        type: 'trigger',
+        platform: 'gmail',
+        category: 'Google Workspace',
+        position: { x: maxX + 100, y: 120 },
+        status: 'idle',
+        icon: 'Mail',
+        description: 'Polls and receives unread messages and priority email threads via Google OAuth 2.0.',
+        inputs: [],
+        outputs: [{ id: 'out_thread', name: 'email_thread', type: 'data', description: 'Incoming email thread context' }],
+        config: { queryFilter: 'is:unread category:primary', maxResults: 15 },
+        metrics: { latencyMs: 240, tokens: 0, costUsd: 0, executions: 0, errorRate: 0 },
+        livePayload: {
+          output: { subject: 'Urgent: Q3 Vendor Agreement Revision', from: 'procurement@acme.corp', snippet: 'Please review the updated indemnification clause attached...' },
+          statusSummary: 'OAuth Scope Authorized',
+        },
+      };
+
+      const gmailPolicyNode: WorkflowNode = {
+        id: policyId,
+        name: 'AST Email Guard & Privacy Shield',
+        type: 'policy_gate',
+        platform: 'aws_nitro',
+        category: 'Zero-Trust Security',
+        position: { x: maxX + 380, y: 90 },
+        status: 'idle',
+        icon: 'ShieldCheck',
+        description: 'Strips malicious phishing payloads, prompt injection markers, and protects personal contact info.',
+        inputs: [{ id: 'in_raw', name: 'email_thread', type: 'data' }],
+        outputs: [{ id: 'out_sanitized', name: 'sanitized_thread', type: 'data' }],
+        config: { policyRuleId: 'SEC-GMAIL-01', piiRedaction: true, fido2Required: true },
+        metrics: { latencyMs: 0.9, tokens: 80, costUsd: 0.0001, executions: 0, errorRate: 0 },
+      };
+
+      const gmailAiNode: WorkflowNode = {
+        id: aiId,
+        name: 'Executive Gmail Inbox Pilot',
+        type: 'ai_model',
+        platform: 'gemini',
+        category: 'AI Models',
+        position: { x: maxX + 660, y: 120 },
+        status: 'idle',
+        icon: 'Sparkles',
+        description: 'Autonomous copilot that categorizes emails, summarizes threads, and writes smart drafts.',
+        inputs: [
+          { id: 'in_context', name: 'sanitized_thread', type: 'data' },
+          { id: 'in_key', name: 'Virtual Proxy Key', type: 'token' },
+        ],
+        outputs: [
+          { id: 'out_draft', name: 'email_draft', type: 'data' },
+          { id: 'out_action', name: 'triage_signal', type: 'signal' },
+        ],
+        config: {
+          model: 'gemini-2.0-flash',
+          systemPrompt: 'You are the Executive Gmail Inbox Pilot. Summarize unread emails, prioritize inquiries, and compose professional, courteous email replies under strict Zero-Trust approval.',
+          temperature: 0.2,
+          budgetCapUsd: 30.0,
+        },
+        metrics: { latencyMs: 320, tokens: 1200, costUsd: 0.0008, executions: 0, errorRate: 0 },
+        credentials: { type: 'Google OAuth 2.0 / Gmail API', status: 'CONNECTED', keyMask: 'google_oauth_session' },
+      };
+
+      const gmailDispatchNode: WorkflowNode = {
+        id: dispatchId,
+        name: 'Gmail Draft & Send API',
+        type: 'integration',
+        platform: 'gmail',
+        category: 'Google Workspace',
+        position: { x: maxX + 940, y: 130 },
+        status: 'intercepted',
+        icon: 'Mail',
+        description: 'Creates email drafts and dispatches authorized replies through your personal Gmail account.',
+        inputs: [
+          { id: 'in_draft', name: 'email_draft', type: 'data' },
+          { id: 'in_action', name: 'triage_signal', type: 'signal' },
+        ],
+        outputs: [{ id: 'out_receipt', name: 'send_receipt', type: 'data' }],
+        config: { autoSend: false, requireConfirmation: true, draftMode: 'CREATE_DRAFT_AND_NOTIFY' },
+        metrics: { latencyMs: 290, tokens: 0, costUsd: 0.0, executions: 0, errorRate: 0 },
+      };
+
+      const e1: WorkflowEdge = { id: `e_${trigId}_${policyId}`, sourceNodeId: trigId, sourcePortId: 'out_thread', targetNodeId: policyId, targetPortId: 'in_raw', animated: true, status: 'idle', dataType: 'data' };
+      const e2: WorkflowEdge = { id: `e_${policyId}_${aiId}`, sourceNodeId: policyId, sourcePortId: 'out_sanitized', targetNodeId: aiId, targetPortId: 'in_context', animated: true, status: 'idle', dataType: 'data' };
+      const e3: WorkflowEdge = { id: `e_${aiId}_${dispatchId}`, sourceNodeId: aiId, sourcePortId: 'out_draft', targetNodeId: dispatchId, targetPortId: 'in_draft', animated: true, status: 'idle', dataType: 'data' };
+
+      set((s) => ({
+        nodes: [...s.nodes, gmailTrigNode, gmailPolicyNode, gmailAiNode, gmailDispatchNode],
+        edges: [...s.edges, e1, e2, e3],
+        selectedNodeId: aiId,
+        inspectorOpen: true,
+      }));
+
+      const action: AIBuildAction = {
+        id: `act-${ts}-gmail`,
+        timestamp: new Date().toISOString(),
+        agentId: state.selectedAgentId,
+        agentName: customAgentName || 'Archon (Workflow Architect)',
+        actionType: 'ADD_NODE',
+        title: 'Provisioned Executive Gmail Manager Agent',
+        description: 'Built complete Gmail pipeline: OAuth Ingress -> AST Guard -> Executive Inbox Pilot -> Gmail Draft/Send API.',
+        nodeIds: [trigId, policyId, aiId, dispatchId],
+        edgeIds: [e1.id, e2.id, e3.id],
+        diffSummary: '+ 4 Nodes (Gmail Swarm) & 3 Wires',
+      };
+      actionsTaken.push(action);
+
+      thoughtText = 'Configured Gmail autonomous agent swarm with Google Workspace OAuth 2.0 integration, AST privacy gate, and HITL email drafting.';
+      responseText = `✉️ **Executive Gmail AI Agent Swarm Deployed!**\n\nI have wired your personal Gmail integration flow:\n1. **Gmail Inbox Trigger**: Monitors unread messages via Google OAuth 2.0.\n2. **AST Email Guard**: Scans for phishing risks and redacts PII.\n3. **Executive Gmail Inbox Pilot**: Gemini 2.0 Flash reasoning agent that prioritizes emails and drafts replies.\n4. **Gmail Draft & Send API**: Held in HITL approval escrow so no external emails send without your sign-off.\n\n💡 *Tip: You can click the Gmail node in the inspector or use the "Open Live Gmail AI Hub" button to test reading live inbox messages and composing drafts!*`;
+      suggestedPrompts.push('🚀 Run Simulation', '📱 Build WhatsApp AI Agent', '✈️ Build Telegram Bot Agent');
+    }
+    // 0C. BUILD TELEGRAM BOT AGENT SWARM
+    else if (lower.includes('telegram')) {
+      const ts = Date.now();
+      const trigId = `node_trig_tg_${ts}`;
+      const policyId = `node_policy_tg_${ts}`;
+      const aiId = `node_ai_tg_${ts}`;
+      const dispatchId = `node_dispatch_tg_${ts}`;
+
+      const tgTrigNode: WorkflowNode = {
+        id: trigId,
+        name: 'Telegram Bot Webhook',
+        type: 'trigger',
+        platform: 'telegram',
+        category: 'Ingress & Triggers',
+        position: { x: maxX + 100, y: 120 },
+        status: 'idle',
+        icon: 'Send',
+        description: 'Listens for /commands, group mentions, and direct messages via Telegram Bot API.',
+        inputs: [],
+        outputs: [{ id: 'out_tg_update', name: 'telegram_update', type: 'data', description: 'Incoming update with chat_id and text' }],
+        config: { botToken: '7198234102:AAFtX_LiveMasked', registeredCommands: '/start, /help, /triage, /alert' },
+        metrics: { latencyMs: 1.4, tokens: 0, costUsd: 0, executions: 0, errorRate: 0 },
+        livePayload: {
+          output: { update_id: 881923, message: { text: '/triage check server latency', from: { username: 'alex_ops' } } },
+          statusSummary: 'Bot Polling Active',
+        },
+      };
+
+      const tgPolicyNode: WorkflowNode = {
+        id: policyId,
+        name: 'AST Telegram Guard',
+        type: 'policy_gate',
+        platform: 'aws_nitro',
+        category: 'Zero-Trust Security',
+        position: { x: maxX + 380, y: 90 },
+        status: 'idle',
+        icon: 'ShieldCheck',
+        description: 'Validates authorized user IDs and blocks injection payloads in group chats.',
+        inputs: [{ id: 'in_raw', name: 'telegram_update', type: 'data' }],
+        outputs: [{ id: 'out_sanitized', name: 'sanitized_cmd', type: 'data' }],
+        config: { policyRuleId: 'SEC-TELEGRAM-01', piiRedaction: true, fido2Required: false },
+        metrics: { latencyMs: 0.7, tokens: 70, costUsd: 0.0001, executions: 0, errorRate: 0 },
+      };
+
+      const tgAiNode: WorkflowNode = {
+        id: aiId,
+        name: 'Telegram Sentinel Copilot',
+        type: 'ai_model',
+        platform: 'gemini',
+        category: 'AI Models',
+        position: { x: maxX + 660, y: 120 },
+        status: 'idle',
+        icon: 'Sparkles',
+        description: 'Gemini 2.0 Flash agent interpreting commands, moderating chats, and compiling summaries.',
+        inputs: [
+          { id: 'in_context', name: 'sanitized_cmd', type: 'data' },
+          { id: 'in_key', name: 'Virtual Proxy Key', type: 'token' },
+        ],
+        outputs: [
+          { id: 'out_msg', name: 'telegram_reply', type: 'data' },
+          { id: 'out_sig', name: 'send_signal', type: 'signal' },
+        ],
+        config: {
+          model: 'gemini-2.0-flash',
+          systemPrompt: 'You are an intelligent Telegram bot assistant. Respond to user commands (/start, /help, /triage), explain technical operations clearly, and format responses with clean Markdown.',
+          temperature: 0.3,
+          budgetCapUsd: 20.0,
+        },
+        metrics: { latencyMs: 280, tokens: 820, costUsd: 0.0004, executions: 0, errorRate: 0 },
+        credentials: { type: 'Telegram Bot Token Proxy', status: 'CONNECTED', keyMask: '7198234102:AAFtX...' },
+      };
+
+      const tgDispatchNode: WorkflowNode = {
+        id: dispatchId,
+        name: 'Telegram Bot Send API',
+        type: 'integration',
+        platform: 'telegram',
+        category: 'Integrations',
+        position: { x: maxX + 940, y: 130 },
+        status: 'idle',
+        icon: 'Send',
+        description: 'Dispatches authorized Markdown messages and inline button keyboards back to Telegram.',
+        inputs: [
+          { id: 'in_msg', name: 'telegram_reply', type: 'data' },
+          { id: 'in_sig', name: 'send_signal', type: 'signal' },
+        ],
+        outputs: [{ id: 'out_receipt', name: 'delivery_receipt', type: 'data' }],
+        config: { parseMode: 'MarkdownV2', disableWebPagePreview: true },
+        metrics: { latencyMs: 140, tokens: 0, costUsd: 0.0, executions: 0, errorRate: 0 },
+      };
+
+      const e1: WorkflowEdge = { id: `e_${trigId}_${policyId}`, sourceNodeId: trigId, sourcePortId: 'out_tg_update', targetNodeId: policyId, targetPortId: 'in_raw', animated: true, status: 'idle', dataType: 'data' };
+      const e2: WorkflowEdge = { id: `e_${policyId}_${aiId}`, sourceNodeId: policyId, sourcePortId: 'out_sanitized', targetNodeId: aiId, targetPortId: 'in_context', animated: true, status: 'idle', dataType: 'data' };
+      const e3: WorkflowEdge = { id: `e_${aiId}_${dispatchId}`, sourceNodeId: aiId, sourcePortId: 'out_msg', targetNodeId: dispatchId, targetPortId: 'in_msg', animated: true, status: 'idle', dataType: 'data' };
+
+      set((s) => ({
+        nodes: [...s.nodes, tgTrigNode, tgPolicyNode, tgAiNode, tgDispatchNode],
+        edges: [...s.edges, e1, e2, e3],
+        selectedNodeId: aiId,
+        inspectorOpen: true,
+      }));
+
+      const action: AIBuildAction = {
+        id: `act-${ts}-tg`,
+        timestamp: new Date().toISOString(),
+        agentId: state.selectedAgentId,
+        agentName: customAgentName || 'Archon (Workflow Architect)',
+        actionType: 'ADD_NODE',
+        title: 'Provisioned Telegram Bot Swarm',
+        description: 'Built and connected Telegram Webhook -> AST Zero-Trust -> Gemini 2.0 Flash -> Telegram Send API.',
+        nodeIds: [trigId, policyId, aiId, dispatchId],
+        edgeIds: [e1.id, e2.id, e3.id],
+        diffSummary: '+ 4 Nodes (Telegram Swarm) & 3 Wires',
+      };
+      actionsTaken.push(action);
+
+      thoughtText = 'Constructed Telegram Bot API agent swarm with BotFather token proxy, AST validation, and automated Markdown response dispatch.';
+      responseText = `✈️ **Telegram Bot Agent Swarm Deployed!**\n\nI have wired your Telegram automation pipeline:\n1. **Telegram Bot Webhook**: Receives commands (/start, /triage) and chat messages.\n2. **AST Telegram Guard**: Restricts commands to authorized admins and sanitizes text.\n3. **Telegram Sentinel Copilot**: Gemini 2.0 Flash reasoning agent.\n4. **Telegram Bot Send API**: Formats and delivers Markdown messages to your target channel.`;
+      suggestedPrompts.push('🚀 Run Simulation', '📱 Build WhatsApp AI Agent', '✉️ Build Gmail Manager Agent');
+    }
     // 1. ADD GEMINI NODE
-    if (lower.includes('gemini') || lower.includes('ai model') || lower.includes('llm') || lower.includes('reasoning')) {
+    else if (lower.includes('gemini') || lower.includes('ai model') || lower.includes('llm') || lower.includes('reasoning')) {
       const newNodeId = `node_gemini_${Date.now()}`;
       const newNode: WorkflowNode = {
         id: newNodeId,

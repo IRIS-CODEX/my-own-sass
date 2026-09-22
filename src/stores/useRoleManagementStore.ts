@@ -1,6 +1,7 @@
 import { create } from 'zustand';
 import {
   PagePermissionId,
+  PagePermissionConfig,
   ActionPermissions,
   RoleDefinition,
   PortalUser,
@@ -40,6 +41,14 @@ interface RoleManagementState {
     badge: string;
     clearanceLevel: RoleDefinition['clearanceLevel'];
     baseRoleTemplateId?: string;
+  }) => RoleDefinition;
+  createRoleWithPermissions: (roleData: {
+    name: string;
+    description: string;
+    color: string;
+    badge: string;
+    clearanceLevel: RoleDefinition['clearanceLevel'];
+    pagePermissions: Record<PagePermissionId, PagePermissionConfig>;
   }) => RoleDefinition;
   updateRole: (roleId: string, updates: Partial<RoleDefinition>) => void;
   deleteRole: (roleId: string) => { success: boolean; message?: string };
@@ -145,6 +154,29 @@ export const useRoleManagementStore = create<RoleManagementState>((set, get) => 
       color: roleData.color || '#3b82f6',
       clearanceLevel: roleData.clearanceLevel,
       pagePermissions: basePermissions,
+      assignedUsersCount: 0,
+      createdAt: new Date().toISOString(),
+      updatedAt: new Date().toISOString(),
+    };
+
+    const updatedRoles = [...state.roles, newRole];
+    set({ roles: updatedRoles });
+    localStorage.setItem(ROLES_STORAGE_KEY, JSON.stringify(updatedRoles));
+    get().saveRoleToFirestore(newRole).catch(() => {});
+    return newRole;
+  },
+
+  createRoleWithPermissions: (roleData) => {
+    const state = get();
+    const newRole: RoleDefinition = {
+      id: `role_custom_${Date.now()}`,
+      name: roleData.name,
+      badge: roleData.badge || 'Custom Role',
+      description: roleData.description,
+      isSystem: false,
+      color: roleData.color || '#3b82f6',
+      clearanceLevel: roleData.clearanceLevel,
+      pagePermissions: roleData.pagePermissions,
       assignedUsersCount: 0,
       createdAt: new Date().toISOString(),
       updatedAt: new Date().toISOString(),

@@ -7,6 +7,7 @@ import { WorkflowInspector } from './WorkflowInspector';
 import { WorkflowLogsDrawer } from './WorkflowLogsDrawer';
 import { WorkflowAgentSidebar } from './WorkflowAgentSidebar';
 import { AddNodeModal } from './AddNodeModal';
+import { BuildAgentModal } from './BuildAgentModal';
 
 export const WorkflowCanvasHub: React.FC = () => {
   const {
@@ -298,6 +299,9 @@ export const WorkflowCanvasHub: React.FC = () => {
 
       {/* Add Node Modal */}
       <AddNodeModal />
+
+      {/* Build AI Agent Swarm Modal */}
+      <BuildAgentModal />
     </div>
   );
 };

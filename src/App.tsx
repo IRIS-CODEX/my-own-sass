@@ -17,7 +17,6 @@ import { VirtualKeyVault } from './components/keys/VirtualKeyVault';
 import { ComplianceHub } from './components/compliance/ComplianceHub';
 import { CostAnalytics } from './components/analytics/CostAnalytics';
 import { SettingsHub } from './components/settings/SettingsHub';
-import { GmailManagerHub } from './components/gmail/GmailManagerHub';
 import { AdminPortal } from './components/admin/AdminPortal';
 import { PortfolioPage } from './components/landing/PortfolioPage';
 import { LoginPage } from './components/auth/LoginPage';
@@ -177,8 +176,6 @@ export default function App() {
         return <AgentStudio />;
       case 'agents':
         return <AgentRegistry />;
-      case 'gmail':
-        return <GmailManagerHub />;
       case 'live-stream':
         return <ControlTower />;
       case 'policies':

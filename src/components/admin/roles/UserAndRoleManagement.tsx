@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import {
   Shield,
   ShieldCheck,
+  ShieldPlus,
   Users,
   Key,
   Layers,
@@ -27,6 +28,7 @@ import { useRoleManagementStore } from '../../../stores/useRoleManagementStore';
 import { useAppStore } from '../../../stores/useAppStore';
 import { RoleDetailModal } from './RoleDetailModal';
 import { CreateRoleModal } from './CreateRoleModal';
+import { CreatePermissionRoleModal } from './CreatePermissionRoleModal';
 import { PortalUserModal } from './PortalUserModal';
 import { UserPermissionsInspectorModal } from './UserPermissionsInspectorModal';
 import { RoleMatrixView } from './RoleMatrixView';
@@ -53,6 +55,7 @@ export const UserAndRoleManagement: React.FC = () => {
   const [isRoleDetailOpen, setIsRoleDetailOpen] = useState(false);
 
   const [isCreateRoleOpen, setIsCreateRoleOpen] = useState(false);
+  const [isCreatePermissionRoleOpen, setIsCreatePermissionRoleOpen] = useState(false);
 
   const [selectedUserForModal, setSelectedUserForModal] = useState<PortalUser | null>(null);
   const [isUserModalOpen, setIsUserModalOpen] = useState(false);
@@ -104,66 +107,6 @@ export const UserAndRoleManagement: React.FC = () => {
 
   return (
     <div className="space-y-6">
-      {/* Internal Management Separation Notice Banner */}
-      <div className="p-4 rounded-2xl bg-amber-500/10 border border-amber-500/25 flex items-start gap-3 text-xs shadow-xs">
-        <div className="w-9 h-9 rounded-xl bg-[#d97706]/20 dark:bg-[#f59e0b]/20 text-[#d97706] dark:text-[#f59e0b] flex items-center justify-center shrink-0">
-          <ShieldCheck className="w-5 h-5" />
-        </div>
-        <div>
-          <div className="flex items-center gap-2">
-            <span className="font-bold text-sm text-[#1f1e1b] dark:text-[#f5f3ef]">
-              SaaS Central Staff &amp; Internal Governance (RBAC)
-            </span>
-            <span className="px-2 py-0.5 rounded-full text-[10px] font-mono font-bold bg-amber-500/20 text-[#92400e] dark:text-[#fbbf24]">
-              Internal Deck Operators
-            </span>
-          </div>
-          <p className="text-[11px] text-[#5c5850] dark:text-[#b8b4aa] mt-0.5 leading-relaxed">
-            This module is strictly for <span className="font-semibold text-[#b45309] dark:text-[#fbbf24]">SaaS Central internal operators, security officers, and administrators</span>. Roles and permissions configured here apply exclusively to this management backend. External client accounts (who sign in to run AI agents) cannot access this portal and are managed separately under <span className="font-semibold text-blue-600 dark:text-blue-400">Tenant Customers &amp; Users</span>.
-          </p>
-        </div>
-      </div>
-
-      {/* Top Banner & Metric Header */}
-      <div className="flex flex-wrap items-start justify-between gap-4 p-6 rounded-3xl bg-white/70 dark:bg-[#211f1c]/70 border border-[#e5e0d5] dark:border-[#33302b] shadow-xs">
-        <div>
-          <div className="flex items-center gap-2">
-            <div className="w-9 h-9 rounded-xl bg-[#d97706] dark:bg-[#f59e0b] text-white dark:text-[#181715] flex items-center justify-center shadow-xs">
-              <ShieldCheck className="w-5 h-5" />
-            </div>
-            <div>
-              <h1 className="text-xl font-bold text-[#1f1e1b] dark:text-[#f5f3ef] tracking-tight">
-                SaaS Central Staff &amp; Roles (RBAC)
-              </h1>
-              <p className="text-xs text-[#5c5850] dark:text-[#b8b4aa]">
-                Granular Role-Based Access Control (RBAC), multi-tier clearance, and portal operator administration.
-              </p>
-            </div>
-          </div>
-        </div>
-
-        {/* Global Action Buttons */}
-        <div className="flex items-center gap-2">
-          <button
-            onClick={handleSync}
-            disabled={isSyncingFirestore}
-            className="px-3 py-2 rounded-xl bg-white dark:bg-[#181715] hover:bg-[#f4f1ea] dark:hover:bg-[#282622] text-[#1f1e1b] dark:text-[#f5f3ef] border border-[#e5e0d5] dark:border-[#33302b] text-xs font-bold transition-all shadow-xs flex items-center gap-1.5 cursor-pointer disabled:opacity-50"
-            title="Sync with Firestore"
-          >
-            <RefreshCw className={`w-3.5 h-3.5 text-[#d97706] ${isSyncingFirestore ? 'animate-spin' : ''}`} />
-            <span>{isSyncingFirestore ? 'Syncing...' : 'Sync Firestore'}</span>
-          </button>
-
-          <button
-            onClick={() => setIsCreateRoleOpen(true)}
-            className="px-4 py-2 rounded-xl bg-[#d97706] dark:bg-[#f59e0b] hover:opacity-90 text-white dark:text-[#181715] text-xs font-bold shadow-sm transition-all cursor-pointer flex items-center gap-1.5"
-          >
-            <Plus className="w-4 h-4" />
-            <span>New Custom Role</span>
-          </button>
-        </div>
-      </div>
-
       {/* KPI Stats Grid */}
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
         <div className="p-5 rounded-2xl bg-white dark:bg-[#211f1c] border border-[#e5e0d5] dark:border-[#33302b] shadow-xs">
@@ -231,43 +174,75 @@ export const UserAndRoleManagement: React.FC = () => {
         </div>
       </div>
 
-      {/* Main Tab Navigation */}
-      <div className="flex items-center gap-2 border-b border-[#e5e0d5] dark:border-[#33302b] pb-2">
-        <button
-          onClick={() => setActiveSubTab('roles')}
-          className={`px-4 py-2 rounded-xl text-xs font-bold transition-all cursor-pointer flex items-center gap-2 ${
-            activeSubTab === 'roles'
-              ? 'bg-[#1f1e1b] dark:bg-[#f5f3ef] text-white dark:text-[#1f1e1b] shadow-xs'
-              : 'text-[#5c5850] dark:text-[#b8b4aa] hover:bg-[#f4f1ea] dark:hover:bg-[#282622]'
-          }`}
-        >
-          <Shield className="w-4 h-4" />
-          <span>Role Definitions & Granular Policies ({roles.length})</span>
-        </button>
+      {/* Main Tab Navigation & Actions */}
+      <div className="flex flex-wrap items-center justify-between gap-3 border-b border-[#e5e0d5] dark:border-[#33302b] pb-2">
+        <div className="flex items-center gap-2 flex-wrap">
+          <button
+            onClick={() => setIsCreatePermissionRoleOpen(true)}
+            className="px-4 py-2 rounded-xl text-xs font-bold transition-all cursor-pointer flex items-center gap-2 bg-[#d97706] hover:bg-[#b45309] text-white shadow-xs"
+            title="Add a new role and configure what it should access and what it should not"
+            id="add-new-permission-btn"
+          >
+            <ShieldPlus className="w-4 h-4" />
+            <span>Add New Permission</span>
+          </button>
 
-        <button
-          onClick={() => setActiveSubTab('users')}
-          className={`px-4 py-2 rounded-xl text-xs font-bold transition-all cursor-pointer flex items-center gap-2 ${
-            activeSubTab === 'users'
-              ? 'bg-[#1f1e1b] dark:bg-[#f5f3ef] text-white dark:text-[#1f1e1b] shadow-xs'
-              : 'text-[#5c5850] dark:text-[#b8b4aa] hover:bg-[#f4f1ea] dark:hover:bg-[#282622]'
-          }`}
-        >
-          <Users className="w-4 h-4" />
-          <span>Portal Administrators & Operators ({portalUsers.length})</span>
-        </button>
+          <button
+            onClick={() => setActiveSubTab('roles')}
+            className={`px-4 py-2 rounded-xl text-xs font-bold transition-all cursor-pointer flex items-center gap-2 ${
+              activeSubTab === 'roles'
+                ? 'bg-[#1f1e1b] dark:bg-[#f5f3ef] text-white dark:text-[#1f1e1b] shadow-xs'
+                : 'text-[#5c5850] dark:text-[#b8b4aa] hover:bg-[#f4f1ea] dark:hover:bg-[#282622]'
+            }`}
+          >
+            <Shield className="w-4 h-4" />
+            <span>Role Definitions ({roles.length})</span>
+          </button>
 
-        <button
-          onClick={() => setActiveSubTab('matrix')}
-          className={`px-4 py-2 rounded-xl text-xs font-bold transition-all cursor-pointer flex items-center gap-2 ${
-            activeSubTab === 'matrix'
-              ? 'bg-[#1f1e1b] dark:bg-[#f5f3ef] text-white dark:text-[#1f1e1b] shadow-xs'
-              : 'text-[#5c5850] dark:text-[#b8b4aa] hover:bg-[#f4f1ea] dark:hover:bg-[#282622]'
-          }`}
-        >
-          <Layers className="w-4 h-4" />
-          <span>Role-Permissions Matrix Grid</span>
-        </button>
+          <button
+            onClick={() => setActiveSubTab('matrix')}
+            className={`px-4 py-2 rounded-xl text-xs font-bold transition-all cursor-pointer flex items-center gap-2 ${
+              activeSubTab === 'matrix'
+                ? 'bg-[#1f1e1b] dark:bg-[#f5f3ef] text-white dark:text-[#1f1e1b] shadow-xs'
+                : 'text-[#5c5850] dark:text-[#b8b4aa] hover:bg-[#f4f1ea] dark:hover:bg-[#282622]'
+            }`}
+          >
+            <Layers className="w-4 h-4" />
+            <span>Permissions Matrix</span>
+          </button>
+
+          <button
+            onClick={() => setActiveSubTab('users')}
+            className={`px-4 py-2 rounded-xl text-xs font-bold transition-all cursor-pointer flex items-center gap-2 ${
+              activeSubTab === 'users'
+                ? 'bg-[#1f1e1b] dark:bg-[#f5f3ef] text-white dark:text-[#1f1e1b] shadow-xs'
+                : 'text-[#5c5850] dark:text-[#b8b4aa] hover:bg-[#f4f1ea] dark:hover:bg-[#282622]'
+            }`}
+          >
+            <Users className="w-4 h-4" />
+            <span>Portal Operators ({portalUsers.length})</span>
+          </button>
+        </div>
+
+        <div className="flex items-center gap-2">
+          <button
+            onClick={handleSync}
+            disabled={isSyncingFirestore}
+            className="px-3 py-1.5 rounded-xl bg-white dark:bg-[#181715] hover:bg-[#f4f1ea] dark:hover:bg-[#282622] text-[#1f1e1b] dark:text-[#f5f3ef] border border-[#e5e0d5] dark:border-[#33302b] text-xs font-bold transition-all shadow-xs flex items-center gap-1.5 cursor-pointer disabled:opacity-50"
+            title="Sync with Firestore"
+          >
+            <RefreshCw className={`w-3.5 h-3.5 text-[#d97706] ${isSyncingFirestore ? 'animate-spin' : ''}`} />
+            <span>{isSyncingFirestore ? 'Syncing...' : 'Sync'}</span>
+          </button>
+
+          <button
+            onClick={() => setIsCreateRoleOpen(true)}
+            className="px-3.5 py-1.5 rounded-xl bg-[#d97706] dark:bg-[#f59e0b] hover:opacity-90 text-white dark:text-[#181715] text-xs font-bold shadow-xs transition-all cursor-pointer flex items-center gap-1.5"
+          >
+            <Plus className="w-4 h-4" />
+            <span>New Custom Role</span>
+          </button>
+        </div>
       </div>
 
       {/* Sub-Tab 1: Role Definitions & Cards */}
@@ -433,6 +408,15 @@ export const UserAndRoleManagement: React.FC = () => {
         isOpen={isCreateRoleOpen}
         onClose={() => setIsCreateRoleOpen(false)}
         onRoleCreated={handleRoleCreated}
+      />
+
+      <CreatePermissionRoleModal
+        isOpen={isCreatePermissionRoleOpen}
+        onClose={() => setIsCreatePermissionRoleOpen(false)}
+        onRoleCreated={(newRoleId) => {
+          handleRoleCreated(newRoleId);
+          setActiveSubTab('roles');
+        }}
       />
 
       <PortalUserModal

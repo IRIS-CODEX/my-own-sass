@@ -1,6 +1,5 @@
 import React, { useState, useEffect } from 'react';
 import {
-  DollarSign,
   Users,
   CreditCard,
   ShieldAlert,
@@ -21,7 +20,8 @@ import {
   Building,
   ArrowUpRight,
   AlertOctagon,
-  BellRing,
+  OctagonAlert,
+  Database,
   Globe,
   Radio,
   Sliders,
@@ -29,7 +29,6 @@ import {
   Flame,
   Copy,
   ShieldCheck,
-  Database,
   Eye,
 } from 'lucide-react';
 import { useAdminStore } from '../../stores/useAdminStore';
@@ -109,7 +108,6 @@ export const AdminPortal: React.FC = () => {
   const [targetPlan, setTargetPlan] = useState<TenantAdmin['planTier']>('PRO_MONTHLY');
   const [newQuotaLimit, setNewQuotaLimit] = useState(300000);
   const [extraDays, setExtraDays] = useState(14);
-  const [announcementInput, setAnnouncementInput] = useState(globalAnnouncement || '');
   const [selectedTenantForDetail, setSelectedTenantForDetail] = useState<FirebaseUserProfile | null>(null);
   const [isTenantDetailModalOpen, setIsTenantDetailModalOpen] = useState(false);
 
@@ -253,10 +251,6 @@ export const AdminPortal: React.FC = () => {
   }
 
   // Financial Calculations
-  const totalMRR = tenants
-    .filter((t) => t.status === 'ACTIVE' || t.status === 'PAST_DUE')
-    .reduce((acc, t) => acc + (t.monthlySpendUsd || 0), 0);
-  const totalARR = totalMRR * 12;
   const activePaidCount = tenants.filter((t) => t.status === 'ACTIVE' && t.planTier !== 'FREE').length;
   const unpaidTenants = tenants.filter((t) => t.status === 'PAST_DUE' || (t.unpaidBalanceUsd && t.unpaidBalanceUsd > 0));
   const totalOverdueDebt = unpaidTenants.reduce((acc, t) => acc + (t.unpaidBalanceUsd || 0), 0);
@@ -393,135 +387,6 @@ export const AdminPortal: React.FC = () => {
           {/* VIEW 1: EXECUTIVE DASHBOARD & MRR */}
           {adminActivePage === 'dashboard' && (
             <div className="space-y-6">
-              {/* Cloud SQL Live Diagnostic Health Strip */}
-              <div className="p-4 rounded-2xl bg-white dark:bg-[#211f1c] border border-[#e5e0d5] dark:border-[#33302b] shadow-xs flex flex-col sm:flex-row sm:items-center justify-between gap-4">
-                <div className="flex items-center gap-3">
-                  <div className="w-10 h-10 rounded-xl bg-blue-500/10 dark:bg-blue-500/20 text-blue-600 dark:text-blue-400 border border-blue-500/25 flex items-center justify-center shrink-0">
-                    <Database className="w-5 h-5" />
-                  </div>
-                  <div>
-                    <div className="flex items-center gap-2">
-                      <span className="font-bold text-sm text-[#1f1e1b] dark:text-[#f5f3ef]">
-                        Google Cloud SQL Primary Storage
-                      </span>
-                      <span className="px-2 py-0.5 rounded-full text-[10px] font-mono font-bold bg-emerald-500/15 text-emerald-800 dark:text-emerald-300 border border-emerald-500/30 flex items-center gap-1">
-                        <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse" />
-                        LIVE RELATIONAL POOL
-                      </span>
-                    </div>
-                    <p className="text-xs text-[#5c5850] dark:text-[#b8b4aa] font-medium mt-0.5">
-                      PostgreSQL 16 • Autonomous Memory, Chat History &amp; Tenant Database
-                    </p>
-                  </div>
-                </div>
-
-                <div className="flex items-center gap-2">
-                  <CloudSqlDiagnosticIndicator onOpenFullModal={() => setIsCloudSqlDiagnosticOpen(true)} />
-                  <button
-                    onClick={() => setIsCloudSqlDiagnosticOpen(true)}
-                    className="px-3 py-1.5 rounded-xl bg-[#faf8f5] dark:bg-[#181715] hover:bg-[#f4f1ea] dark:hover:bg-[#282622] text-[#1f1e1b] dark:text-[#f5f3ef] border border-[#e5e0d5] dark:border-[#33302b] text-xs font-bold transition-all shadow-xs cursor-pointer flex items-center gap-1.5"
-                  >
-                    <Activity className="w-3.5 h-3.5 text-[#d97706] dark:text-[#f59e0b]" />
-                    <span>Open Diagnostics</span>
-                  </button>
-                </div>
-              </div>
-
-              {/* High-Level Metrics */}
-              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-                <div className="p-5 rounded-2xl bg-white dark:bg-[#211f1c] border border-[#e5e0d5] dark:border-[#33302b] shadow-xs">
-                  <span className="text-xs font-bold text-[#5c5850] dark:text-[#b8b4aa] uppercase tracking-wider font-mono flex items-center gap-1.5">
-                    <DollarSign className="w-4 h-4 text-emerald-600 dark:text-emerald-400" />
-                    Monthly Recurring Revenue
-                  </span>
-                  <div className="mt-2 text-2xl font-bold text-[#1f1e1b] dark:text-[#f5f3ef] flex items-baseline gap-2">
-                    ${totalMRR.toLocaleString()}
-                    <span className="text-xs text-emerald-600 dark:text-emerald-400 font-bold bg-emerald-500/10 px-2 py-0.5 rounded border border-emerald-500/20">
-                      +22.4% MoM
-                    </span>
-                  </div>
-                  <p className="mt-2 text-xs text-[#5c5850] dark:text-[#b8b4aa] font-medium">
-                    Run Rate: <span className="font-bold font-mono text-[#1f1e1b] dark:text-[#f5f3ef]">${totalARR.toLocaleString()} ARR</span>
-                  </p>
-                </div>
-
-                <div className="p-5 rounded-2xl bg-white dark:bg-[#211f1c] border border-[#e5e0d5] dark:border-[#33302b] shadow-xs">
-                  <span className="text-xs font-bold text-[#5c5850] dark:text-[#b8b4aa] uppercase tracking-wider font-mono flex items-center gap-1.5">
-                    <Users className="w-4 h-4 text-[#d97706] dark:text-[#f59e0b]" />
-                    Paid Active Subscribers
-                  </span>
-                  <div className="mt-2 text-2xl font-bold text-[#1f1e1b] dark:text-[#f5f3ef] flex items-baseline gap-2">
-                    {activePaidCount}
-                    <span className="text-xs text-[#878278] dark:text-[#7d7970] font-normal">
-                      / {tenants.length} tenants
-                    </span>
-                  </div>
-                  <p className="mt-2 text-xs text-[#5c5850] dark:text-[#b8b4aa] font-medium">
-                    Average LTV: <span className="font-bold font-mono text-[#1f1e1b] dark:text-[#f5f3ef]">$3,184</span>
-                  </p>
-                </div>
-
-                <div className="p-5 rounded-2xl bg-white dark:bg-[#211f1c] border border-[#e5e0d5] dark:border-[#33302b] shadow-xs">
-                  <span className="text-xs font-bold text-[#5c5850] dark:text-[#b8b4aa] uppercase tracking-wider font-mono flex items-center gap-1.5">
-                    <AlertTriangle className="w-4 h-4 text-rose-600 dark:text-rose-400" />
-                    Overdue Debt in Dunning
-                  </span>
-                  <div className="mt-2 text-2xl font-bold text-rose-600 dark:text-rose-400 flex items-baseline gap-2">
-                    ${totalOverdueDebt.toLocaleString()}
-                    <span className="text-xs font-bold bg-rose-500/10 px-2 py-0.5 rounded border border-rose-500/20">
-                      {unpaidTenants.length} accounts
-                    </span>
-                  </div>
-                  <p className="mt-2 text-xs text-[#5c5850] dark:text-[#b8b4aa] font-medium">
-                    Automated smart retry running
-                  </p>
-                </div>
-
-                <div className="p-5 rounded-2xl bg-white dark:bg-[#211f1c] border border-[#e5e0d5] dark:border-[#33302b] shadow-xs">
-                  <span className="text-xs font-bold text-[#5c5850] dark:text-[#b8b4aa] uppercase tracking-wider font-mono flex items-center gap-1.5">
-                    <Activity className="w-4 h-4 text-sky-600 dark:text-sky-400" />
-                    Net Revenue Retention
-                  </span>
-                  <div className="mt-2 text-2xl font-bold text-[#1f1e1b] dark:text-[#f5f3ef] flex items-baseline gap-2">
-                    128.4%
-                    <span className="text-xs text-emerald-600 dark:text-emerald-400 font-bold bg-emerald-500/10 px-2 py-0.5 rounded border border-emerald-500/20">
-                      High Growth
-                    </span>
-                  </div>
-                  <p className="mt-2 text-xs text-[#5c5850] dark:text-[#b8b4aa] font-medium">
-                    Suspended Accounts: <span className="font-bold font-mono text-[#1f1e1b] dark:text-[#f5f3ef]">{suspendedCount}</span>
-                  </p>
-                </div>
-              </div>
-
-              {/* SaaS Subscription Plans Distribution */}
-              <div className="p-6 rounded-2xl bg-white dark:bg-[#211f1c] border border-[#e5e0d5] dark:border-[#33302b] shadow-xs space-y-4">
-                <h2 className="text-sm font-bold text-[#1f1e1b] dark:text-[#f5f3ef]">
-                  SaaS Subscription Tier Distribution
-                </h2>
-                <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
-                  {[
-                    { plan: 'FREE HOBBY', price: '$0 / mo', users: tenants.filter(t => t.planTier === 'FREE').length, desc: '10,000 monthly requests, 2 agents' },
-                    { plan: 'STARTER', price: '$49 / mo', users: tenants.filter(t => t.planTier === 'STARTER').length, desc: '50,000 requests, 5 agents, basic policies' },
-                    { plan: 'PRO (GROWTH / ANNUAL)', price: '$199 / mo', users: tenants.filter(t => t.planTier === 'PRO_MONTHLY' || t.planTier === 'PRO_YEARLY').length, desc: '500,000 requests, unlimited agents' },
-                    { plan: 'ENTERPRISE FLEET', price: '$799 / mo', users: tenants.filter(t => t.planTier === 'ENTERPRISE').length, desc: '2,000,000 requests, dedicated gateway' },
-                  ].map((tier) => (
-                    <div key={tier.plan} className="p-4 rounded-xl bg-[#faf8f5] dark:bg-[#181715] border border-[#e5e0d5] dark:border-[#33302b] space-y-2">
-                      <div className="flex items-center justify-between">
-                        <span className="text-xs font-mono font-bold text-[#b45309] dark:text-[#fbbf24]">{tier.plan}</span>
-                        <span className="text-xs font-bold font-mono text-[#1f1e1b] dark:text-[#f5f3ef]">{tier.price}</span>
-                      </div>
-                      <div className="text-xl font-bold text-[#1f1e1b] dark:text-[#f5f3ef] font-mono">
-                        {tier.users} <span className="text-xs font-normal text-[#878278] dark:text-[#7d7970]">organizations</span>
-                      </div>
-                      <p className="text-[11px] text-[#5c5850] dark:text-[#b8b4aa] font-medium">
-                        {tier.desc}
-                      </p>
-                    </div>
-                  ))}
-                </div>
-              </div>
-
               {/* Payment Processing Webhooks Feed */}
               <div className="p-6 rounded-2xl bg-white dark:bg-[#211f1c] border border-[#e5e0d5] dark:border-[#33302b] shadow-xs space-y-4">
                 <div className="flex items-center justify-between">
@@ -591,68 +456,6 @@ export const AdminPortal: React.FC = () => {
           {/* VIEW 2: TENANTS & USER DIRECTORY */}
           {adminActivePage === 'tenants' && (
             <div className="space-y-6">
-              {/* Tenant Customer Context Banner */}
-              <div className="p-4 rounded-2xl bg-blue-500/10 border border-blue-500/25 flex items-start gap-3 text-xs shadow-xs">
-                <div className="w-9 h-9 rounded-xl bg-blue-500/20 text-blue-600 dark:text-blue-400 flex items-center justify-center shrink-0">
-                  <Users className="w-5 h-5" />
-                </div>
-                <div>
-                  <div className="flex items-center gap-2">
-                    <span className="font-bold text-sm text-[#1f1e1b] dark:text-[#f5f3ef]">
-                      Tenant Customers &amp; App Users Roster
-                    </span>
-                    <span className="px-2 py-0.5 rounded-full text-[10px] font-mono font-bold bg-blue-500/20 text-blue-700 dark:text-blue-300">
-                      External Clients
-                    </span>
-                  </div>
-                  <p className="text-[11px] text-[#5c5850] dark:text-[#b8b4aa] mt-0.5 leading-relaxed">
-                    This directory lists the <span className="font-semibold text-blue-600 dark:text-blue-400">customer accounts, subscribers, and external organizations</span> who signed up to use the AI Agent features (Fleet, Virtual Keys, Policies). These accounts are strictly isolated and cannot log into SaaS Central.
-                  </p>
-                </div>
-              </div>
-
-              {/* Firebase Live Cloud Integration Strip */}
-              <div className="p-4 rounded-2xl bg-amber-500/10 dark:bg-amber-950/20 border border-amber-500/20 flex flex-col md:flex-row md:items-center justify-between gap-4 text-xs shadow-xs">
-                <div className="flex items-center gap-3">
-                  <div className="w-9 h-9 rounded-xl bg-[#d97706]/10 dark:bg-[#f59e0b]/20 flex items-center justify-center text-[#d97706] dark:text-[#f59e0b] font-bold flex-shrink-0">
-                    <Flame className="w-5 h-5" />
-                  </div>
-                  <div>
-                    <div className="flex items-center gap-2">
-                      <span className="font-bold text-[#1f1e1b] dark:text-[#f5f3ef] text-sm">
-                        Firebase Auth &amp; Cloud Firestore Identity Sync
-                      </span>
-                      <span className="px-2 py-0.5 rounded-full text-[10px] font-mono font-bold bg-emerald-500/15 text-emerald-800 dark:text-emerald-300 border border-emerald-500/25 flex items-center gap-1">
-                        <ShieldCheck className="w-3 h-3 text-emerald-600 dark:text-emerald-400" />
-                        LIVE europe-west1
-                      </span>
-                    </div>
-                    <p className="text-[11px] text-[#5c5850] dark:text-[#b8b4aa] mt-0.5">
-                      Project <span className="font-mono text-[#b45309] dark:text-[#fbbf24] font-semibold">tranquil-tomorrow-hrtgb</span> • Zero-Trust Security Rules Active • Super-Admin Bypass Enforced
-                    </p>
-                  </div>
-                </div>
-
-                <div className="flex items-center gap-2">
-                  <button
-                    onClick={handleSyncFirestoreUsers}
-                    disabled={isLoadingFirebaseUsers}
-                    className="px-3 py-1.5 rounded-xl border border-[#e5e0d5] dark:border-[#33302b] hover:bg-[#f4f1ea] dark:hover:bg-[#282622] text-[#1f1e1b] dark:text-[#f5f3ef] font-semibold flex items-center gap-1.5 transition-all cursor-pointer shadow-xs bg-white dark:bg-[#211f1c]"
-                    title="Fetch registered user accounts from Firestore"
-                  >
-                    <RefreshCw className={`w-3.5 h-3.5 text-[#d97706] dark:text-[#f59e0b] ${isLoadingFirebaseUsers ? 'animate-spin' : ''}`} />
-                    <span>{isLoadingFirebaseUsers ? 'Syncing...' : 'Sync Firestore'}</span>
-                  </button>
-                  <button
-                    onClick={() => setIsNewUserModalOpen(true)}
-                    className="px-3.5 py-1.5 rounded-xl bg-[#d97706] hover:bg-[#b45309] dark:bg-[#f59e0b] dark:hover:bg-[#fbbf24] text-white dark:text-[#181715] font-bold flex items-center gap-1.5 transition-all shadow-xs cursor-pointer border border-[#d97706] dark:border-[#f59e0b]"
-                  >
-                    <UserPlus className="w-3.5 h-3.5" />
-                    <span>Register User</span>
-                  </button>
-                </div>
-              </div>
-
               {/* View Tabs & Filter Controls */}
               <div className="p-4 rounded-2xl bg-white dark:bg-[#211f1c] border border-[#e5e0d5] dark:border-[#33302b] shadow-xs flex flex-col md:flex-row md:items-center justify-between gap-4">
                 <div className="flex items-center gap-3">
@@ -707,15 +510,33 @@ export const AdminPortal: React.FC = () => {
                   )}
                 </div>
 
-                <div className="relative w-full md:w-64">
-                  <Search className="w-3.5 h-3.5 absolute left-3 top-1/2 -translate-y-1/2 text-[#878278] dark:text-[#7d7970]" />
-                  <input
-                    type="text"
-                    value={searchQuery}
-                    onChange={(e) => setSearchQuery(e.target.value)}
-                    placeholder="Search name, email, or org..."
-                    className="w-full bg-[#faf8f5] dark:bg-[#181715] border border-[#e5e0d5] dark:border-[#33302b] rounded-xl pl-8 pr-3 py-1.5 text-xs text-[#1f1e1b] dark:text-[#f5f3ef] placeholder-[#878278] dark:placeholder-[#7d7970] focus:outline-hidden focus:border-[#d97706] dark:focus:border-[#f59e0b] font-medium"
-                  />
+                <div className="flex items-center gap-2 w-full md:w-auto">
+                  <div className="relative w-full md:w-64">
+                    <Search className="w-3.5 h-3.5 absolute left-3 top-1/2 -translate-y-1/2 text-[#878278] dark:text-[#7d7970]" />
+                    <input
+                      type="text"
+                      value={searchQuery}
+                      onChange={(e) => setSearchQuery(e.target.value)}
+                      placeholder="Search name, email, or org..."
+                      className="w-full bg-[#faf8f5] dark:bg-[#181715] border border-[#e5e0d5] dark:border-[#33302b] rounded-xl pl-8 pr-3 py-1.5 text-xs text-[#1f1e1b] dark:text-[#f5f3ef] placeholder-[#878278] dark:placeholder-[#7d7970] focus:outline-hidden focus:border-[#d97706] dark:focus:border-[#f59e0b] font-medium"
+                    />
+                  </div>
+                  <button
+                    onClick={handleSyncFirestoreUsers}
+                    disabled={isLoadingFirebaseUsers}
+                    className="px-3 py-1.5 rounded-xl border border-[#e5e0d5] dark:border-[#33302b] hover:bg-[#f4f1ea] dark:hover:bg-[#282622] text-[#1f1e1b] dark:text-[#f5f3ef] font-semibold flex items-center gap-1.5 transition-all cursor-pointer shadow-xs bg-white dark:bg-[#211f1c] text-xs shrink-0"
+                    title="Fetch registered user accounts from Firestore"
+                  >
+                    <RefreshCw className={`w-3.5 h-3.5 text-[#d97706] dark:text-[#f59e0b] ${isLoadingFirebaseUsers ? 'animate-spin' : ''}`} />
+                    <span>{isLoadingFirebaseUsers ? 'Syncing...' : 'Sync'}</span>
+                  </button>
+                  <button
+                    onClick={() => setIsNewUserModalOpen(true)}
+                    className="px-3.5 py-1.5 rounded-xl bg-[#d97706] hover:bg-[#b45309] dark:bg-[#f59e0b] dark:hover:bg-[#fbbf24] text-white dark:text-[#181715] font-bold flex items-center gap-1.5 transition-all shadow-xs cursor-pointer border border-[#d97706] dark:border-[#f59e0b] text-xs shrink-0"
+                  >
+                    <UserPlus className="w-3.5 h-3.5" />
+                    <span>Register User</span>
+                  </button>
                 </div>
               </div>
 
@@ -1258,104 +1079,113 @@ export const AdminPortal: React.FC = () => {
           {/* VIEW 6: SAAS PLATFORM CONFIG */}
           {adminActivePage === 'settings' && (
             <div className="space-y-6">
+              {/* Infrastructure, Fleet Cluster & Emergency Controls */}
               <div className="p-6 rounded-2xl bg-white dark:bg-[#211f1c] border border-[#e5e0d5] dark:border-[#33302b] shadow-xs space-y-4">
-                <h2 className="text-sm font-bold text-[#1f1e1b] dark:text-[#f5f3ef]">
-                  SaaS Platform Operational Toggles
-                </h2>
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                  <div className="p-4 rounded-xl bg-[#faf8f5] dark:bg-[#181715] border border-[#e5e0d5] dark:border-[#33302b] flex items-center justify-between">
-                    <div>
-                      <div className="font-bold text-xs text-[#1f1e1b] dark:text-[#f5f3ef]">Public User Registration</div>
-                      <div className="text-[11px] text-[#5c5850] dark:text-[#b8b4aa]">Allow new customers to sign up and choose plans</div>
-                    </div>
-                    <button
-                      onClick={() => updateSaaSConfig({ publicSignupsEnabled: !saasConfig.publicSignupsEnabled })}
-                      className={`px-3 py-1.5 rounded-lg text-xs font-bold cursor-pointer ${
-                        saasConfig.publicSignupsEnabled ? 'bg-emerald-600 text-white' : 'bg-neutral-200 dark:bg-neutral-800 text-[#5c5850] dark:text-[#b8b4aa]'
-                      }`}
-                    >
-                      {saasConfig.publicSignupsEnabled ? 'OPEN' : 'CLOSED'}
-                    </button>
-                  </div>
-
-                  <div className="p-4 rounded-xl bg-[#faf8f5] dark:bg-[#181715] border border-[#e5e0d5] dark:border-[#33302b] flex items-center justify-between">
-                    <div>
-                      <div className="font-bold text-xs text-[#1f1e1b] dark:text-[#f5f3ef]">Automated Account Freeze</div>
-                      <div className="text-[11px] text-[#5c5850] dark:text-[#b8b4aa]">Suspend gateway once past-due grace expires</div>
-                    </div>
-                    <button
-                      onClick={() => updateSaaSConfig({ autoFreezeUnpaidAccounts: !saasConfig.autoFreezeUnpaidAccounts })}
-                      className={`px-3 py-1.5 rounded-lg text-xs font-bold cursor-pointer ${
-                        saasConfig.autoFreezeUnpaidAccounts ? 'bg-emerald-600 text-white' : 'bg-neutral-200 dark:bg-neutral-800 text-[#5c5850] dark:text-[#b8b4aa]'
-                      }`}
-                    >
-                      {saasConfig.autoFreezeUnpaidAccounts ? 'ENABLED' : 'OFF'}
-                    </button>
-                  </div>
-
-                  <div className="p-4 rounded-xl bg-[#faf8f5] dark:bg-[#181715] border border-[#e5e0d5] dark:border-[#33302b] flex items-center justify-between">
-                    <div>
-                      <div className="font-bold text-xs text-[#1f1e1b] dark:text-[#f5f3ef]">Strict AI Jailbreak Firewall</div>
-                      <div className="text-[11px] text-[#5c5850] dark:text-[#b8b4aa]">Enforce prompt safety filters across all tenants</div>
-                    </div>
-                    <button
-                      onClick={() => updateSaaSConfig({ strictModelFirewall: !saasConfig.strictModelFirewall })}
-                      className={`px-3 py-1.5 rounded-lg text-xs font-bold cursor-pointer ${
-                        saasConfig.strictModelFirewall ? 'bg-emerald-600 text-white' : 'bg-neutral-200 dark:bg-neutral-800 text-[#5c5850] dark:text-[#b8b4aa]'
-                      }`}
-                    >
-                      {saasConfig.strictModelFirewall ? 'ENFORCED' : 'OFF'}
-                    </button>
-                  </div>
-
-                  <div className="p-4 rounded-xl bg-[#faf8f5] dark:bg-[#181715] border border-[#e5e0d5] dark:border-[#33302b] flex items-center justify-between">
-                    <div>
-                      <div className="font-bold text-xs text-[#1f1e1b] dark:text-[#f5f3ef]">Platform Maintenance Mode</div>
-                      <div className="text-[11px] text-[#5c5850] dark:text-[#b8b4aa]">Set workspace to read-only for scheduled updates</div>
-                    </div>
-                    <button
-                      onClick={() => updateSaaSConfig({ maintenanceMode: !saasConfig.maintenanceMode })}
-                      className={`px-3 py-1.5 rounded-lg text-xs font-bold cursor-pointer ${
-                        saasConfig.maintenanceMode ? 'bg-rose-600 text-white' : 'bg-neutral-200 dark:bg-neutral-800 text-[#5c5850] dark:text-[#b8b4aa]'
-                      }`}
-                    >
-                      {saasConfig.maintenanceMode ? 'MAINTENANCE ON' : 'NORMAL'}
-                    </button>
-                  </div>
+                <div>
+                  <h2 className="text-sm font-bold text-[#1f1e1b] dark:text-[#f5f3ef] flex items-center gap-2">
+                    <Server className="w-4 h-4 text-[#d97706] dark:text-[#f59e0b]" />
+                    Infrastructure Health, Cluster Fleet &amp; Emergency Controls
+                  </h2>
+                  <p className="text-xs text-[#5c5850] dark:text-[#b8b4aa] font-medium mt-0.5">
+                    Live operational telemetry, Cloud SQL database connection pool, gateway cluster nodes, and global breaker kill-switch.
+                  </p>
                 </div>
-              </div>
 
-              {/* Global Announcement */}
-              <div className="p-6 rounded-2xl bg-white dark:bg-[#211f1c] border border-[#e5e0d5] dark:border-[#33302b] shadow-xs space-y-4">
-                <h2 className="text-sm font-bold text-[#1f1e1b] dark:text-[#f5f3ef] flex items-center gap-2">
-                  <BellRing className="w-4 h-4 text-[#d97706] dark:text-[#f59e0b]" />
-                  Global Broadcast Alert
-                </h2>
-                <p className="text-xs text-[#5c5850] dark:text-[#b8b4aa] font-medium">
-                  Publish a global announcement banner visible across every customer tenant console.
-                </p>
+                <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                  {/* Section 1: Cloud SQL Live Diagnostics Indicator & Launcher */}
+                  <div className="p-4 rounded-xl bg-[#faf8f5] dark:bg-[#181715] border border-[#e5e0d5] dark:border-[#33302b] flex flex-col justify-between gap-3">
+                    <div className="space-y-1">
+                      <div className="flex items-center justify-between">
+                        <span className="text-xs font-mono font-bold text-[#b45309] dark:text-[#fbbf24] flex items-center gap-1.5">
+                          <Database className="w-3.5 h-3.5 text-[#d97706] dark:text-[#f59e0b]" />
+                          Cloud SQL Diagnostics
+                        </span>
+                        <span className="px-2 py-0.5 rounded-full text-[10px] font-mono font-bold bg-emerald-500/15 text-emerald-800 dark:text-emerald-300 border border-emerald-500/25">
+                          PostgreSQL 16
+                        </span>
+                      </div>
+                      <p className="text-[11px] text-[#5c5850] dark:text-[#b8b4aa] leading-relaxed">
+                        Real-time pool connection status, latency, query health, and schema validation.
+                      </p>
+                    </div>
+                    <div className="flex items-center justify-between pt-2 border-t border-[#e5e0d5]/60 dark:border-[#33302b]/60">
+                      <CloudSqlDiagnosticIndicator onOpenFullModal={() => setIsCloudSqlDiagnosticOpen(true)} />
+                      <button
+                        onClick={() => setIsCloudSqlDiagnosticOpen(true)}
+                        className="px-2.5 py-1 text-[11px] font-semibold text-[#b45309] dark:text-[#fbbf24] hover:underline cursor-pointer flex items-center gap-1"
+                      >
+                        <span>Full Audit</span>
+                        <ArrowUpRight className="w-3 h-3" />
+                      </button>
+                    </div>
+                  </div>
 
-                <div className="flex gap-2">
-                  <input
-                    type="text"
-                    value={announcementInput}
-                    onChange={(e) => setAnnouncementInput(e.target.value)}
-                    placeholder="e.g., Scheduled maintenance window on Saturday 03:00 UTC."
-                    className="flex-1 bg-[#faf8f5] dark:bg-[#181715] border border-[#e5e0d5] dark:border-[#33302b] rounded-xl px-4 py-2 text-xs text-[#1f1e1b] dark:text-[#f5f3ef] placeholder-[#878278] dark:placeholder-[#7d7970] focus:outline-hidden focus:border-[#d97706] dark:focus:border-[#f59e0b]"
-                  />
-                  <button
-                    onClick={() => {
-                      setGlobalAnnouncement(announcementInput.trim() ? announcementInput.trim() : null);
-                      addToast({
-                        title: announcementInput.trim() ? 'Broadcast Published' : 'Broadcast Cleared',
-                        description: announcementInput.trim() ? 'Notification banner active for all users.' : 'Banner removed.',
-                        type: 'success',
-                      });
-                    }}
-                    className="px-4 py-2 rounded-xl text-xs font-bold bg-[#d97706] hover:bg-[#b45309] dark:bg-[#f59e0b] dark:hover:bg-[#fbbf24] text-white dark:text-[#181715] transition-all cursor-pointer shadow-xs"
-                  >
-                    Broadcast
-                  </button>
+                  {/* Section 2: Live Cluster Health Badge & Nodes */}
+                  <div className="p-4 rounded-xl bg-[#faf8f5] dark:bg-[#181715] border border-[#e5e0d5] dark:border-[#33302b] flex flex-col justify-between gap-3">
+                    <div className="space-y-1">
+                      <div className="flex items-center justify-between">
+                        <span className="text-xs font-mono font-bold text-[#b45309] dark:text-[#fbbf24] flex items-center gap-1.5">
+                          <Radio className="w-3.5 h-3.5 text-emerald-600 dark:text-emerald-400" />
+                          Gateway Cluster Nodes
+                        </span>
+                        <div className="flex items-center gap-1.5 px-2 py-0.5 rounded-full bg-emerald-500/10 border border-emerald-500/20 text-emerald-700 dark:text-emerald-400 font-mono text-[10px] font-bold">
+                          <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse" />
+                          <span>12/12 Online</span>
+                        </div>
+                      </div>
+                      <p className="text-[11px] text-[#5c5850] dark:text-[#b8b4aa] leading-relaxed">
+                        Fleet proxy instances handling tenant rate limits, virtual keys, and request token counters.
+                      </p>
+                    </div>
+                    <div className="flex items-center justify-between pt-2 border-t border-[#e5e0d5]/60 dark:border-[#33302b]/60">
+                      <div className="flex items-center gap-2 text-[11px] font-mono text-[#5c5850] dark:text-[#b8b4aa]">
+                        <span className="text-emerald-600 dark:text-emerald-400 font-bold">● Healthy</span>
+                        <span>• 99.99% Uptime</span>
+                      </div>
+                      <span className="text-[10px] font-mono text-[#878278] dark:text-[#7d7970]">
+                        europe-west2
+                      </span>
+                    </div>
+                  </div>
+
+                  {/* Section 3: Global Emergency Kill-Switch & Circuit Breaker */}
+                  <div className={`p-4 rounded-xl border flex flex-col justify-between gap-3 transition-colors ${
+                    globalKillSwitchActive
+                      ? 'bg-rose-500/10 border-rose-500/40 dark:bg-rose-950/20'
+                      : 'bg-[#faf8f5] dark:bg-[#181715] border-[#e5e0d5] dark:border-[#33302b]'
+                  }`}>
+                    <div className="space-y-1">
+                      <div className="flex items-center justify-between">
+                        <span className="text-xs font-mono font-bold text-rose-600 dark:text-rose-400 flex items-center gap-1.5">
+                          <OctagonAlert className="w-3.5 h-3.5" />
+                          Emergency Kill-Switch
+                        </span>
+                        <span className={`px-2 py-0.5 rounded-full text-[10px] font-mono font-bold ${
+                          globalKillSwitchActive
+                            ? 'bg-rose-600 text-white animate-pulse'
+                            : 'bg-neutral-500/10 text-[#5c5850] dark:text-[#b8b4aa]'
+                        }`}>
+                          {globalKillSwitchActive ? 'BREAKER TRIPPED' : 'ARMED / IDLE'}
+                        </span>
+                      </div>
+                      <p className="text-[11px] text-[#5c5850] dark:text-[#b8b4aa] leading-relaxed">
+                        Instantly cut off all external API routing and return HTTP 503 across all tenant gateways in disaster recovery.
+                      </p>
+                    </div>
+                    <div className="pt-2 border-t border-[#e5e0d5]/60 dark:border-[#33302b]/60">
+                      <button
+                        onClick={toggleGlobalKillSwitch}
+                        className={`w-full py-2 px-3 rounded-xl text-xs font-bold transition-all flex items-center justify-center gap-2 cursor-pointer shadow-xs ${
+                          globalKillSwitchActive
+                            ? 'bg-rose-600 hover:bg-rose-700 text-white animate-pulse'
+                            : 'bg-white hover:bg-rose-50 dark:bg-[#211f1c] dark:hover:bg-rose-950/40 text-rose-600 dark:text-rose-400 border border-rose-200 dark:border-rose-900/60'
+                        }`}
+                      >
+                        <OctagonAlert className="w-3.5 h-3.5" />
+                        <span>{globalKillSwitchActive ? 'Disengage Circuit Breaker' : 'Engage Emergency Kill-Switch'}</span>
+                      </button>
+                    </div>
+                  </div>
                 </div>
               </div>
             </div>

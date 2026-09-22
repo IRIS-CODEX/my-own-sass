@@ -26,6 +26,10 @@ import {
   Layers,
   FileCode,
   Image as ImageIcon,
+  Send,
+  Globe,
+  Phone,
+  MessageCircle,
 } from 'lucide-react';
 import { useWorkflowStore } from '../../stores/useWorkflowStore';
 
@@ -69,6 +73,16 @@ export const WorkflowNodeCard: React.FC<WorkflowNodeCardProps> = ({
         return <Server className="w-4 h-4 text-blue-500" />;
       case 'imagen':
         return <ImageIcon className="w-4 h-4 text-rose-500" />;
+      case 'whatsapp':
+        return <MessageCircle className="w-4 h-4 text-emerald-500" />;
+      case 'telegram':
+        return <Send className="w-4 h-4 text-sky-500" />;
+      case 'discord':
+        return <MessageSquare className="w-4 h-4 text-indigo-400" />;
+      case 'rest_api':
+        return <Globe className="w-4 h-4 text-teal-500" />;
+      case 'twilio':
+        return <Phone className="w-4 h-4 text-rose-500" />;
       case 'webhook':
       default:
         return <Radio className="w-4 h-4 text-[#c15f3c]" />;
