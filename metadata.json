@@ -1,7 +1,9 @@
 {
   "name": "Agent Lens",
   "description": "Enterprise AI Agent Governance, Observability, and Virtual Key Gateway command center with Human-In-The-Loop steering, real-time control tower, policy studio, and security compliance.",
-  "requestFramePermissions": [],
+  "requestFramePermissions": [
+    "microphone"
+  ],
   "majorCapabilities": [
     "MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"
   ]

@@ -38,6 +38,7 @@ import {
 import { useWorkflowStore } from '../../stores/useWorkflowStore';
 import { useAgentsStore } from '../../stores/useAgentsStore';
 import { useGitHubStore } from '../../stores/useGitHubStore';
+import { useAppStore } from '../../stores/useAppStore';
 import { GeneratedCodeViewer } from './GeneratedCodeViewer';
 import { GitHubSyncModal } from './GitHubSyncModal';
 
@@ -58,10 +59,12 @@ export const WorkflowAgentSidebar: React.FC = () => {
     revertBuildAction,
     focusNode,
     nodes,
+    setSaveFlowModalOpen,
   } = useWorkflowStore();
 
   const { agents } = useAgentsStore();
   const { setGitHubModalOpen, owner, repo, branch, lastCommitSha } = useGitHubStore();
+  const { startChatWithAgent, setActiveNav } = useAppStore();
 
   const [inputVal, setInputVal] = useState('');
   const [collapsedThoughts, setCollapsedThoughts] = useState<Record<string, boolean>>({});
@@ -702,6 +705,29 @@ export const WorkflowAgentSidebar: React.FC = () => {
                 defaultValue="20"
                 className="w-full accent-[#c15f3c] cursor-pointer"
               />
+            </div>
+
+            {/* Quick Launch & Save Actions */}
+            <div className="pt-2 space-y-2">
+              <button
+                onClick={() => setSaveFlowModalOpen(true)}
+                className="w-full py-2.5 px-3 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white text-xs font-bold flex items-center justify-center gap-1.5 shadow-xs cursor-pointer transition-colors"
+              >
+                <span>Save Workflow as Fleet Agent</span>
+              </button>
+
+              <button
+                onClick={() => {
+                  const targetAgent = agents.find((a) => a.id === selectedAgentId) || agents[0];
+                  if (targetAgent) {
+                    startChatWithAgent(targetAgent.id);
+                  }
+                }}
+                className="w-full py-2.5 px-3 rounded-xl border border-[#e5e0d5] dark:border-[#33302b] bg-white dark:bg-[#211f1c] hover:bg-[#faf8f5] dark:hover:bg-[#282622] text-[#1f1e1b] dark:text-[#f5f3ef] text-xs font-bold flex items-center justify-center gap-1.5 shadow-2xs cursor-pointer transition-colors"
+              >
+                <span>Chat with Agent in Live Console</span>
+                <ArrowRight className="w-3.5 h-3.5" />
+              </button>
             </div>
           </div>
         </div>

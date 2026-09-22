@@ -1,5 +1,5 @@
 import { create } from 'zustand';
-import { Agent, AutonomyMode, AgentArchetype } from '../types';
+import { Agent, AutonomyMode, AgentArchetype, AgentMultimodalCapability, AgentIntegrationsConfig } from '../types';
 import {
   subscribeToUserAgents,
   saveAgentToFirestore,
@@ -26,7 +26,7 @@ interface AgentsState {
   updateSystemPrompt: (agentId: string, prompt: string) => Promise<void>;
   updateModel: (agentId: string, model: string) => Promise<void>;
   addAgent: (agent: Omit<Agent, 'id' | 'createdAt' | 'lastActiveAt' | 'spendTodayUsd' | 'totalExecutions'>) => Promise<Agent>;
-  createAgentFromPrompt: (userPrompt: string) => Promise<Agent>;
+  createAgentFromPrompt: (userPrompt: string, capabilities?: AgentMultimodalCapability[], modelPreference?: string, integrationsConfig?: AgentIntegrationsConfig) => Promise<Agent>;
   deleteAgent: (agentId: string) => Promise<void>;
   provisionDefaultFleet: () => Promise<void>;
   provisionGmailAgent: () => Promise<Agent>;
@@ -196,7 +196,7 @@ export const useAgentsStore = create<AgentsState>((set, get) => ({
     return newAgent;
   },
 
-  createAgentFromPrompt: async (userPrompt: string) => {
+  createAgentFromPrompt: async (userPrompt: string, capabilities = [], modelPreference, integrationsConfig) => {
     const userId = get().activeUserId || 'guest_user';
     let synthesized: any = null;
 
@@ -204,7 +204,11 @@ export const useAgentsStore = create<AgentsState>((set, get) => ({
       const res = await fetch('/api/agents/synthesize', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ prompt: userPrompt }),
+        body: JSON.stringify({
+          prompt: userPrompt,
+          enabledCapabilities: capabilities,
+          modelPreference,
+        }),
       });
       if (res.ok) {
         synthesized = await res.json();
@@ -215,8 +219,8 @@ export const useAgentsStore = create<AgentsState>((set, get) => ({
 
     const name = synthesized?.name || 'Custom-Governed-Agent';
     const description = synthesized?.description || (userPrompt.length > 120 ? userPrompt.slice(0, 117) + '...' : userPrompt);
-    const archetype: AgentArchetype = synthesized?.archetype || 'SUPPORT';
-    const model = synthesized?.model || 'gemini-3.8-flash';
+    const archetype: AgentArchetype = synthesized?.archetype || (capabilities.includes('image_generation') || capabilities.includes('video_generation') ? 'CREATIVE' : 'SUPPORT');
+    const model = synthesized?.model || modelPreference || 'gemini-3.5-flash';
     const systemPrompt = synthesized?.systemPrompt || `You are ${name}, a governed autonomous AI agent created in AgentLens.\nMission: ${userPrompt}`;
     const tools = synthesized?.tools || ['search_knowledge_base', 'validate_business_rules', 'execute_action'];
     const suggestedPrompts = synthesized?.suggestedPrompts || [
@@ -239,8 +243,10 @@ export const useAgentsStore = create<AgentsState>((set, get) => ({
       temperature: 0.2,
       status: 'ONLINE',
       framework: 'CrewAI / AgentLens v2.4',
-      avatarIcon: archetype === 'CODING' ? 'Code' : archetype === 'DB_REPORTER' ? 'Database' : archetype === 'RESEARCHER' ? 'Brain' : archetype === 'OUTREACH' ? 'Zap' : 'Bot',
+      avatarIcon: archetype === 'CODING' ? 'Code' : archetype === 'DB_REPORTER' ? 'Database' : archetype === 'RESEARCHER' ? 'Brain' : archetype === 'OUTREACH' ? 'Zap' : archetype === 'CREATIVE' ? 'Sparkles' : 'Bot',
       tools,
+      capabilities: capabilities.length > 0 ? capabilities : synthesized?.capabilities || ['gemini_chat'],
+      integrationsConfig,
       suggestedPrompts,
       welcomeMessage,
     });

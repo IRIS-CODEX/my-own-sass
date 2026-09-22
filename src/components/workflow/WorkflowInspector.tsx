@@ -22,6 +22,7 @@ import {
   Mail,
   Inbox,
   Send,
+  Save,
 } from 'lucide-react';
 import { useAppStore } from '../../stores/useAppStore';
 import {
@@ -42,6 +43,7 @@ export const WorkflowInspector: React.FC = () => {
     deleteNode,
     resolveHITLApproval,
     setInspectorOpen,
+    setSaveFlowModalOpen,
   } = useWorkflowStore();
 
   const [copiedPayload, setCopiedPayload] = useState(false);
@@ -254,6 +256,14 @@ export async function transformData(item: Record<string, any>) {
           </div>
 
           <div className="flex items-center gap-1">
+            <button
+              onClick={() => setSaveFlowModalOpen(true)}
+              className="px-2 py-1 rounded-lg bg-emerald-600 hover:bg-emerald-700 text-white text-[11px] font-bold flex items-center gap-1 shadow-xs cursor-pointer transition-colors"
+              title="Save flow as live agent"
+            >
+              <Save className="w-3.5 h-3.5" />
+              <span>Save</span>
+            </button>
             <button
               onClick={() => deleteNode(selectedNode.id)}
               className="p-1.5 rounded-lg hover:bg-red-500/10 text-red-600 dark:text-red-400 cursor-pointer transition-colors"

@@ -36,6 +36,7 @@ interface WorkflowState {
   logsDrawerOpen: boolean;
   addNodeModalOpen: boolean;
   buildAgentModalOpen: boolean;
+  saveFlowModalOpen: boolean;
   selectedCategoryFilter: string;
 
   // AI Agent Builder Sidebar State
@@ -76,6 +77,7 @@ interface WorkflowState {
   setLogsDrawerOpen: (open: boolean) => void;
   setAddNodeModalOpen: (open: boolean) => void;
   setBuildAgentModalOpen: (open: boolean) => void;
+  setSaveFlowModalOpen: (open: boolean) => void;
   setSelectedCategoryFilter: (cat: string) => void;
   clearLogs: () => void;
 
@@ -147,6 +149,7 @@ export const useWorkflowStore = create<WorkflowState>((set, get) => ({
   logsDrawerOpen: false,
   addNodeModalOpen: false,
   buildAgentModalOpen: false,
+  saveFlowModalOpen: false,
   selectedCategoryFilter: 'ALL',
 
   // AI Agent Sidebar Initial State
@@ -434,6 +437,7 @@ export const useWorkflowStore = create<WorkflowState>((set, get) => ({
   setLogsDrawerOpen: (open: boolean) => set({ logsDrawerOpen: open }),
   setAddNodeModalOpen: (open: boolean) => set({ addNodeModalOpen: open }),
   setBuildAgentModalOpen: (open: boolean) => set({ buildAgentModalOpen: open }),
+  setSaveFlowModalOpen: (open: boolean) => set({ saveFlowModalOpen: open }),
   setSelectedCategoryFilter: (cat: string) => set({ selectedCategoryFilter: cat }),
   clearLogs: () => set({ logs: [] }),
 

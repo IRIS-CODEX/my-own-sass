@@ -11,6 +11,7 @@ import {
   ChevronDown,
   Bot,
   Sparkles,
+  Save,
 } from 'lucide-react';
 import { useWorkflowStore } from '../../stores/useWorkflowStore';
 
@@ -27,6 +28,7 @@ export const WorkflowTopHeader: React.FC = () => {
     setZoom,
     resetView,
     setAddNodeModalOpen,
+    setSaveFlowModalOpen,
     logsDrawerOpen,
     setLogsDrawerOpen,
     logs,
@@ -73,6 +75,16 @@ export const WorkflowTopHeader: React.FC = () => {
         <div className="flex items-center gap-2 flex-shrink-0">
           {/* Node & Agent Creation */}
           <div className="flex items-center gap-1.5">
+            <button
+              id="btn-save-flow-agent-header"
+              onClick={() => setSaveFlowModalOpen(true)}
+              className="h-8 px-3 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white text-xs font-bold flex items-center gap-1.5 transition-colors cursor-pointer shadow-xs"
+              title="Save current flow configuration as a live Fleet Agent"
+            >
+              <Save className="w-3.5 h-3.5" />
+              <span>Save Agent</span>
+            </button>
+
             <button
               onClick={() => setBuildAgentModalOpen(true)}
               className="h-8 px-3 rounded-xl bg-[#c15f3c] hover:bg-[#ad5232] text-white text-xs font-bold flex items-center gap-1.5 transition-colors cursor-pointer shadow-xs"

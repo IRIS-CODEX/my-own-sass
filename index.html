@@ -27,15 +27,65 @@
         } catch (e) {}
 
         // Gracefully ignore benign Vite dev server websocket disconnection messages in sandbox
-        window.addEventListener('unhandledrejection', function(event) {
-          if (event && event.reason && (
-            String(event.reason).includes('WebSocket') ||
-            String(event.reason).includes('failed to connect to websocket') ||
-            String(event.reason).includes('WebSocket closed without opened')
-          )) {
-            event.preventDefault();
+        function isBenignWsError(err) {
+          if (!err) return false;
+          var str = '';
+          try {
+            if (typeof err === 'string') {
+              str = err;
+            } else if (err.message) {
+              str = err.message + ' ' + (err.stack || '');
+            } else if (err.reason) {
+              str = typeof err.reason === 'string' ? err.reason : (err.reason.message || String(err.reason));
+            } else {
+              str = String(err);
+            }
+          } catch(e) {
+            str = String(err);
           }
-        });
+          return (
+            str.indexOf('WebSocket') !== -1 ||
+            str.indexOf('websocket') !== -1 ||
+            str.indexOf('failed to connect to websocket') !== -1 ||
+            str.indexOf('WebSocket closed without opened') !== -1 ||
+            str.indexOf('ws://') !== -1 ||
+            str.indexOf('wss://') !== -1
+          );
+        }
+
+        var _origError = console.error;
+        console.error = function() {
+          var args = Array.prototype.slice.call(arguments);
+          var joined = args.map(function(a) { 
+            try { return typeof a === 'string' ? a : (a && a.message) || JSON.stringify(a) || String(a); } catch(e) { return String(a); }
+          }).join(' ');
+          if (isBenignWsError(joined)) return;
+          _origError.apply(console, arguments);
+        };
+
+        var _origWarn = console.warn;
+        console.warn = function() {
+          var args = Array.prototype.slice.call(arguments);
+          var joined = args.map(function(a) { 
+            try { return typeof a === 'string' ? a : (a && a.message) || JSON.stringify(a) || String(a); } catch(e) { return String(a); }
+          }).join(' ');
+          if (isBenignWsError(joined)) return;
+          _origWarn.apply(console, arguments);
+        };
+
+        window.addEventListener('unhandledrejection', function(event) {
+          if (event && isBenignWsError(event.reason)) {
+            event.preventDefault();
+            event.stopImmediatePropagation();
+          }
+        }, true);
+
+        window.addEventListener('error', function(event) {
+          if (event && (isBenignWsError(event.error) || isBenignWsError(event.message))) {
+            event.preventDefault();
+            event.stopImmediatePropagation();
+          }
+        }, true);
       })();
     </script>
   </head>

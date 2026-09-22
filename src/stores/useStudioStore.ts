@@ -170,6 +170,30 @@ client = AgentLensClient(virtual_key="al_live_custom_agent")
 @protect(risk_level=RiskLevel.GREEN)
 def execute_safe_action(action_payload: dict):
     return client.runtime.execute(action_payload)
+`,
+  CREATIVE: `"""
+AgentLens Autonomous Agent: Creative-Multimodal-Studio
+Synthesized with Gemini 3.1 & Lyria Audio Engines
+"""
+from agentlens import AgentLensClient, protect, RiskLevel
+
+client = AgentLensClient(virtual_key="al_live_creative_suite")
+
+@protect(risk_level=RiskLevel.GREEN)
+def generate_multimodal_asset(prompt: str, media_type: str = "image"):
+    return client.multimodal.generate(prompt=prompt, type=media_type)
+`,
+  MULTIMODAL: `"""
+AgentLens Autonomous Agent: Universal-Multimodal-Agent
+Integrated with Image, Voice Live, Video Veo, Maps, and Search Grounding
+"""
+from agentlens import AgentLensClient, protect, RiskLevel
+
+client = AgentLensClient(virtual_key="al_live_multimodal_nexus")
+
+@protect(risk_level=RiskLevel.GREEN)
+def analyze_multimodal_stream(audio_or_video_stream):
+    return client.gemini.process_live(audio_or_video_stream)
 `
 };
 

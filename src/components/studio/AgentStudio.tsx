@@ -19,12 +19,17 @@ import {
   ArrowRight,
   MessageSquare,
   Zap,
-  Code
+  Code,
+  Cpu,
+  ChevronDown,
+  ChevronUp,
 } from 'lucide-react';
 import { useStudioStore } from '../../stores/useStudioStore';
 import { useAgentsStore } from '../../stores/useAgentsStore';
 import { useAppStore } from '../../stores/useAppStore';
-import { AgentArchetype, Agent } from '../../types';
+import { AgentArchetype, Agent, AgentMultimodalCapability } from '../../types';
+import { MultimodalIntegrationsPanel } from './MultimodalIntegrationsPanel';
+import { MultimodalSandboxRunner } from './MultimodalSandboxRunner';
 
 const PROMPT_PRESETS = [
   {
@@ -33,32 +38,32 @@ const PROMPT_PRESETS = [
     prompt: 'Build a Tier-1 customer support agent for our online store that checks order statuses, searches our vector knowledge base, and requires human approval for refunds over $50.'
   },
   {
-    title: 'Python Coding Mentor',
+    title: 'Creative Visual Studio & Video Creator',
+    archetype: 'CREATIVE' as AgentArchetype,
+    prompt: 'Build a creative multi-modal AI director that generates marketing concept images with Gemini Flash Image, creates cinematic promo videos with Veo 3, and composes ambient sound tracks with Lyria 3.'
+  },
+  {
+    title: 'Real-Time Grounded Research Scout',
+    archetype: 'RESEARCHER' as AgentArchetype,
+    prompt: 'Create a live research analyst agent with Google Search Grounding and Google Maps integration to verify geopolitical facts, compare global tech hubs, and cite live web sources.'
+  },
+  {
+    title: 'Voice Assistant & Meeting Transcriber',
+    archetype: 'SUPPORT' as AgentArchetype,
+    prompt: 'Build an executive AI voice assistant that listens to speech audio via Gemini 3.5 Transcribe, conducts live spoken conversations with Gemini 3.8 Live, and persists notes to Firestore.'
+  },
+  {
+    title: 'Python Coding Mentor & Security Guard',
     archetype: 'SUPPORT' as AgentArchetype,
     prompt: 'Build an autonomous senior Python mentor agent that reviews pull requests, writes pytest test cases, inspects async code for memory leaks, and recommends security hardening.'
-  },
-  {
-    title: 'Outbound B2B Lead Scout',
-    archetype: 'OUTREACH' as AgentArchetype,
-    prompt: 'Create a sales outreach agent that enriches domain tech stacks, scores ICP fit, drafts personalized email sequences, and complies with anti-spam sending rules.'
-  },
-  {
-    title: 'SEC Financial Ratio Auditor',
-    archetype: 'RESEARCHER' as AgentArchetype,
-    prompt: 'Build a read-only financial research agent that queries SEC EDGAR vector filings, parses 10-K disclosures, calculates EBITDA margins, and blocks any live trade execution.'
-  },
-  {
-    title: 'Travel & Flight Concierge',
-    archetype: 'SUPPORT' as AgentArchetype,
-    prompt: 'Build an AI travel concierge that searches flight availability, compares boutique hotel deals, drafts custom 5-day itineraries, and checks passport requirements.'
   }
 ];
 
 const ARCHETYPES: { id: AgentArchetype; title: string; desc: string; icon: React.ComponentType<{ className?: string }> }[] = [
   { id: 'SUPPORT', title: 'Customer Support Sentinel', desc: 'Queries vector KB, drafts ticket resolutions, pauses for refunds > $50.', icon: Bot },
-  { id: 'OUTREACH', title: 'Sales Pipeline Navigator', desc: 'Researches lead domain signals, personalizes pitch, gates outbound emails.', icon: Mail },
-  { id: 'RESEARCHER', title: 'Financial & SEC Scout', desc: 'Parses quarterly 10-Ks, runs financial ratio calculations in read-only mode.', icon: Search },
-  { id: 'DB_REPORTER', title: 'Database Analytics Oracle', desc: 'Queries SQL read-replicas, prepares daily rollups, blocks schema DDL.', icon: Database },
+  { id: 'CREATIVE', title: 'Multimodal Creative Studio', desc: 'Generates images, creates Veo videos, and composes Lyria music stems.', icon: Sparkles },
+  { id: 'RESEARCHER', title: 'Grounded Web & Maps Scout', desc: 'Grounds answers with live Google Search queries and Google Maps places.', icon: Search },
+  { id: 'DB_REPORTER', title: 'Database & Cloud Oracle', desc: 'Queries SQL read-replicas, syncs Firestore, blocks destructive DDL.', icon: Database },
 ];
 
 export const AgentStudio: React.FC = () => {
@@ -84,6 +89,17 @@ export const AgentStudio: React.FC = () => {
   const [copied, setCopied] = useState(false);
   const [createdAgent, setCreatedAgent] = useState<Agent | null>(null);
 
+  // Multimodal Capabilities Configuration
+  const [selectedCapabilities, setSelectedCapabilities] = useState<AgentMultimodalCapability[]>([
+    'gemini_chat',
+    'image_generation',
+    'google_search',
+    'voice_live',
+    'audio_transcription',
+  ]);
+  const [selectedModel, setSelectedModel] = useState<string>('gemini-3.5-flash');
+  const [showIntegrationsSection, setShowIntegrationsSection] = useState(true);
+
   const handleCopyCode = () => {
     navigator.clipboard.writeText(generatedCode);
     setCopied(true);
@@ -107,12 +123,12 @@ export const AgentStudio: React.FC = () => {
     setCreatedAgent(null);
 
     startGeneration(async () => {
-      // Once build sequence completes, create the permanent agent
-      const agent = await createAgentFromPrompt(prompt);
+      // Once build sequence completes, create the permanent agent with capabilities & model
+      const agent = await createAgentFromPrompt(prompt, selectedCapabilities, selectedModel);
       setCreatedAgent(agent);
       addToast({
         title: 'Agent Synthesized & Saved',
-        description: `${agent.name} is ready. All safety rules, tools, and keys are active.`,
+        description: `${agent.name} is ready with ${selectedCapabilities.length} active integrations.`,
         type: 'success'
       });
     });
@@ -124,11 +140,11 @@ export const AgentStudio: React.FC = () => {
       <div className="p-6 rounded-2xl bg-[#faf8f5] dark:bg-[#181715] border border-[#e5e0d5] dark:border-[#33302b] text-[#1f1e1b] dark:text-[#f5f3ef] space-y-2 shadow-xs">
         <div className="flex items-center gap-2 text-[#d97706] dark:text-[#f59e0b] font-mono text-xs uppercase font-bold">
           <Sparkles className="w-4 h-4" />
-          <span>AI Agent Creator & Synthesizer</span>
+          <span>Multimodal AI Agent Creator & Automations Synthesizer</span>
         </div>
         <h2 className="text-xl font-bold tracking-tight text-[#1f1e1b] dark:text-[#f5f3ef]">Write a Prompt to Build Any Kind of AI Agent</h2>
-        <p className="text-xs text-[#5c5850] dark:text-[#b8b4aa] max-w-2xl font-medium">
-          Describe what you want your agent to do. AgentLens will synthesize its system prompt, configure allowed tools, attach safety guardrails, run sandboxed red-team tests, and store it so you can chat with it immediately.
+        <p className="text-xs text-[#5c5850] dark:text-[#b8b4aa] max-w-3xl font-medium leading-relaxed">
+          Describe what you want your agent to do. Integrate advanced capabilities including <strong>Image Creation & Editing (Gemini Flash Image)</strong>, <strong>Live Voice Conversations (Gemini 3.8 Live)</strong>, <strong>Video Generation (Veo 3)</strong>, <strong>Google Search & Maps Grounding</strong>, <strong>Lyria 3 Music</strong>, and <strong>Firestore Database Sync</strong>.
         </p>
       </div>
 
@@ -183,7 +199,7 @@ export const AgentStudio: React.FC = () => {
               onChange={(e) => setPrompt(e.target.value)}
               disabled={isGenerating}
               rows={4}
-              placeholder="e.g. Build an AI customer service agent that checks order status, processes returns, and needs confirmation for refunds over $50..."
+              placeholder="e.g. Build an AI multimedia agent that can listen to audio with Gemini 3.5 Transcribe, generate visual assets with Gemini Flash Image, and verify news with Google Search..."
               className="w-full bg-[#faf8f5] dark:bg-[#181715] border border-[#e5e0d5] dark:border-[#33302b] rounded-xl p-3 text-xs text-[#1f1e1b] dark:text-[#f5f3ef] placeholder-[#878278] dark:placeholder-[#7d7970] focus:outline-hidden focus:border-[#d97706] transition-colors resize-none font-medium shadow-xs"
             />
 
@@ -211,22 +227,48 @@ export const AgentStudio: React.FC = () => {
               </div>
             </div>
 
+            {/* Collapsible Multimodal Integrations Selector */}
+            <div className="border-t border-[#e5e0d5] dark:border-[#33302b] pt-3">
+              <button
+                type="button"
+                onClick={() => setShowIntegrationsSection(!showIntegrationsSection)}
+                className="w-full flex items-center justify-between text-xs font-bold text-[#1f1e1b] dark:text-[#f5f3ef] cursor-pointer py-1"
+              >
+                <span className="flex items-center gap-1.5 font-mono uppercase text-[#878278] text-[11px]">
+                  2. Select AI Capabilities ({selectedCapabilities.length} Enabled)
+                </span>
+                {showIntegrationsSection ? <ChevronUp className="w-4 h-4 text-[#878278]" /> : <ChevronDown className="w-4 h-4 text-[#878278]" />}
+              </button>
+
+              {showIntegrationsSection && (
+                <div className="mt-3">
+                  <MultimodalIntegrationsPanel
+                    selectedCapabilities={selectedCapabilities}
+                    onChangeCapabilities={setSelectedCapabilities}
+                    selectedModel={selectedModel}
+                    onChangeModel={setSelectedModel}
+                    compact
+                  />
+                </div>
+              )}
+            </div>
+
             {/* Build Button */}
             <button
               id="start-studio-synthesis-btn"
               onClick={handleStartBuild}
               disabled={isGenerating || !prompt.trim()}
-              className="w-full py-3 bg-[#d97706] hover:bg-[#b45309] dark:bg-[#f59e0b] dark:hover:bg-[#fbbf24] disabled:opacity-50 text-white dark:text-[#181715] font-bold text-xs rounded-xl flex items-center justify-center gap-2 transition-all shadow-xs cursor-pointer"
+              className="w-full py-3 bg-[#d97706] hover:bg-[#b45309] dark:bg-[#f59e0b] dark:hover:bg-[#fbbf24] disabled:opacity-50 text-white dark:text-[#181715] font-bold text-xs rounded-xl flex items-center justify-center gap-2 transition-all shadow-xs cursor-pointer mt-2"
             >
               {isGenerating ? (
                 <>
                   <Loader2 className="w-4 h-4 animate-spin text-white dark:text-[#181715]" />
-                  <span>Synthesizing & Verifying Agent...</span>
+                  <span>Synthesizing Multimodal Agent...</span>
                 </>
               ) : (
                 <>
                   <Sparkles className="w-4 h-4" />
-                  <span>Build & Store AI Agent</span>
+                  <span>Build & Deploy Multimodal Agent</span>
                 </>
               )}
             </button>
@@ -308,18 +350,18 @@ export const AgentStudio: React.FC = () => {
                 </div>
               </div>
 
-              {createdAgent.tools && (
+              {createdAgent.capabilities && createdAgent.capabilities.length > 0 && (
                 <div className="space-y-1 text-xs">
                   <span className="text-[10px] uppercase font-mono font-bold text-[#878278] dark:text-[#7d7970]">
-                    Configured Tools:
+                    Active Multimodal Capabilities:
                   </span>
                   <div className="flex flex-wrap gap-1.5">
-                    {createdAgent.tools.map((tool) => (
+                    {createdAgent.capabilities.map((cap) => (
                       <span
-                        key={tool}
-                        className="px-2 py-0.5 rounded bg-amber-500/10 border border-amber-500/20 text-[#b45309] dark:text-[#fbbf24] font-mono font-bold text-[11px]"
+                        key={cap}
+                        className="px-2 py-0.5 rounded-md bg-emerald-500/10 border border-emerald-500/20 text-emerald-700 dark:text-emerald-300 font-mono font-bold text-[11px]"
                       >
-                        {tool}()
+                        {cap.replace('_', ' ')}
                       </span>
                     ))}
                   </div>
@@ -348,10 +390,10 @@ export const AgentStudio: React.FC = () => {
           )}
 
           {/* Code, Sandbox, & Governance Tabs */}
-          <div className="rounded-2xl bg-white dark:bg-[#211f1c] border border-[#e5e0d5] dark:border-[#33302b] overflow-hidden shadow-xs flex flex-col h-full min-h-[480px]">
+          <div className="rounded-2xl bg-white dark:bg-[#211f1c] border border-[#e5e0d5] dark:border-[#33302b] overflow-hidden shadow-xs flex flex-col h-full min-h-[500px]">
             {/* Header Tabs */}
-            <div className="px-4 py-2.5 border-b border-[#e5e0d5] dark:border-[#33302b] bg-[#faf8f5] dark:bg-[#181715] flex items-center justify-between">
-              <div className="flex items-center gap-2">
+            <div className="px-4 py-2.5 border-b border-[#e5e0d5] dark:border-[#33302b] bg-[#faf8f5] dark:bg-[#181715] flex flex-wrap items-center justify-between gap-2">
+              <div className="flex flex-wrap items-center gap-1.5">
                 <button
                   onClick={() => setActiveTab('sandbox')}
                   className={`px-3 py-1.5 rounded-xl text-xs flex items-center gap-1.5 transition-all cursor-pointer font-bold ${
@@ -360,8 +402,8 @@ export const AgentStudio: React.FC = () => {
                       : 'text-[#878278] dark:text-[#7d7970] hover:text-[#1f1e1b] dark:hover:text-[#f5f3ef]'
                   }`}
                 >
-                  <Terminal className="w-3.5 h-3.5 text-emerald-600 dark:text-emerald-400" />
-                  <span>Sandbox Test Logs ({sandboxLogs.length})</span>
+                  <Sparkles className="w-3.5 h-3.5 text-[#d97706] dark:text-[#f59e0b]" />
+                  <span>Live AI Capabilities Sandbox</span>
                 </button>
 
                 <button
@@ -373,7 +415,7 @@ export const AgentStudio: React.FC = () => {
                   }`}
                 >
                   <Code2 className="w-3.5 h-3.5 text-[#d97706] dark:text-[#f59e0b]" />
-                  <span>Synthesized Code (Python)</span>
+                  <span>Synthesized Code</span>
                 </button>
 
                 <button
@@ -384,7 +426,7 @@ export const AgentStudio: React.FC = () => {
                       : 'text-[#878278] dark:text-[#7d7970] hover:text-[#1f1e1b] dark:hover:text-[#f5f3ef]'
                   }`}
                 >
-                  <Shield className="w-3.5 h-3.5 text-[#d97706] dark:text-[#f59e0b]" />
+                  <Shield className="w-3.5 h-3.5 text-emerald-600 dark:text-emerald-400" />
                   <span>Risk Blueprint</span>
                 </button>
               </div>
@@ -408,33 +450,23 @@ export const AgentStudio: React.FC = () => {
               </div>
             </div>
 
-            {/* Tab 1: Sandbox Logs Terminal */}
+            {/* Tab 1: Live Multimodal AI Sandbox */}
             {activeTab === 'sandbox' && (
-              <div className="p-4 flex-1 bg-[#181715] text-emerald-400 font-mono text-xs space-y-1.5 overflow-y-auto max-h-[420px]">
-                {sandboxLogs.length === 0 ? (
-                  <div className="text-[#878278] italic">
-                    Type your prompt on the left and click "Build & Store AI Agent" to simulate container verification and red-team tests.
-                  </div>
-                ) : (
-                  sandboxLogs.map((log, i) => (
-                    <div key={i} className="leading-normal">
-                      {log}
-                    </div>
-                  ))
-                )}
+              <div className="p-4 flex-1 overflow-y-auto max-h-[550px]">
+                <MultimodalSandboxRunner activeCapabilities={selectedCapabilities} />
               </div>
             )}
 
             {/* Tab 2: Code View */}
             {activeTab === 'code' && (
-              <div className="p-4 flex-1 bg-[#181715] text-[#f5f3ef] font-mono text-xs overflow-x-auto select-text leading-relaxed max-h-[420px]">
+              <div className="p-4 flex-1 bg-[#181715] text-[#f5f3ef] font-mono text-xs overflow-x-auto select-text leading-relaxed max-h-[550px]">
                 <pre>{generatedCode}</pre>
               </div>
             )}
 
             {/* Tab 3: Governance Summary */}
             {activeTab === 'governance' && (
-              <div className="p-5 flex-1 bg-white dark:bg-[#211f1c] space-y-4 text-xs">
+              <div className="p-5 flex-1 bg-white dark:bg-[#211f1c] space-y-4 text-xs overflow-y-auto max-h-[550px]">
                 <div className="p-3.5 rounded-xl bg-[#faf8f5] dark:bg-[#181715] border border-[#e5e0d5] dark:border-[#33302b]">
                   <span className="font-bold text-[#1f1e1b] dark:text-[#f5f3ef] block mb-1">
                     Zero-Trust Virtual Key Architecture
@@ -446,12 +478,12 @@ export const AgentStudio: React.FC = () => {
 
                 <div className="space-y-2">
                   <h4 className="font-bold text-[#1f1e1b] dark:text-[#f5f3ef] uppercase tracking-wider font-mono text-[11px]">
-                    Generated Tool Risk Boundaries
+                    Integrated Multimodal Guardrails
                   </h4>
                   <div className="p-2.5 rounded-xl border border-[#e5e0d5] dark:border-[#33302b] bg-[#faf8f5] dark:bg-[#181715] flex items-center justify-between">
                     <div>
-                      <span className="font-mono font-bold text-[#1f1e1b] dark:text-[#f5f3ef]">search_knowledge_base</span>
-                      <span className="text-[#5c5850] dark:text-[#b8b4aa] block text-[11px]">Read-only retrieval lookup</span>
+                      <span className="font-mono font-bold text-[#1f1e1b] dark:text-[#f5f3ef]">generate_image (Gemini Flash Image)</span>
+                      <span className="text-[#5c5850] dark:text-[#b8b4aa] block text-[11px]">Content safety filters & asset bounds</span>
                     </div>
                     <span className="px-2 py-0.5 rounded text-[10px] font-bold bg-emerald-500/10 text-emerald-700 dark:text-emerald-300 border border-emerald-500/30">
                       GREEN (AUTO)
@@ -460,11 +492,21 @@ export const AgentStudio: React.FC = () => {
 
                   <div className="p-2.5 rounded-xl border border-[#e5e0d5] dark:border-[#33302b] bg-[#faf8f5] dark:bg-[#181715] flex items-center justify-between">
                     <div>
-                      <span className="font-mono font-bold text-[#1f1e1b] dark:text-[#f5f3ef]">issue_customer_refund</span>
-                      <span className="text-[#5c5850] dark:text-[#b8b4aa] block text-[11px]">Condition: IF amount &gt; $50.00</span>
+                      <span className="font-mono font-bold text-[#1f1e1b] dark:text-[#f5f3ef]">google_search_grounding (Gemini 3.5)</span>
+                      <span className="text-[#5c5850] dark:text-[#b8b4aa] block text-[11px]">Live web queries & source verification</span>
+                    </div>
+                    <span className="px-2 py-0.5 rounded text-[10px] font-bold bg-emerald-500/10 text-emerald-700 dark:text-emerald-300 border border-emerald-500/30">
+                      GREEN (AUTO)
+                    </span>
+                  </div>
+
+                  <div className="p-2.5 rounded-xl border border-[#e5e0d5] dark:border-[#33302b] bg-[#faf8f5] dark:bg-[#181715] flex items-center justify-between">
+                    <div>
+                      <span className="font-mono font-bold text-[#1f1e1b] dark:text-[#f5f3ef]">veo_video_generation (Veo 3)</span>
+                      <span className="text-[#5c5850] dark:text-[#b8b4aa] block text-[11px]">Cost threshold: Rate limited per user</span>
                     </div>
                     <span className="px-2 py-0.5 rounded text-[10px] font-bold bg-amber-500/15 text-[#b45309] dark:text-[#fbbf24] border border-amber-500/40">
-                      YELLOW (HITL APPROVAL)
+                      YELLOW (BUDGET GATED)
                     </span>
                   </div>
                 </div>
@@ -476,3 +518,4 @@ export const AgentStudio: React.FC = () => {
     </div>
   );
 };
+

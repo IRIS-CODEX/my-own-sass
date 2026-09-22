@@ -2,9 +2,59 @@ export type AutonomyMode = 'FULL_AUTO' | 'SEMI_AUTO' | 'READ_ONLY' | 'PAUSED';
 
 export type RiskLevel = 'GREEN' | 'YELLOW' | 'RED';
 
-export type AgentArchetype = 'SUPPORT' | 'OUTREACH' | 'RESEARCHER' | 'DB_REPORTER' | 'CODING' | 'CUSTOM';
+export type AgentArchetype = 'SUPPORT' | 'OUTREACH' | 'RESEARCHER' | 'DB_REPORTER' | 'CODING' | 'CUSTOM' | 'CREATIVE' | 'MULTIMODAL';
 
 export type StepType = 'THOUGHT' | 'TOOL_INVOCATION' | 'EVALUATION' | 'OUTPUT' | 'ERROR';
+
+export type AgentMultimodalCapability =
+  | 'image_generation'
+  | 'voice_live'
+  | 'video_generation'
+  | 'google_maps'
+  | 'google_search'
+  | 'music_generation'
+  | 'firebase_auth_db'
+  | 'audio_transcription'
+  | 'gemini_chat';
+
+export interface AgentIntegrationsConfig {
+  imageGeneration?: {
+    enabled: boolean;
+    model: string; // 'gemini-3.1-flash-image-preview'
+    aspectRatio: '1:1' | '16:9' | '9:16' | '4:3' | '3:4';
+  };
+  voiceLive?: {
+    enabled: boolean;
+    model: string; // 'gemini-3.8-live'
+    voice: 'Kore' | 'Zephyr' | 'Puck' | 'Fenrir' | 'Charon';
+  };
+  videoGeneration?: {
+    enabled: boolean;
+    model: string; // 'veo-3.1-fast-generate-preview'
+    aspectRatio: '16:9' | '9:16';
+  };
+  googleMapsGrounding?: {
+    enabled: boolean;
+    model: string; // 'gemini-3.5-flash'
+  };
+  googleSearchGrounding?: {
+    enabled: boolean;
+    model: string; // 'gemini-3.5-flash'
+  };
+  musicGeneration?: {
+    enabled: boolean;
+    model: 'lyria-3-clip-preview' | 'lyria-3-pro-preview';
+  };
+  firebasePersistence?: {
+    enabled: boolean;
+    syncFirestore: boolean;
+  };
+  audioTranscription?: {
+    enabled: boolean;
+    model: string; // 'gemini-3.5-transcribe'
+  };
+  chatModel?: 'gemini-3.1-pro-preview' | 'gemini-3.5-flash' | 'gemini-3.1-flash-lite' | 'gemini-3.8-flash';
+}
 
 export interface Agent {
   id: string;
@@ -25,6 +75,8 @@ export interface Agent {
   lastActiveAt: string;
   framework: string;
   tools?: string[];
+  capabilities?: AgentMultimodalCapability[];
+  integrationsConfig?: AgentIntegrationsConfig;
   suggestedPrompts?: string[];
   avatarIcon?: string;
   welcomeMessage?: string;
@@ -46,6 +98,15 @@ export interface ChatMessage {
   timestamp: string;
   thoughts?: string[];
   toolCall?: ChatToolCall;
+  mediaType?: 'image' | 'video' | 'audio' | 'music' | 'grounding';
+  mediaUrl?: string;
+  audioBase64?: string;
+  lyrics?: string;
+  groundingMetadata?: {
+    webSearchQueries?: string[];
+    searchChunks?: Array<{ title?: string; uri?: string; text?: string }>;
+    mapsLocation?: string;
+  };
   metrics?: {
     latencyMs: number;
     tokensUsed: number;

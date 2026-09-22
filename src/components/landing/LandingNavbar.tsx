@@ -3,7 +3,6 @@ import { useAppStore } from '../../stores/useAppStore';
 import {
   Moon,
   Sun,
-  Crown,
   ArrowRight,
   Menu,
   X,
@@ -29,7 +28,6 @@ export const LandingNavbar: React.FC = () => {
   const {
     theme,
     toggleTheme,
-    setIsAdminView,
     setIsLandingPage,
     setIsLoginPage,
     setAuthModalOpen,
@@ -99,16 +97,6 @@ export const LandingNavbar: React.FC = () => {
 
         {/* Right Action Buttons matching Screenshot */}
         <div className="hidden sm:flex items-center gap-3 lg:gap-4">
-          {/* Admin toggle for quick testing */}
-          <button
-            onClick={() => setIsAdminView(true)}
-            className="px-2.5 py-1 rounded-md border border-[#33312b] hover:border-[#48453e] text-[#b8b4aa] hover:text-[#f5f3ef] text-xs font-mono flex items-center gap-1 transition-colors cursor-pointer"
-            title="Open Admin Console"
-          >
-            <Crown className="w-3 h-3 text-[#c15f3c]" />
-            <span>Admin</span>
-          </button>
-
           {/* Theme Toggle */}
           <button
             onClick={toggleTheme}
@@ -209,17 +197,6 @@ export const LandingNavbar: React.FC = () => {
           </div>
 
           <div className="pt-3 border-t border-[#e5e0d5] dark:border-[#33302b] flex flex-col gap-2.5">
-            <button
-              onClick={() => {
-                setMobileMenuOpen(false);
-                setIsAdminView(true);
-              }}
-              className="w-full py-2 rounded-full border border-[#e5e0d5] dark:border-[#33302b] text-xs font-medium flex items-center justify-center gap-1.5"
-            >
-              <Crown className="w-3.5 h-3.5 text-amber-600 dark:text-amber-500" />
-              <span>Admin Portal</span>
-            </button>
-
             {isAuthenticated ? (
               <button
                 onClick={() => {

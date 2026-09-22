@@ -20,7 +20,16 @@ import {
   Sliders,
   CheckCircle2,
   AlertTriangle,
-  Info
+  Info,
+  Mic,
+  Volume2,
+  Image as ImageIcon,
+  Video,
+  Music,
+  MapPin,
+  Loader2,
+  ExternalLink,
+  Square
 } from 'lucide-react';
 import { useAgentsStore } from '../../stores/useAgentsStore';
 import { useChatStore } from '../../stores/useChatStore';
@@ -53,8 +62,30 @@ export const AgentChat: React.FC = () => {
   const [showMemoryBank, setShowMemoryBank] = useState(false);
   const [collapsedThoughts, setCollapsedThoughts] = useState<Record<string, boolean>>({});
 
+  // Multimodal Voice & Audio Recording State
+  const [isRecording, setIsRecording] = useState(false);
+  const [isTranscribing, setIsTranscribing] = useState(false);
+  const [isLiveVoiceMode, setIsLiveVoiceMode] = useState(false);
+  const [currentlySpeakingMsgId, setCurrentlySpeakingMsgId] = useState<string | null>(null);
+  const mediaRecorderRef = useRef<MediaRecorder | null>(null);
+  const audioChunksRef = useRef<Blob[]>([]);
+  const speechRecognitionRef = useRef<any>(null);
+  const lastSpokenMsgIdRef = useRef<string | null>(null);
+
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const inputRef = useRef<HTMLTextAreaElement>(null);
+
+  // Helper to clean markdown for natural TTS audio reading
+  const cleanTextForSpeech = (text: string): string => {
+    return text
+      .replace(/```[\s\S]*?```/g, 'Code block omitted.')
+      .replace(/`([^`]+)`/g, '$1')
+      .replace(/[*#_~>]/g, '')
+      .replace(/\[([^\]]+)\]\([^)]+\)/g, '$1')
+      .replace(/🛡️|⚠️|✅|❌|•/g, '')
+      .replace(/\n+/g, ' ')
+      .trim();
+  };
 
   // Sync if appStore requested a specific agent
   useEffect(() => {
@@ -77,6 +108,225 @@ export const AgentChat: React.FC = () => {
   useEffect(() => {
     messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
   }, [messages, isThinking]);
+
+  // Auto-speak in Live Voice Mode when a new agent message arrives
+  useEffect(() => {
+    if (!isLiveVoiceMode || messages.length === 0) return;
+    const lastMsg = messages[messages.length - 1];
+    if (lastMsg.sender === 'agent' && lastMsg.id !== lastSpokenMsgIdRef.current && !isThinking) {
+      lastSpokenMsgIdRef.current = lastMsg.id;
+      handleSpeakMessage(lastMsg.id, lastMsg.content);
+    }
+  }, [messages, isLiveVoiceMode, isThinking]);
+
+  // Handler: Start audio recording & real-time transcription
+  const handleStartRecording = async () => {
+    let interimTextCaptured = '';
+    try {
+      // 1. Initialize Web Speech API for real-time live dictation if available
+      const SpeechRecognitionClass = (window as any).SpeechRecognition || (window as any).webkitSpeechRecognition;
+      if (SpeechRecognitionClass) {
+        try {
+          const recognition = new SpeechRecognitionClass();
+          recognition.continuous = true;
+          recognition.interimResults = true;
+          recognition.lang = 'en-US';
+
+          recognition.onresult = (event: any) => {
+            let transcript = '';
+            for (let i = event.resultIndex; i < event.results.length; i++) {
+              transcript += event.results[i][0].transcript;
+            }
+            if (transcript) {
+              interimTextCaptured = transcript;
+              setInputMessage(transcript);
+            }
+          };
+
+          recognition.onerror = (err: any) => {
+            console.warn('Live speech recognition warning:', err);
+          };
+
+          recognition.start();
+          speechRecognitionRef.current = recognition;
+        } catch (recErr) {
+          console.warn('SpeechRecognition start failed, relying on media recorder:', recErr);
+        }
+      }
+
+      // 2. Initialize MediaRecorder with adaptive MIME type for Gemini 3.5 Transcribe
+      if (navigator.mediaDevices && navigator.mediaDevices.getUserMedia) {
+        const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+        audioChunksRef.current = [];
+
+        let mimeType = 'audio/webm';
+        if (typeof MediaRecorder !== 'undefined') {
+          if (MediaRecorder.isTypeSupported('audio/webm;codecs=opus')) {
+            mimeType = 'audio/webm;codecs=opus';
+          } else if (MediaRecorder.isTypeSupported('audio/webm')) {
+            mimeType = 'audio/webm';
+          } else if (MediaRecorder.isTypeSupported('audio/mp4')) {
+            mimeType = 'audio/mp4';
+          } else if (MediaRecorder.isTypeSupported('audio/ogg')) {
+            mimeType = 'audio/ogg';
+          }
+        }
+
+        const mediaRecorder = new MediaRecorder(stream);
+        mediaRecorderRef.current = mediaRecorder;
+
+        mediaRecorder.ondataavailable = (e) => {
+          if (e.data.size > 0) audioChunksRef.current.push(e.data);
+        };
+
+        mediaRecorder.onstop = async () => {
+          const audioBlob = new Blob(audioChunksRef.current, { type: mimeType });
+          stream.getTracks().forEach((t) => t.stop());
+
+          // If speech recognition already provided accurate text, we don't need additional cloud transcription
+          if (interimTextCaptured.trim().length > 3) {
+            if (isLiveVoiceMode) {
+              handleSend(interimTextCaptured.trim());
+            }
+            return;
+          }
+
+          const reader = new FileReader();
+          reader.onloadend = async () => {
+            const base64Data = (reader.result as string) || '';
+            setIsTranscribing(true);
+            try {
+              const res = await fetch('/api/gemini/transcribe-audio', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                  audioData: base64Data,
+                  mimeType,
+                  model: 'gemini-3.5-transcribe',
+                }),
+              });
+              const data = await res.json();
+              if (res.ok && data.transcription) {
+                const finalStr = data.transcription;
+                setInputMessage((prev) => (prev ? `${prev} ${finalStr}` : finalStr));
+                addToast({ title: 'Voice Transcribed', description: 'Speech captured cleanly.', type: 'success' });
+                if (isLiveVoiceMode) {
+                  handleSend(finalStr);
+                }
+              }
+            } catch (err) {
+              console.error('Transcription error:', err);
+            } finally {
+              setIsTranscribing(false);
+            }
+          };
+          reader.readAsDataURL(audioBlob);
+        };
+
+        mediaRecorder.start();
+        setIsRecording(true);
+        addToast({ title: 'Listening...', description: 'Speak clearly into your microphone.', type: 'info' });
+      } else {
+        setIsRecording(true);
+      }
+    } catch (e) {
+      console.error('Microphone error:', e);
+      addToast({ title: 'Microphone Notice', description: 'Could not access microphone.', type: 'error' });
+    }
+  };
+
+  const handleStopRecording = () => {
+    if (speechRecognitionRef.current) {
+      try {
+        speechRecognitionRef.current.stop();
+      } catch (e) {}
+      speechRecognitionRef.current = null;
+    }
+
+    if (mediaRecorderRef.current && isRecording) {
+      try {
+        mediaRecorderRef.current.stop();
+      } catch (e) {}
+    }
+    setIsRecording(false);
+  };
+
+  // Handler: Speech Synthesis (TTS Read-Aloud with natural speech)
+  const handleSpeakMessage = async (msgId: string, text: string) => {
+    if (currentlySpeakingMsgId === msgId) {
+      if (window.speechSynthesis) window.speechSynthesis.cancel();
+      setCurrentlySpeakingMsgId(null);
+      return;
+    }
+
+    setCurrentlySpeakingMsgId(msgId);
+    const spokenText = cleanTextForSpeech(text).slice(0, 1000);
+
+    const fallbackToSpeechSynthesis = () => {
+      if (!window.speechSynthesis) {
+        setCurrentlySpeakingMsgId(null);
+        return;
+      }
+      window.speechSynthesis.cancel();
+      const utterance = new SpeechSynthesisUtterance(spokenText);
+      const voices = window.speechSynthesis.getVoices();
+      const preferredVoice = voices.find((v) => v.lang.startsWith('en') && (v.name.includes('Natural') || v.name.includes('Google') || v.name.includes('Samantha') || v.name.includes('Daniel'))) || voices[0];
+      if (preferredVoice) utterance.voice = preferredVoice;
+      utterance.rate = 1.0;
+      utterance.pitch = 1.0;
+      utterance.onend = () => setCurrentlySpeakingMsgId(null);
+      utterance.onerror = () => setCurrentlySpeakingMsgId(null);
+      window.speechSynthesis.speak(utterance);
+    };
+
+    try {
+      const res = await fetch('/api/gemini/generate-speech', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          text: spokenText.slice(0, 600),
+          voice: 'Kore',
+          model: 'gemini-3.1-flash-tts-preview',
+        }),
+      });
+
+      const data = await res.json();
+      if (res.ok && data.audioBase64) {
+        const AudioContextClass = window.AudioContext || (window as any).webkitAudioContext;
+        if (!AudioContextClass) {
+          fallbackToSpeechSynthesis();
+          return;
+        }
+
+        const audioCtx = new AudioContextClass({ sampleRate: 24000 });
+        if (audioCtx.state === 'suspended') {
+          await audioCtx.resume();
+        }
+
+        const binary = atob(data.audioBase64);
+        const bytes = new Uint8Array(binary.length);
+        for (let i = 0; i < binary.length; i++) {
+          bytes[i] = binary.charCodeAt(i);
+        }
+        const pcm16 = new Int16Array(bytes.buffer);
+        const audioBuffer = audioCtx.createBuffer(1, pcm16.length, 24000);
+        const channelData = audioBuffer.getChannelData(0);
+        for (let i = 0; i < pcm16.length; i++) {
+          channelData[i] = pcm16[i] / 32768.0;
+        }
+
+        const source = audioCtx.createBufferSource();
+        source.buffer = audioBuffer;
+        source.connect(audioCtx.destination);
+        source.onended = () => setCurrentlySpeakingMsgId(null);
+        source.start();
+      } else {
+        fallbackToSpeechSynthesis();
+      }
+    } catch (e) {
+      fallbackToSpeechSynthesis();
+    }
+  };
 
   const handleSend = async (textToSend?: string) => {
     const text = textToSend || inputMessage;
@@ -337,6 +587,41 @@ export const AgentChat: React.FC = () => {
                 title={isCurrentAgentPaused ? 'Resume Agent' : 'Emergency Halt'}
               >
                 {isCurrentAgentPaused ? <Play className="w-3.5 h-3.5" /> : <OctagonAlert className="w-3.5 h-3.5" />}
+              </button>
+
+              {/* Live Voice Mode Toggle */}
+              <button
+                onClick={() => {
+                  const nextMode = !isLiveVoiceMode;
+                  setIsLiveVoiceMode(nextMode);
+                  if (nextMode) {
+                    addToast({
+                      title: 'Live Voice Mode: ON',
+                      description: 'The agent will automatically speak responses and listen hands-free.',
+                      type: 'success',
+                    });
+                  } else {
+                    if (window.speechSynthesis) window.speechSynthesis.cancel();
+                    setCurrentlySpeakingMsgId(null);
+                    addToast({
+                      title: 'Live Voice Mode: OFF',
+                      description: 'Voice chat switched to standard text mode.',
+                      type: 'info',
+                    });
+                  }
+                }}
+                className={`p-1.5 px-2.5 rounded-xl border text-xs font-bold transition-all flex items-center gap-1.5 cursor-pointer shadow-xs ${
+                  isLiveVoiceMode
+                    ? 'bg-rose-600 text-white border-rose-600 animate-pulse'
+                    : 'border-[#e5e0d5] dark:border-[#33302b] text-[#1f1e1b] dark:text-[#f5f3ef] bg-white dark:bg-[#211f1c] hover:bg-[#f4f1ea] dark:hover:bg-[#282622]'
+                }`}
+                title="Toggle Hands-Free Live Voice Conversation Mode"
+              >
+                <Mic className="w-3.5 h-3.5 text-rose-500" />
+                <span className="hidden sm:inline">Live Voice</span>
+                <span className={`text-[10px] font-mono px-1 py-0.2 rounded-full font-bold ${isLiveVoiceMode ? 'bg-white/20 text-white' : 'bg-rose-500/10 text-rose-600 dark:text-rose-400'}`}>
+                  {isLiveVoiceMode ? 'LIVE' : 'OFF'}
+                </span>
               </button>
 
               {/* Memory Bank Toggle */}
@@ -682,13 +967,71 @@ export const AgentChat: React.FC = () => {
 
                   {/* Message Bubble */}
                   <div
-                    className={`p-3.5 rounded-2xl leading-relaxed whitespace-pre-wrap shadow-xs ${
+                    className={`p-3.5 rounded-2xl leading-relaxed whitespace-pre-wrap shadow-xs relative group ${
                       isUser
                         ? 'bg-[#1f1e1b] dark:bg-[#f5f3ef] text-white dark:text-[#181715] font-medium'
                         : 'bg-white dark:bg-[#211f1c] text-[#1f1e1b] dark:text-[#f5f3ef] border border-[#e5e0d5] dark:border-[#33302b] font-medium'
                     }`}
                   >
                     {msg.content}
+
+                    {/* Media Render (Image, Audio, Video) */}
+                    {msg.mediaUrl && (
+                      <div className="mt-3 rounded-2xl overflow-hidden border border-[#e5e0d5] dark:border-[#33302b] bg-[#faf8f5] dark:bg-[#181715] shadow-xs">
+                        {msg.mediaType === 'image' && (
+                          <div className="relative group/img">
+                            <div className="flex items-center justify-between px-3 py-2 border-b border-[#e5e0d5] dark:border-[#33302b] bg-white/80 dark:bg-[#211f1c]/80 text-[10px] font-mono text-[#5c5850] dark:text-[#b8b4aa]">
+                              <span className="flex items-center gap-1.5 font-bold text-[#d97706] dark:text-[#f59e0b]">
+                                <ImageIcon className="w-3.5 h-3.5" />
+                                <span>Gemini Synthesized Image</span>
+                              </span>
+                              <a
+                                href={msg.mediaUrl}
+                                download={`agent-generated-${Date.now()}.png`}
+                                target="_blank"
+                                rel="noreferrer"
+                                className="px-2 py-0.5 rounded bg-white dark:bg-[#282622] hover:bg-[#f4f1ea] border border-[#e5e0d5] dark:border-[#33302b] font-bold text-[#1f1e1b] dark:text-[#f5f3ef] flex items-center gap-1 cursor-pointer transition-colors"
+                              >
+                                <span>Save / Open</span>
+                                <ExternalLink className="w-2.5 h-2.5" />
+                              </a>
+                            </div>
+                            <div className="p-2 flex items-center justify-center bg-black/5 dark:bg-black/20">
+                              <img
+                                src={msg.mediaUrl}
+                                alt="Agent Generated Output"
+                                referrerPolicy="no-referrer"
+                                className="w-full max-h-96 object-contain rounded-xl shadow-xs transition-transform duration-300"
+                              />
+                            </div>
+                          </div>
+                        )}
+                        {msg.mediaType === 'audio' && (
+                          <div className="p-3.5 space-y-2">
+                            <div className="flex items-center gap-2 text-xs font-bold text-purple-600 dark:text-purple-400">
+                              <Music className="w-4 h-4" />
+                              <span>Synthesized Audio Track</span>
+                            </div>
+                            <audio controls src={msg.mediaUrl} className="w-full" />
+                          </div>
+                        )}
+                        {msg.mediaType === 'video' && (
+                          <video controls src={msg.mediaUrl} className="w-full max-h-72 rounded-xl" />
+                        )}
+                      </div>
+                    )}
+
+                    {/* Assistant Voice TTS Action */}
+                    {!isUser && (
+                      <button
+                        onClick={() => handleSpeakMessage(msg.id, msg.content)}
+                        className="mt-2.5 inline-flex items-center gap-1.5 px-2 py-1 rounded-lg border border-[#e5e0d5] dark:border-[#33302b] bg-[#faf8f5] dark:bg-[#181715] hover:bg-[#f4f1ea] dark:hover:bg-[#282622] text-[#5c5850] dark:text-[#b8b4aa] text-[10px] font-bold cursor-pointer transition-all"
+                        title="Read aloud with Gemini voice"
+                      >
+                        <Volume2 className={`w-3 h-3 ${currentlySpeakingMsgId === msg.id ? 'text-[#d97706] animate-pulse' : ''}`} />
+                        <span>{currentlySpeakingMsgId === msg.id ? 'Speaking...' : 'Listen Voice'}</span>
+                      </button>
+                    )}
                   </div>
 
                   {/* Telemetry Footer */}
@@ -750,6 +1093,38 @@ export const AgentChat: React.FC = () => {
 
         {/* Input Bar */}
         <div className="p-3.5 border-t border-[#e5e0d5] dark:border-[#33302b] bg-[#faf8f5] dark:bg-[#181715]">
+          {/* Quick Multimodal Action Chips */}
+          <div className="flex items-center gap-1.5 mb-2 overflow-x-auto pb-1">
+            <button
+              onClick={() => setInputMessage('Generate an illustration for our product launch')}
+              className="px-2 py-0.5 rounded-lg bg-white dark:bg-[#211f1c] hover:bg-[#f4f1ea] dark:hover:bg-[#282622] border border-[#e5e0d5] dark:border-[#33302b] text-[10px] font-medium text-[#5c5850] dark:text-[#b8b4aa] flex items-center gap-1 flex-shrink-0 cursor-pointer"
+            >
+              <ImageIcon className="w-3 h-3 text-[#d97706]" />
+              <span>Image</span>
+            </button>
+            <button
+              onClick={() => setInputMessage('Search current web facts about ')}
+              className="px-2 py-0.5 rounded-lg bg-white dark:bg-[#211f1c] hover:bg-[#f4f1ea] dark:hover:bg-[#282622] border border-[#e5e0d5] dark:border-[#33302b] text-[10px] font-medium text-[#5c5850] dark:text-[#b8b4aa] flex items-center gap-1 flex-shrink-0 cursor-pointer"
+            >
+              <Search className="w-3 h-3 text-emerald-600" />
+              <span>Search Web</span>
+            </button>
+            <button
+              onClick={() => setInputMessage('Search Google Maps places for top cafes in Paris')}
+              className="px-2 py-0.5 rounded-lg bg-white dark:bg-[#211f1c] hover:bg-[#f4f1ea] dark:hover:bg-[#282622] border border-[#e5e0d5] dark:border-[#33302b] text-[10px] font-medium text-[#5c5850] dark:text-[#b8b4aa] flex items-center gap-1 flex-shrink-0 cursor-pointer"
+            >
+              <MapPin className="w-3 h-3 text-red-500" />
+              <span>Maps</span>
+            </button>
+            <button
+              onClick={() => setInputMessage('Compose a soothing ambient background synth track')}
+              className="px-2 py-0.5 rounded-lg bg-white dark:bg-[#211f1c] hover:bg-[#f4f1ea] dark:hover:bg-[#282622] border border-[#e5e0d5] dark:border-[#33302b] text-[10px] font-medium text-[#5c5850] dark:text-[#b8b4aa] flex items-center gap-1 flex-shrink-0 cursor-pointer"
+            >
+              <Music className="w-3 h-3 text-purple-500" />
+              <span>Music</span>
+            </button>
+          </div>
+
           <div className="relative rounded-2xl border border-[#e5e0d5] dark:border-[#33302b] bg-white dark:bg-[#211f1c] focus-within:border-[#d97706] transition-all shadow-xs">
             <textarea
               ref={inputRef}
@@ -763,17 +1138,42 @@ export const AgentChat: React.FC = () => {
                   ? 'Agent paused. Resume above to chat...'
                   : `Message ${currentAgent?.name || 'Agent'}... (Press Enter)`
               }
-              className="w-full bg-transparent p-3 pr-10 text-xs text-[#1f1e1b] dark:text-[#f5f3ef] placeholder:text-[#878278] dark:placeholder:text-[#7d7970] focus:outline-hidden resize-none font-medium"
+              className="w-full bg-transparent p-3 pr-20 text-xs text-[#1f1e1b] dark:text-[#f5f3ef] placeholder:text-[#878278] dark:placeholder:text-[#7d7970] focus:outline-hidden resize-none font-medium"
             />
 
-            <button
-              onClick={() => handleSend()}
-              disabled={!inputMessage.trim() || isThinking}
-              className="absolute right-2.5 bottom-2.5 p-2 rounded-xl bg-[#d97706] hover:bg-[#b45309] dark:bg-[#f59e0b] dark:hover:bg-[#fbbf24] disabled:opacity-30 text-white dark:text-[#181715] font-bold transition-all shadow-xs cursor-pointer"
-              title="Send message"
-            >
-              <Send className="w-3.5 h-3.5" />
-            </button>
+            <div className="absolute right-2.5 bottom-2.5 flex items-center gap-1.5">
+              {/* Mic / Voice Recording Button */}
+              <button
+                type="button"
+                onClick={isRecording ? handleStopRecording : handleStartRecording}
+                disabled={isThinking || isTranscribing}
+                className={`p-2 rounded-xl border text-xs font-bold transition-all shadow-xs cursor-pointer ${
+                  isRecording
+                    ? 'bg-rose-600 text-white border-rose-600 animate-pulse'
+                    : isTranscribing
+                    ? 'bg-amber-500/10 text-[#d97706] border-amber-500/30'
+                    : 'bg-[#faf8f5] dark:bg-[#181715] hover:bg-[#f4f1ea] dark:hover:bg-[#282622] text-[#5c5850] dark:text-[#b8b4aa] border-[#e5e0d5] dark:border-[#33302b]'
+                }`}
+                title={isRecording ? 'Stop recording & transcribe' : 'Speak to agent (Voice transcription)'}
+              >
+                {isTranscribing ? (
+                  <Loader2 className="w-3.5 h-3.5 animate-spin text-[#d97706]" />
+                ) : isRecording ? (
+                  <Square className="w-3.5 h-3.5 fill-white" />
+                ) : (
+                  <Mic className="w-3.5 h-3.5" />
+                )}
+              </button>
+
+              <button
+                onClick={() => handleSend()}
+                disabled={!inputMessage.trim() || isThinking}
+                className="p-2 rounded-xl bg-[#d97706] hover:bg-[#b45309] dark:bg-[#f59e0b] dark:hover:bg-[#fbbf24] disabled:opacity-30 text-white dark:text-[#181715] font-bold transition-all shadow-xs cursor-pointer"
+                title="Send message"
+              >
+                <Send className="w-3.5 h-3.5" />
+              </button>
+            </div>
           </div>
 
           <div className="flex items-center justify-between mt-1.5 px-1 text-[10px] text-[#878278] dark:text-[#7d7970] font-mono font-semibold">
