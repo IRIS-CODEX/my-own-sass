@@ -66,11 +66,14 @@ interface WorkflowState {
   resetSimulation: () => void;
   resolveHITLApproval: (nodeId: string, approved: boolean) => void;
   
-  // Canvas Nav
+  // Canvas Nav & Layout
   setZoom: (zoom: number) => void;
   setPan: (panX: number, panY: number) => void;
   resetView: () => void;
   focusNode: (nodeId: string) => void;
+  autoLayoutNodes: () => void;
+  snapNodesToGrid: () => void;
+  duplicateNode: (nodeId: string) => void;
   
   // Modal toggles & Agent Sidebar
   setInspectorOpen: (open: boolean) => void;
@@ -418,6 +421,137 @@ export const useWorkflowStore = create<WorkflowState>((set, get) => ({
   setPan: (panX: number, panY: number) => set({ panX, panY }),
   resetView: () => set({ zoom: 1.0, panX: 40, panY: 40 }),
 
+  autoLayoutNodes: () => {
+    const { nodes, edges } = get();
+    if (nodes.length === 0) return;
+
+    const inDegree: Record<string, number> = {};
+    const adj: Record<string, string[]> = {};
+    nodes.forEach((n) => {
+      inDegree[n.id] = 0;
+      adj[n.id] = [];
+    });
+
+    edges.forEach((e) => {
+      if (adj[e.sourceNodeId] && inDegree[e.targetNodeId] !== undefined) {
+        adj[e.sourceNodeId].push(e.targetNodeId);
+        inDegree[e.targetNodeId] = (inDegree[e.targetNodeId] || 0) + 1;
+      }
+    });
+
+    const levels: Record<string, number> = {};
+    const queue: { id: string; level: number }[] = [];
+
+    nodes.forEach((n) => {
+      if ((inDegree[n.id] || 0) === 0) {
+        levels[n.id] = 0;
+        queue.push({ id: n.id, level: 0 });
+      }
+    });
+
+    if (queue.length === 0 && nodes.length > 0) {
+      levels[nodes[0].id] = 0;
+      queue.push({ id: nodes[0].id, level: 0 });
+    }
+
+    while (queue.length > 0) {
+      const { id, level } = queue.shift()!;
+      const neighbors = adj[id] || [];
+      neighbors.forEach((nbr) => {
+        if (levels[nbr] === undefined || levels[nbr] < level + 1) {
+          levels[nbr] = level + 1;
+          queue.push({ id: nbr, level: level + 1 });
+        }
+      });
+    }
+
+    let unassignedLevel = 0;
+    nodes.forEach((n) => {
+      if (levels[n.id] === undefined) {
+        levels[n.id] = unassignedLevel++;
+      }
+    });
+
+    const levelGroups: Record<number, WorkflowNode[]> = {};
+    nodes.forEach((n) => {
+      const lvl = levels[n.id] ?? 0;
+      if (!levelGroups[lvl]) levelGroups[lvl] = [];
+      levelGroups[lvl].push(n);
+    });
+
+    const COL_WIDTH = 340;
+    const ROW_HEIGHT = 280;
+    const START_X = 60;
+    const START_Y = 120;
+
+    const newNodes = nodes.map((node) => {
+      const lvl = levels[node.id] ?? 0;
+      const group = levelGroups[lvl] || [node];
+      const indexInGroup = group.findIndex((n) => n.id === node.id);
+      const totalInGroup = group.length;
+
+      const x = START_X + lvl * COL_WIDTH;
+      const offsetY = START_Y + (indexInGroup - (totalInGroup - 1) / 2) * ROW_HEIGHT;
+      const y = Math.max(60, offsetY);
+
+      return {
+        ...node,
+        position: { x, y },
+      };
+    });
+
+    set({
+      nodes: newNodes,
+      panX: 40,
+      panY: 40,
+      zoom: 0.95,
+      logs: [
+        ...get().logs,
+        {
+          id: `log-layout-${Date.now()}`,
+          timestamp: new Date().toISOString(),
+          nodeId: 'system_layout',
+          nodeName: 'Auto Layout Engine',
+          level: 'SUCCESS',
+          message: `Organized ${nodes.length} nodes and ${edges.length} wires into structured topological columns.`,
+        },
+      ],
+    });
+  },
+
+  snapNodesToGrid: () => {
+    const GRID_SIZE = 20;
+    set((state) => ({
+      nodes: state.nodes.map((n) => ({
+        ...n,
+        position: {
+          x: Math.round(n.position.x / GRID_SIZE) * GRID_SIZE,
+          y: Math.round(n.position.y / GRID_SIZE) * GRID_SIZE,
+        },
+      })),
+    }));
+  },
+
+  duplicateNode: (nodeId: string) => {
+    const target = get().nodes.find((n) => n.id === nodeId);
+    if (!target) return;
+    const newId = `node_${target.type}_${Date.now()}`;
+    const duplicated: WorkflowNode = {
+      ...JSON.parse(JSON.stringify(target)),
+      id: newId,
+      name: `${target.name} (Copy)`,
+      position: {
+        x: target.position.x + 30,
+        y: target.position.y + 30,
+      },
+    };
+    set((state) => ({
+      nodes: [...state.nodes, duplicated],
+      selectedNodeId: newId,
+      inspectorOpen: true,
+    }));
+  },
+
   focusNode: (nodeId: string) => {
     const node = get().nodes.find((n) => n.id === nodeId);
     if (!node) return;
@@ -580,7 +714,7 @@ export const useWorkflowStore = create<WorkflowState>((set, get) => ({
           { id: 'out_sig', name: 'dispatch_signal', type: 'signal' },
         ],
         config: {
-          model: 'gemini-2.0-flash',
+          model: 'gemini-3.8-flash',
           systemPrompt: 'You are an autonomous WhatsApp customer support agent. Answer customer inquiries politely, concisely, and helpfully. Keep messages under 300 characters when possible.',
           temperature: 0.3,
           budgetCapUsd: 25.0,
@@ -700,7 +834,7 @@ export const useWorkflowStore = create<WorkflowState>((set, get) => ({
           { id: 'out_action', name: 'triage_signal', type: 'signal' },
         ],
         config: {
-          model: 'gemini-2.0-flash',
+          model: 'gemini-3.8-flash',
           systemPrompt: 'You are the Executive Gmail Inbox Pilot. Summarize unread emails, prioritize inquiries, and compose professional, courteous email replies under strict Zero-Trust approval.',
           temperature: 0.2,
           budgetCapUsd: 30.0,
@@ -820,7 +954,7 @@ export const useWorkflowStore = create<WorkflowState>((set, get) => ({
           { id: 'out_sig', name: 'send_signal', type: 'signal' },
         ],
         config: {
-          model: 'gemini-2.0-flash',
+          model: 'gemini-3.8-flash',
           systemPrompt: 'You are an intelligent Telegram bot assistant. Respond to user commands (/start, /help, /triage), explain technical operations clearly, and format responses with clean Markdown.',
           temperature: 0.3,
           budgetCapUsd: 20.0,
@@ -866,7 +1000,7 @@ export const useWorkflowStore = create<WorkflowState>((set, get) => ({
         agentName: customAgentName || 'Archon (Workflow Architect)',
         actionType: 'ADD_NODE',
         title: 'Provisioned Telegram Bot Swarm',
-        description: 'Built and connected Telegram Webhook -> AST Zero-Trust -> Gemini 2.0 Flash -> Telegram Send API.',
+        description: 'Built and connected Telegram Webhook -> AST Zero-Trust -> Gemini 3.8 Flash -> Telegram Send API.',
         nodeIds: [trigId, policyId, aiId, dispatchId],
         edgeIds: [e1.id, e2.id, e3.id],
         diffSummary: '+ 4 Nodes (Telegram Swarm) & 3 Wires',
@@ -874,7 +1008,7 @@ export const useWorkflowStore = create<WorkflowState>((set, get) => ({
       actionsTaken.push(action);
 
       thoughtText = 'Constructed Telegram Bot API agent swarm with BotFather token proxy, AST validation, and automated Markdown response dispatch.';
-      responseText = `✈️ **Telegram Bot Agent Swarm Deployed!**\n\nI have wired your Telegram automation pipeline:\n1. **Telegram Bot Webhook**: Receives commands (/start, /triage) and chat messages.\n2. **AST Telegram Guard**: Restricts commands to authorized admins and sanitizes text.\n3. **Telegram Sentinel Copilot**: Gemini 2.0 Flash reasoning agent.\n4. **Telegram Bot Send API**: Formats and delivers Markdown messages to your target channel.`;
+      responseText = `✈️ **Telegram Bot Agent Swarm Deployed!**\n\nI have wired your Telegram automation pipeline:\n1. **Telegram Bot Webhook**: Receives commands (/start, /triage) and chat messages.\n2. **AST Telegram Guard**: Restricts commands to authorized admins and sanitizes text.\n3. **Telegram Sentinel Copilot**: Gemini 3.8 Flash reasoning agent.\n4. **Telegram Bot Send API**: Formats and delivers Markdown messages to your target channel.`;
       suggestedPrompts.push('🚀 Run Simulation', '📱 Build WhatsApp AI Agent', '✉️ Build Gmail Manager Agent');
     }
     // 1. ADD GEMINI NODE
@@ -882,7 +1016,7 @@ export const useWorkflowStore = create<WorkflowState>((set, get) => ({
       const newNodeId = `node_gemini_${Date.now()}`;
       const newNode: WorkflowNode = {
         id: newNodeId,
-        name: 'Google Gemini 2.0 Flash',
+        name: 'Google Gemini 3.8 Flash',
         type: 'ai_model',
         platform: 'gemini',
         category: 'AI_MODELS',
@@ -899,7 +1033,7 @@ export const useWorkflowStore = create<WorkflowState>((set, get) => ({
           { id: 'out_tool_call', name: 'Tool Directives', type: 'signal' },
         ],
         config: {
-          model: 'gemini-2.0-flash',
+          model: 'gemini-3.8-flash',
           temperature: 0.7,
           promptTemplate: 'You are an autonomous operations copilot.',
           piiRedaction: true,
@@ -1274,13 +1408,13 @@ import { GoogleGenAI } from '@google/genai';
 export async function executeAgentLogic(context: Record<string, any>, apiKey: string) {
   const ai = new GoogleGenAI({ apiKey });
   const response = await ai.models.generateContent({
-    model: 'gemini-2.0-flash',
+    model: 'gemini-3.8-flash',
     contents: [{ role: 'user', parts: [{ text: JSON.stringify(context) }] }]
   });
   return { result: response.text, executionMs: 24.5 };
 }`,
         config: {
-          model: 'gemini-2.0-flash',
+          model: 'gemini-3.8-flash',
           temperature: 0.7,
           piiRedaction: true,
           budgetCapUsd: 15.0,

@@ -156,8 +156,8 @@ export const WorkflowAgentSidebar: React.FC = () => {
 
   // Available agent options
   const defaultAgentOptions = [
-    { id: 'archon-workflow', name: 'Archon (Workflow Architect)', archetype: 'ORCHESTRATOR', model: 'gemini-2.0-flash' },
-    { id: 'apex-coder', name: 'Apex (Master Coder & Builder)', archetype: 'CODER', model: 'gemini-2.0-flash' },
+    { id: 'archon-workflow', name: 'Archon (Workflow Architect)', archetype: 'ORCHESTRATOR', model: 'gemini-3.8-flash' },
+    { id: 'apex-coder', name: 'Apex (Master Coder & Builder)', archetype: 'CODER', model: 'gemini-3.8-flash' },
     { id: 'secguard-zero-trust', name: 'SecGuard (Zero-Trust Officer)', archetype: 'SECURITY', model: 'claude-3-5-sonnet' },
     { id: 'finops-cost', name: 'FinOps (Cost Engine)', archetype: 'ANALYST', model: 'gpt-4o' },
   ];

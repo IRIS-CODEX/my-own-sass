@@ -76,7 +76,7 @@ interface GitHubState {
 function buildTypeScriptAgentCode(agentName: string, nodes: WorkflowNode[], edges: WorkflowEdge[]): string {
   const cleanName = agentName.replace(/[^a-zA-Z0-9]/g, '');
   const modelNodes = nodes.filter((n) => n.platform === 'gemini' || n.type === 'ai_model');
-  const primaryModel = modelNodes[0]?.config?.model || 'gemini-2.0-flash';
+  const primaryModel = modelNodes[0]?.config?.model || 'gemini-3.8-flash';
 
   return `/**
  * =========================================================================

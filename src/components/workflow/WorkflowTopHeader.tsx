@@ -12,6 +12,8 @@ import {
   Bot,
   Sparkles,
   Save,
+  LayoutGrid,
+  Grid,
 } from 'lucide-react';
 import { useWorkflowStore } from '../../stores/useWorkflowStore';
 
@@ -27,6 +29,8 @@ export const WorkflowTopHeader: React.FC = () => {
     zoom,
     setZoom,
     resetView,
+    autoLayoutNodes,
+    snapNodesToGrid,
     setAddNodeModalOpen,
     setSaveFlowModalOpen,
     logsDrawerOpen,
@@ -102,7 +106,30 @@ export const WorkflowTopHeader: React.FC = () => {
             </button>
           </div>
 
-          <div className="h-4 w-px bg-[#e5e0d5] dark:border-[#33302b] mx-0.5" />
+          <div className="h-4 w-px bg-[#e5e0d5] dark:bg-[#33302b] mx-0.5" />
+
+          {/* Auto Align & Layout Tools */}
+          <div className="flex items-center gap-1">
+            <button
+              id="btn-auto-layout-flow"
+              onClick={autoLayoutNodes}
+              className="h-8 px-2.5 rounded-xl bg-white dark:bg-[#211f1c] hover:bg-[#f4f1ea] dark:hover:bg-[#2a2824] border border-[#e5e0d5] dark:border-[#33302b] text-xs font-semibold text-[#1f1e1b] dark:text-[#f5f3ef] flex items-center gap-1.5 transition-colors cursor-pointer shadow-2xs"
+              title="Auto-organize graph into clean, structured columns"
+            >
+              <LayoutGrid className="w-3.5 h-3.5 text-indigo-500" />
+              <span>Clean Layout</span>
+            </button>
+
+            <button
+              onClick={snapNodesToGrid}
+              className="h-8 w-8 rounded-xl bg-white dark:bg-[#211f1c] hover:bg-[#f4f1ea] dark:hover:bg-[#2a2824] border border-[#e5e0d5] dark:border-[#33302b] text-[#5c5850] dark:text-[#b8b4aa] flex items-center justify-center transition-colors cursor-pointer shadow-2xs"
+              title="Snap all nodes to 20px grid"
+            >
+              <Grid className="w-3.5 h-3.5 text-[#878278]" />
+            </button>
+          </div>
+
+          <div className="h-4 w-px bg-[#e5e0d5] dark:bg-[#33302b] mx-0.5" />
 
           {/* Flow Simulation Controls */}
           <div className="flex items-center gap-1">
@@ -133,7 +160,7 @@ export const WorkflowTopHeader: React.FC = () => {
             </button>
           </div>
 
-          <div className="h-4 w-px bg-[#e5e0d5] dark:border-[#33302b] mx-0.5" />
+          <div className="h-4 w-px bg-[#e5e0d5] dark:bg-[#33302b] mx-0.5" />
 
           {/* Zoom Controls */}
           <div className="flex items-center h-8 bg-white dark:bg-[#211f1c] border border-[#e5e0d5] dark:border-[#33302b] rounded-xl px-1">

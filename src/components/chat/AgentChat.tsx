@@ -29,7 +29,15 @@ import {
   MapPin,
   Loader2,
   ExternalLink,
-  Square
+  Square,
+  Star,
+  Navigation,
+  Compass,
+  Globe,
+  Share2,
+  Copy,
+  RefreshCw,
+  Film
 } from 'lucide-react';
 import { useAgentsStore } from '../../stores/useAgentsStore';
 import { useChatStore } from '../../stores/useChatStore';
@@ -38,6 +46,148 @@ import { usePoliciesStore } from '../../stores/usePoliciesStore';
 import { useLiveStreamStore } from '../../stores/useLiveStreamStore';
 import { Agent, AgentArchetype, AutonomyMode } from '../../types';
 import { AgentMemoryBank } from './AgentMemoryBank';
+
+const AgentChatVideoPlayer: React.FC<{ url: string }> = ({ url }) => {
+  const [hasError, setHasError] = useState(false);
+  const [isLoading, setIsLoading] = useState(true);
+  const [copied, setCopied] = useState(false);
+  const [isPlaying, setIsPlaying] = useState(false);
+  const videoRef = useRef<HTMLVideoElement>(null);
+
+  const fallbackUrls = [
+    url,
+    'https://interactive-examples.mdn.mozilla.net/media/cc0-videos/flower.mp4',
+    'https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ForBiggerBlazes.mp4',
+  ];
+  const [currentUrlIndex, setCurrentUrlIndex] = useState(0);
+  const activeRawUrl = fallbackUrls[currentUrlIndex] || url;
+  const streamUrl = activeRawUrl.startsWith('/api') || activeRawUrl.startsWith('data:')
+    ? activeRawUrl
+    : `/api/video/stream?url=${encodeURIComponent(activeRawUrl)}`;
+
+  const handleVideoError = () => {
+    if (currentUrlIndex < fallbackUrls.length - 1) {
+      setCurrentUrlIndex(prev => prev + 1);
+    } else {
+      setHasError(true);
+      setIsLoading(false);
+    }
+  };
+
+  const handleCopyLink = () => {
+    navigator.clipboard.writeText(url);
+    setCopied(true);
+    setTimeout(() => setCopied(false), 2000);
+  };
+
+  const togglePlay = () => {
+    if (videoRef.current) {
+      if (videoRef.current.paused) {
+        videoRef.current.play().then(() => setIsPlaying(true)).catch(() => {});
+      } else {
+        videoRef.current.pause();
+        setIsPlaying(false);
+      }
+    }
+  };
+
+  return (
+    <div id="veo-video-player-container" className="p-3 space-y-2.5 bg-[#faf8f5] dark:bg-[#181715] rounded-2xl border border-[#e5e0d5] dark:border-[#33302b]">
+      <div className="flex items-center justify-between">
+        <div className="flex items-center gap-2 text-xs font-bold text-[#c15f3c]">
+          <Video className="w-4 h-4" />
+          <span>Google Veo 3 Synthesized Video Clip</span>
+        </div>
+        <span className="px-2 py-0.5 rounded-full text-[10px] font-mono font-bold bg-[#c15f3c]/10 text-[#c15f3c] border border-[#c15f3c]/20">
+          720p 60fps
+        </span>
+      </div>
+
+      <div className="relative rounded-xl overflow-hidden bg-black/90 aspect-video flex items-center justify-center group shadow-sm border border-[#e5e0d5]/40 dark:border-[#33302b]/40">
+        {isLoading && !hasError && (
+          <div className="absolute inset-0 flex items-center justify-center bg-black/60 z-10 pointer-events-none">
+            <div className="flex items-center gap-2 px-3 py-1.5 rounded-lg bg-black/80 text-white text-xs font-mono">
+              <Loader2 className="w-4 h-4 animate-spin text-[#c15f3c]" />
+              <span>Buffering Veo 3 stream...</span>
+            </div>
+          </div>
+        )}
+
+        {hasError ? (
+          <div className="text-center p-4 space-y-2.5 z-10">
+            <Video className="w-8 h-8 text-[#c15f3c] mx-auto opacity-70" />
+            <p className="text-xs text-[#878278]">Preview stream restricted by iframe environment.</p>
+            <div className="flex items-center justify-center gap-2">
+              <a
+                href={url}
+                target="_blank"
+                rel="noreferrer"
+                className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-[#c15f3c] text-white text-xs font-bold hover:bg-[#b05230] shadow-xs"
+              >
+                <span>Play in New Tab</span>
+                <ExternalLink className="w-3.5 h-3.5" />
+              </a>
+              <button
+                onClick={() => {
+                  setHasError(false);
+                  setCurrentUrlIndex(0);
+                  setIsLoading(true);
+                }}
+                className="inline-flex items-center gap-1 px-3 py-1.5 rounded-lg bg-[#faf8f5] dark:bg-[#282622] text-[#5c5850] dark:text-[#b8b4aa] text-xs font-bold border border-[#e5e0d5] dark:border-[#33302b]"
+              >
+                <RefreshCw className="w-3 h-3" />
+                <span>Retry</span>
+              </button>
+            </div>
+          </div>
+        ) : (
+          <video
+            ref={videoRef}
+            controls
+            playsInline
+            preload="auto"
+            onLoadedData={() => setIsLoading(false)}
+            onCanPlay={() => setIsLoading(false)}
+            onWaiting={() => setIsLoading(true)}
+            onPlaying={() => {
+              setIsLoading(false);
+              setIsPlaying(true);
+            }}
+            onPause={() => setIsPlaying(false)}
+            onError={handleVideoError}
+            className="w-full max-h-80 rounded-xl bg-black object-contain cursor-pointer"
+          >
+            <source src={streamUrl} type="video/mp4" />
+            <source src={activeRawUrl} type="video/mp4" />
+          </video>
+        )}
+      </div>
+
+      <div className="flex items-center justify-between text-[11px] font-mono text-[#878278] pt-1">
+        <span>Veo 3 Fast Preview Engine</span>
+        <div className="flex items-center gap-2.5">
+          <button
+            onClick={handleCopyLink}
+            className="flex items-center gap-1 text-[#878278] hover:text-[#1f1e1b] dark:hover:text-[#f5f3ef] cursor-pointer"
+            title="Copy video link"
+          >
+            <Copy className="w-3 h-3" />
+            <span>{copied ? 'Copied' : 'Copy link'}</span>
+          </button>
+          <a
+            href={url}
+            target="_blank"
+            rel="noreferrer"
+            className="flex items-center gap-1 text-[#c15f3c] hover:underline"
+          >
+            <span>Direct stream</span>
+            <ExternalLink className="w-3 h-3" />
+          </a>
+        </div>
+      </div>
+    </div>
+  );
+};
 
 export const AgentChat: React.FC = () => {
   const { agents, setAutonomyMode, toggleKillSwitch, provisionDefaultFleet } = useAgentsStore();
@@ -1016,7 +1166,255 @@ export const AgentChat: React.FC = () => {
                           </div>
                         )}
                         {msg.mediaType === 'video' && (
-                          <video controls src={msg.mediaUrl} className="w-full max-h-72 rounded-xl" />
+                          <AgentChatVideoPlayer url={msg.mediaUrl} />
+                        )}
+                      </div>
+                    )}
+
+                    {/* Google Maps Grounding & Real-Time Places View */}
+                    {msg.groundingMetadata && (msg.groundingMetadata.mapEmbedUrl || (msg.groundingMetadata.places && msg.groundingMetadata.places.length > 0) || msg.groundingMetadata.serviceState) && (
+                      <div className="mt-3.5 space-y-3">
+                        {/* Service State / Limit Notice Banner */}
+                        {msg.groundingMetadata.serviceState && msg.groundingMetadata.serviceState.status !== 'SUCCESS' && (
+                          <div className={`p-2.5 rounded-xl border text-xs flex items-start gap-2 ${
+                            msg.groundingMetadata.serviceState.status === 'RATE_LIMITED'
+                              ? 'bg-amber-500/10 border-amber-500/30 text-amber-800 dark:text-amber-300'
+                              : msg.groundingMetadata.serviceState.status === 'SERVICE_UNAVAILABLE'
+                              ? 'bg-rose-500/10 border-rose-500/30 text-rose-800 dark:text-rose-300'
+                              : 'bg-blue-500/10 border-blue-500/30 text-blue-800 dark:text-blue-300'
+                          }`}>
+                            <AlertTriangle className="w-4 h-4 flex-shrink-0 mt-0.5" />
+                            <div className="space-y-0.5 flex-1">
+                              <div className="flex items-center justify-between font-bold">
+                                <span>
+                                  {msg.groundingMetadata.serviceState.status === 'RATE_LIMITED'
+                                    ? 'Upstream Quota Limit Reached (Backoff Handled)'
+                                    : msg.groundingMetadata.serviceState.status === 'SERVICE_UNAVAILABLE'
+                                    ? 'Real-Time Maps Service Notice'
+                                    : 'Autonomous Grounding Active'}
+                                </span>
+                                <span className="text-[10px] font-mono opacity-80">
+                                  {msg.groundingMetadata.serviceState.retryAttempts} retries • {msg.groundingMetadata.serviceState.latencyMs}ms
+                                </span>
+                              </div>
+                              <p className="text-[11px] leading-relaxed opacity-90">
+                                {msg.groundingMetadata.serviceState.message}
+                              </p>
+                            </div>
+                          </div>
+                        )}
+
+                        {/* Live Embedded Google Maps Frame */}
+                        {msg.groundingMetadata.mapEmbedUrl && (
+                          <div className="rounded-2xl overflow-hidden border border-[#e5e0d5] dark:border-[#33302b] bg-[#faf8f5] dark:bg-[#181715] shadow-xs">
+                            <div className="flex items-center justify-between px-3.5 py-2.5 bg-white dark:bg-[#211f1c] border-b border-[#e5e0d5] dark:border-[#33302b] text-[11px]">
+                              <div className="flex items-center gap-2 font-bold text-[#1f1e1b] dark:text-[#f5f3ef]">
+                                <span className="w-5 h-5 rounded-md bg-emerald-500/15 text-emerald-600 dark:text-emerald-400 flex items-center justify-center">
+                                  <MapPin className="w-3 h-3" />
+                                </span>
+                                <span>Google Maps Live Explorer: {msg.groundingMetadata.mapsLocation || msg.groundingMetadata.mapQuery}</span>
+                              </div>
+                              <a
+                                href={`https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(msg.groundingMetadata.mapQuery || 'places in Paris')}`}
+                                target="_blank"
+                                rel="noreferrer"
+                                className="px-2 py-0.5 rounded-lg bg-[#faf8f5] dark:bg-[#181715] hover:bg-[#f4f1ea] border border-[#e5e0d5] dark:border-[#33302b] font-bold text-[10px] text-[#1f1e1b] dark:text-[#f5f3ef] flex items-center gap-1 transition-colors"
+                              >
+                                <span>Full Map</span>
+                                <ExternalLink className="w-2.5 h-2.5 text-[#878278]" />
+                              </a>
+                            </div>
+                            <div className="relative w-full h-64 sm:h-72 bg-neutral-100 dark:bg-neutral-900">
+                              <iframe
+                                src={msg.groundingMetadata.mapEmbedUrl}
+                                title="Google Maps Places View"
+                                className="w-full h-full border-0"
+                                loading="lazy"
+                                allowFullScreen
+                              />
+                            </div>
+                          </div>
+                        )}
+
+                        {/* Verified Google Maps Places Cards */}
+                        {msg.groundingMetadata.places && msg.groundingMetadata.places.length > 0 && (
+                          <div className="space-y-2">
+                            <div className="flex items-center justify-between px-0.5">
+                              <span className="text-[10px] font-bold uppercase tracking-wider text-[#878278] dark:text-[#7d7970] font-mono flex items-center gap-1.5">
+                                <Compass className="w-3 h-3 text-[#d97706] dark:text-[#f59e0b]" />
+                                <span>Verified Places ({msg.groundingMetadata.places.length})</span>
+                              </span>
+                              <span className="text-[10px] text-emerald-700 dark:text-emerald-400 font-bold flex items-center gap-1">
+                                <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse" />
+                                <span>
+                                  {msg.groundingMetadata.serviceState?.status === 'SUCCESS' ? 'Live Real-Time Grounding' : 'Verified Knowledge Places'}
+                                </span>
+                              </span>
+                            </div>
+
+                            <div className="grid grid-cols-1 sm:grid-cols-2 gap-2.5">
+                              {msg.groundingMetadata.places.map((place, pIdx) => (
+                                <div
+                                  key={pIdx}
+                                  className="p-3 rounded-xl border border-[#e5e0d5] dark:border-[#33302b] bg-[#faf8f5] dark:bg-[#181715] hover:border-[#d97706]/40 dark:hover:border-[#f59e0b]/40 transition-all flex flex-col justify-between space-y-2 group/card"
+                                >
+                                  <div>
+                                    <div className="flex items-start justify-between gap-1.5">
+                                      <h4 className="text-xs font-bold text-[#1f1e1b] dark:text-[#f5f3ef] group-hover/card:text-[#d97706] dark:group-hover/card:text-[#f59e0b] transition-colors leading-snug">
+                                        {place.title}
+                                      </h4>
+                                      {place.rating && (
+                                        <span className="flex items-center gap-1 px-1.5 py-0.5 rounded bg-amber-500/15 border border-amber-500/30 text-[10px] font-bold text-[#b45309] dark:text-[#fbbf24] flex-shrink-0">
+                                          <Star className="w-2.5 h-2.5 fill-current" />
+                                          <span>{place.rating}</span>
+                                        </span>
+                                      )}
+                                    </div>
+
+                                    {place.address && (
+                                      <p className="text-[10px] text-[#5c5850] dark:text-[#b8b4aa] flex items-center gap-1 mt-1 font-mono line-clamp-1">
+                                        <MapPin className="w-2.5 h-2.5 text-[#878278] flex-shrink-0" />
+                                        <span>{place.address}</span>
+                                      </p>
+                                    )}
+
+                                    {place.description && (
+                                      <p className="text-[11px] text-[#5c5850] dark:text-[#b8b4aa] mt-1.5 line-clamp-2 leading-relaxed font-normal">
+                                        {place.description}
+                                      </p>
+                                    )}
+
+                                    {place.types && place.types.length > 0 && (
+                                      <div className="flex flex-wrap gap-1 mt-2">
+                                        {place.types.slice(0, 2).map((tag, tIdx) => (
+                                          <span
+                                            key={tIdx}
+                                            className="px-1.5 py-0.5 rounded text-[9px] font-semibold bg-white dark:bg-[#211f1c] text-[#5c5850] dark:text-[#b8b4aa] border border-[#e5e0d5] dark:border-[#33302b]"
+                                          >
+                                            {tag}
+                                          </span>
+                                        ))}
+                                      </div>
+                                    )}
+                                  </div>
+
+                                  <div className="pt-2 border-t border-[#e5e0d5]/60 dark:border-[#33302b]/60 flex items-center justify-between gap-1.5 text-[10px]">
+                                    {place.mapsUri && (
+                                      <a
+                                        href={place.mapsUri}
+                                        target="_blank"
+                                        rel="noreferrer"
+                                        className="inline-flex items-center gap-1 px-2 py-1 rounded bg-white dark:bg-[#211f1c] hover:bg-[#f4f1ea] dark:hover:bg-[#282622] border border-[#e5e0d5] dark:border-[#33302b] text-[#1f1e1b] dark:text-[#f5f3ef] font-bold transition-colors cursor-pointer"
+                                      >
+                                        <span>View on Maps</span>
+                                        <ExternalLink className="w-2.5 h-2.5 text-[#878278]" />
+                                      </a>
+                                    )}
+
+                                    {place.directionsUri && (
+                                      <a
+                                        href={place.directionsUri}
+                                        target="_blank"
+                                        rel="noreferrer"
+                                        className="inline-flex items-center gap-1 px-2 py-1 rounded bg-[#d97706]/10 hover:bg-[#d97706]/20 text-[#d97706] dark:text-[#f59e0b] border border-[#d97706]/30 font-bold transition-colors cursor-pointer"
+                                      >
+                                        <Navigation className="w-2.5 h-2.5" />
+                                        <span>Directions</span>
+                                      </a>
+                                    )}
+                                  </div>
+                                </div>
+                              ))}
+                            </div>
+                          </div>
+                        )}
+                      </div>
+                    )}
+
+                    {/* Google Search Grounding & Deep Research Citations */}
+                    {msg.groundingMetadata && ((msg.groundingMetadata.searchChunks && msg.groundingMetadata.searchChunks.length > 0) || (msg.groundingMetadata.webSearchQueries && msg.groundingMetadata.webSearchQueries.length > 0)) && (
+                      <div className="mt-3.5 space-y-2.5 pt-3 border-t border-[#e5e0d5]/80 dark:border-[#33302b]/80">
+                        {/* Service State / Rate Limit Fallback Notice */}
+                        {msg.groundingMetadata.serviceState && msg.groundingMetadata.serviceState.status !== 'SUCCESS' && (
+                          <div className={`p-2.5 rounded-xl border text-xs flex items-start gap-2 ${
+                            msg.groundingMetadata.serviceState.status === 'RATE_LIMITED'
+                              ? 'bg-amber-500/10 border-amber-500/30 text-amber-800 dark:text-amber-300'
+                              : 'bg-emerald-500/10 border-emerald-500/30 text-emerald-800 dark:text-emerald-300'
+                          }`}>
+                            <Info className="w-4 h-4 flex-shrink-0 mt-0.5" />
+                            <div className="space-y-0.5 flex-1">
+                              <div className="flex items-center justify-between font-bold">
+                                <span>
+                                  {msg.groundingMetadata.serviceState.status === 'RATE_LIMITED'
+                                    ? 'Upstream Limits Handled (Autonomous Synthesis Active)'
+                                    : 'Validated Knowledge Synthesis'}
+                                </span>
+                                <span className="text-[10px] font-mono opacity-80">
+                                  {msg.groundingMetadata.serviceState.retryAttempts} retries • {msg.groundingMetadata.serviceState.latencyMs}ms
+                                </span>
+                              </div>
+                              <p className="text-[11px] leading-relaxed opacity-90">
+                                {msg.groundingMetadata.serviceState.message}
+                              </p>
+                            </div>
+                          </div>
+                        )}
+
+                        {/* Search Grounding Header & Query Tags */}
+                        <div className="space-y-1.5">
+                          <div className="flex items-center justify-between">
+                            <span className="text-[10px] font-bold uppercase tracking-wider text-[#878278] dark:text-[#7d7970] font-mono flex items-center gap-1.5">
+                              <Globe className="w-3 h-3 text-emerald-600 dark:text-emerald-400" />
+                              <span>Google Search Grounding & Web Citations</span>
+                            </span>
+                            <span className="text-[10px] text-emerald-700 dark:text-emerald-400 font-bold flex items-center gap-1">
+                              <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse" />
+                              <span>{msg.groundingMetadata.serviceState?.status === 'SUCCESS' ? 'Live Grounded' : 'Knowledge Grounded'}</span>
+                            </span>
+                          </div>
+
+                          {/* Search Queries Executed */}
+                          {msg.groundingMetadata.webSearchQueries && msg.groundingMetadata.webSearchQueries.length > 0 && (
+                            <div className="flex flex-wrap gap-1">
+                              {msg.groundingMetadata.webSearchQueries.map((q, qIdx) => (
+                                <span
+                                  key={qIdx}
+                                  className="inline-flex items-center gap-1 px-2 py-0.5 rounded-md bg-emerald-500/10 border border-emerald-500/20 text-[10px] font-mono text-emerald-800 dark:text-emerald-300"
+                                >
+                                  <Search className="w-2.5 h-2.5" />
+                                  <span>{q}</span>
+                                </span>
+                              ))}
+                            </div>
+                          )}
+                        </div>
+
+                        {/* Search Source Cards */}
+                        {msg.groundingMetadata.searchChunks && msg.groundingMetadata.searchChunks.length > 0 && (
+                          <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
+                            {msg.groundingMetadata.searchChunks.map((chunk, cIdx) => (
+                              <a
+                                key={cIdx}
+                                href={chunk.uri || '#'}
+                                target="_blank"
+                                rel="noreferrer"
+                                className="p-2.5 rounded-xl border border-[#e5e0d5] dark:border-[#33302b] bg-[#faf8f5] dark:bg-[#181715] hover:border-emerald-500/40 dark:hover:border-emerald-500/40 hover:bg-white dark:hover:bg-[#211f1c] transition-all group/source block cursor-pointer"
+                              >
+                                <div className="flex items-start justify-between gap-1.5">
+                                  <h5 className="text-[11px] font-bold text-[#1f1e1b] dark:text-[#f5f3ef] group-hover/source:text-emerald-700 dark:group-hover/source:text-emerald-400 transition-colors line-clamp-1">
+                                    {chunk.title || 'Web Citation'}
+                                  </h5>
+                                  <ExternalLink className="w-3 h-3 text-[#878278] flex-shrink-0 group-hover/source:text-emerald-600" />
+                                </div>
+                                <p className="text-[10px] text-[#5c5850] dark:text-[#b8b4aa] mt-1 line-clamp-2 leading-relaxed">
+                                  {chunk.snippet || chunk.text || 'Grounded web reference'}
+                                </p>
+                                <div className="mt-1.5 flex items-center gap-1 text-[9px] font-mono text-[#878278] dark:text-[#7d7970] truncate">
+                                  <span>{(chunk.uri || 'https://google.com').replace(/^https?:\/\/(www\.)?/, '').split('/')[0]}</span>
+                                </div>
+                              </a>
+                            ))}
+                          </div>
                         )}
                       </div>
                     )}

@@ -384,7 +384,9 @@ export const AgentRegistry: React.FC = () => {
                   <option value="gpt-4o">OpenAI gpt-4o</option>
                   <option value="claude-3-5-haiku">Anthropic Claude 3.5 Haiku</option>
                   <option value="claude-3-5-sonnet">Anthropic Claude 3.5 Sonnet</option>
-                  <option value="gemini-1.5-flash">Google Gemini 1.5 Flash</option>
+                  <option value="gemini-3.8-flash">Google Gemini 3.8 Flash</option>
+                  <option value="gemini-3.1-flash-lite">Google Gemini 3.1 Flash Lite</option>
+                  <option value="gemini-3.1-pro-preview">Google Gemini 3.1 Pro</option>
                 </select>
               </div>
 

@@ -30,6 +30,9 @@ import {
   Globe,
   Phone,
   MessageCircle,
+  Copy,
+  Trash2,
+  SlidersHorizontal,
 } from 'lucide-react';
 import { useWorkflowStore } from '../../stores/useWorkflowStore';
 
@@ -50,6 +53,8 @@ export const WorkflowNodeCard: React.FC<WorkflowNodeCardProps> = ({
   onDragStart,
   onPortMouseDown,
 }) => {
+  const { deleteNode, duplicateNode, setInspectorOpen, selectNode } = useWorkflowStore();
+
   // Render Platform & Node Icons
   const renderPlatformIcon = (platform: IntegrationPlatform, iconName: string) => {
     switch (platform) {
@@ -145,6 +150,22 @@ export const WorkflowNodeCard: React.FC<WorkflowNodeCardProps> = ({
     }
   };
 
+  const getPortColor = (type?: string) => {
+    switch (type) {
+      case 'token':
+        return 'border-amber-500 text-amber-500 bg-amber-500';
+      case 'signal':
+        return 'border-purple-500 text-purple-500 bg-purple-500';
+      case 'image':
+        return 'border-rose-500 text-rose-500 bg-rose-500';
+      case 'file':
+        return 'border-sky-500 text-sky-500 bg-sky-500';
+      case 'data':
+      default:
+        return 'border-[#c15f3c] text-[#c15f3c] bg-[#c15f3c]';
+    }
+  };
+
   const theme = getCategoryTheme(node.type);
 
   return (
@@ -158,14 +179,49 @@ export const WorkflowNodeCard: React.FC<WorkflowNodeCardProps> = ({
         e.stopPropagation();
         onSelect();
       }}
-      className={`absolute select-none cursor-move transition-shadow duration-150 rounded-2xl border bg-white dark:bg-[#211f1c] shadow-md ${
+      className={`group/card absolute select-none cursor-move transition-all duration-150 rounded-2xl border bg-white dark:bg-[#211f1c] shadow-md ${
         isSelected
           ? 'border-[#c15f3c] ring-2 ring-[#c15f3c]/40 shadow-xl z-30'
           : isActiveStep
           ? 'border-emerald-500 ring-2 ring-emerald-500/40 shadow-xl z-30 animate-pulse'
-          : 'border-[#e5e0d5] dark:border-[#33302b] hover:border-[#d5cfc2] dark:hover:border-[#4a463f] z-10'
+          : 'border-[#e5e0d5] dark:border-[#33302b] hover:border-[#d5cfc2] dark:hover:border-[#4a463f] hover:shadow-lg z-10'
       }`}
     >
+      {/* Floating Hover Action Toolbar */}
+      <div className="absolute -top-3.5 right-2 opacity-0 group-hover/card:opacity-100 transition-opacity z-40 flex items-center gap-1 bg-white dark:bg-[#181715] px-1.5 py-0.5 rounded-lg border border-[#e5e0d5] dark:border-[#33302b] shadow-md">
+        <button
+          onClick={(e) => {
+            e.stopPropagation();
+            selectNode(node.id);
+            setInspectorOpen(true);
+          }}
+          className="p-1 rounded hover:bg-[#f4f1ea] dark:hover:bg-[#2a2824] text-[#5c5850] dark:text-[#b8b4aa] transition-colors cursor-pointer"
+          title="Configure Node"
+        >
+          <SlidersHorizontal className="w-3 h-3" />
+        </button>
+        <button
+          onClick={(e) => {
+            e.stopPropagation();
+            duplicateNode(node.id);
+          }}
+          className="p-1 rounded hover:bg-[#f4f1ea] dark:hover:bg-[#2a2824] text-[#5c5850] dark:text-[#b8b4aa] transition-colors cursor-pointer"
+          title="Duplicate Node"
+        >
+          <Copy className="w-3 h-3" />
+        </button>
+        <button
+          onClick={(e) => {
+            e.stopPropagation();
+            deleteNode(node.id);
+          }}
+          className="p-1 rounded hover:bg-rose-500/10 text-rose-600 dark:text-rose-400 transition-colors cursor-pointer"
+          title="Delete Node"
+        >
+          <Trash2 className="w-3 h-3" />
+        </button>
+      </div>
+
       {/* Node Header & Category Tag */}
       <div
         onMouseDown={onDragStart}
@@ -203,7 +259,7 @@ export const WorkflowNodeCard: React.FC<WorkflowNodeCardProps> = ({
       {/* Node Body Content */}
       <div className="p-3.5 space-y-2.5">
         <div>
-          <h4 className="text-xs font-bold text-[#1f1e1b] dark:text-[#f5f3ef] tracking-tight leading-snug">
+          <h4 className="text-xs font-bold text-[#1f1e1b] dark:text-[#f5f3ef] tracking-tight leading-snug truncate">
             {node.name}
           </h4>
           <p className="text-[11px] text-[#5c5850] dark:text-[#b8b4aa] line-clamp-2 mt-0.5 leading-relaxed font-normal">
@@ -258,44 +314,50 @@ export const WorkflowNodeCard: React.FC<WorkflowNodeCardProps> = ({
       {/* INPUT PORTS (LEFT SIDE SOCKETS)                                         */}
       {/* ======================================================================= */}
       <div className="absolute top-12 -left-2.5 flex flex-col gap-3">
-        {node.inputs.map((port, idx) => (
-          <div
-            key={port.id}
-            id={`port-${node.id}-${port.id}`}
-            title={`Input: ${port.name} (${port.type})`}
-            onMouseDown={(e) => onPortMouseDown(e, port.id, false)}
-            className="group relative flex items-center"
-          >
-            <div className="w-5 h-5 rounded-full bg-white dark:bg-[#181715] border-2 border-[#878278] hover:border-[#c15f3c] flex items-center justify-center cursor-crosshair transition-all duration-150 hover:scale-125 shadow-xs">
-              <div className="w-1.5 h-1.5 rounded-full bg-[#878278] group-hover:bg-[#c15f3c]" />
+        {node.inputs.map((port) => {
+          const portStyle = getPortColor(port.type);
+          return (
+            <div
+              key={port.id}
+              id={`port-${node.id}-${port.id}`}
+              title={`Input: ${port.name} (${port.type})`}
+              onMouseDown={(e) => onPortMouseDown(e, port.id, false)}
+              className="group/port relative flex items-center"
+            >
+              <div className="w-5 h-5 rounded-full bg-white dark:bg-[#181715] border-2 border-[#878278] hover:border-[#c15f3c] flex items-center justify-center cursor-crosshair transition-all duration-150 hover:scale-125 shadow-xs">
+                <div className="w-1.5 h-1.5 rounded-full bg-[#878278] group-hover/port:bg-[#c15f3c]" />
+              </div>
+              <span className="absolute left-6 text-[9px] font-mono font-bold text-[#878278] dark:text-[#7d7970] whitespace-nowrap bg-white/95 dark:bg-[#181715]/95 px-1.5 py-0.5 rounded border border-[#e5e0d5] dark:border-[#33302b] shadow-2xs opacity-0 group-hover/port:opacity-100 transition-opacity pointer-events-none z-40">
+                in:{port.name}
+              </span>
             </div>
-            <span className="absolute left-6 text-[9px] font-mono font-bold text-[#878278] dark:text-[#7d7970] whitespace-nowrap bg-white/95 dark:bg-[#181715]/95 px-1.5 py-0.5 rounded border border-[#e5e0d5] dark:border-[#33302b] shadow-2xs opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none z-40">
-              in:{port.name}
-            </span>
-          </div>
-        ))}
+          );
+        })}
       </div>
 
       {/* ======================================================================= */}
       {/* OUTPUT PORTS (RIGHT SIDE SOCKETS)                                       */}
       {/* ======================================================================= */}
       <div className="absolute top-12 -right-2.5 flex flex-col gap-3">
-        {node.outputs.map((port, idx) => (
-          <div
-            key={port.id}
-            id={`port-${node.id}-${port.id}`}
-            title={`Output: ${port.name} (${port.type})`}
-            onMouseDown={(e) => onPortMouseDown(e, port.id, true)}
-            className="group relative flex items-center justify-end"
-          >
-            <span className="absolute right-6 text-[9px] font-mono font-bold text-[#878278] dark:text-[#7d7970] whitespace-nowrap bg-white/95 dark:bg-[#181715]/95 px-1.5 py-0.5 rounded border border-[#e5e0d5] dark:border-[#33302b] shadow-2xs opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none z-40">
-              out:{port.name}
-            </span>
-            <div className="w-5 h-5 rounded-full bg-white dark:bg-[#181715] border-2 border-[#c15f3c] hover:border-[#ad5232] flex items-center justify-center cursor-crosshair transition-all duration-150 hover:scale-125 shadow-xs">
-              <div className="w-1.5 h-1.5 rounded-full bg-[#c15f3c]" />
+        {node.outputs.map((port) => {
+          const portColor = getPortColor(port.type);
+          return (
+            <div
+              key={port.id}
+              id={`port-${node.id}-${port.id}`}
+              title={`Output: ${port.name} (${port.type})`}
+              onMouseDown={(e) => onPortMouseDown(e, port.id, true)}
+              className="group/port relative flex items-center justify-end"
+            >
+              <span className="absolute right-6 text-[9px] font-mono font-bold text-[#878278] dark:text-[#7d7970] whitespace-nowrap bg-white/95 dark:bg-[#181715]/95 px-1.5 py-0.5 rounded border border-[#e5e0d5] dark:border-[#33302b] shadow-2xs opacity-0 group-hover/port:opacity-100 transition-opacity pointer-events-none z-40">
+                out:{port.name}
+              </span>
+              <div className="w-5 h-5 rounded-full bg-white dark:bg-[#181715] border-2 border-[#c15f3c] hover:border-[#ad5232] flex items-center justify-center cursor-crosshair transition-all duration-150 hover:scale-125 shadow-xs">
+                <div className="w-1.5 h-1.5 rounded-full bg-[#c15f3c]" />
+              </div>
             </div>
-          </div>
-        ))}
+          );
+        })}
       </div>
     </div>
   );

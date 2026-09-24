@@ -99,13 +99,13 @@ const TEMPLATES: NodeTemplate[] = [
 
   // AI Models
   {
-    name: 'Gemini 2.0 Flash',
+    name: 'Gemini 3.8 Flash',
     type: 'ai_model',
     platform: 'gemini',
     category: 'AI Models',
     icon: 'Zap',
     description: 'Google next-gen low latency model ($0.075/1M tokens) with multimodal reasoning.',
-    config: { model: 'gemini-2.0-flash', temperature: 0.7 },
+    config: { model: 'gemini-3.8-flash', temperature: 0.7 },
     inputs: [{ id: 'in_prompt', name: 'prompt', type: 'data' }],
     outputs: [{ id: 'out_text', name: 'response', type: 'data' }],
   },

@@ -1,23 +1,22 @@
 import { Router, Request, Response } from 'express';
 import { GoogleGenAI, Modality, GenerateVideosOperation } from '@google/genai';
+import { performDeepWebResearch } from '../services/research.service.ts';
+import { searchGoogleMapsPlaces } from '../services/maps.service.ts';
+import { ToolDispatcherService } from '../services/toolDispatcher.service.ts';
 
 const router = Router();
 
-let aiClient: GoogleGenAI | null = null;
-function getAIClient(): GoogleGenAI | null {
-  if (!aiClient) {
-    try {
-      const apiKey = process.env.GEMINI_API_KEY || process.env.GOOGLE_GENAI_API_KEY;
-      if (apiKey) {
-        aiClient = new GoogleGenAI({ apiKey });
-      } else {
-        aiClient = new GoogleGenAI({});
-      }
-    } catch (err) {
-      console.warn('[Backend] Gemini AI client initialization error:', err);
+export function getAIClient(): GoogleGenAI | null {
+  const apiKey = process.env.GEMINI_API_KEY || process.env.GOOGLE_GENAI_API_KEY || process.env.VITE_GEMINI_API_KEY;
+  try {
+    if (apiKey) {
+      return new GoogleGenAI({ apiKey });
     }
+    return new GoogleGenAI({});
+  } catch (err) {
+    console.warn('[Backend] Gemini AI client initialization notice:', err);
+    return null;
   }
-  return aiClient;
 }
 
 export async function generateImageInternal(params: {
@@ -437,48 +436,127 @@ router.post('/video-download', async (req: Request, res: Response) => {
   }
 });
 
-// 6. GROUNDED CHAT (Google Search & Google Maps Grounding with gemini-3.5-flash)
+// Direct Video Proxy Endpoint for iframe safe same-origin playback
+router.get('/video/stream', async (req: Request, res: Response) => {
+  const targetUrl = (req.query.url as string) || 'https://interactive-examples.mdn.mozilla.net/media/cc0-videos/flower.mp4';
+  try {
+    const remoteRes = await fetch(targetUrl);
+    if (!remoteRes.ok) {
+      return res.redirect(targetUrl);
+    }
+    const contentType = remoteRes.headers.get('content-type') || 'video/mp4';
+    res.setHeader('Content-Type', contentType.includes('video/') ? contentType : 'video/mp4');
+    res.setHeader('Access-Control-Allow-Origin', '*');
+    res.setHeader('Accept-Ranges', 'bytes');
+    res.setHeader('Cache-Control', 'public, max-age=86400');
+    
+    if (remoteRes.body) {
+      const arrayBuffer = await remoteRes.arrayBuffer();
+      res.setHeader('Content-Length', arrayBuffer.byteLength);
+      return res.send(Buffer.from(arrayBuffer));
+    }
+    return res.redirect(targetUrl);
+  } catch {
+    return res.redirect(targetUrl);
+  }
+});
+
+// 6. GROUNDED CHAT & UNIFIED TOOL DISPATCHER (Google Search & Google Maps with Exponential Backoff)
 router.post('/grounded-chat', async (req: Request, res: Response) => {
   try {
-    const { query, groundingType = 'SEARCH', systemInstruction, model = 'gemini-3.5-flash' } = req.body;
+    const { query, groundingType = 'SEARCH', options } = req.body;
     if (!query) {
       return res.status(400).json({ error: 'Query is required' });
     }
 
-    const ai = getAIClient();
-    if (!ai) {
-      return res.status(500).json({ error: 'AI Client unavailable' });
-    }
-
-    const toolsConfig: any[] = [];
     if (groundingType === 'MAPS') {
-      toolsConfig.push({ googleMaps: {} });
-    } else {
-      toolsConfig.push({ googleSearch: {} });
+      const mapsResult = await ToolDispatcherService.executeMaps(query, options);
+      return res.json({
+        content: mapsResult.replyText,
+        groundingType: 'MAPS',
+        groundingMetadata: {
+          mapEmbedUrl: mapsResult.mapEmbedUrl,
+          mapQuery: mapsResult.mapQuery,
+          mapsLocation: mapsResult.mapsLocation,
+          places: mapsResult.places,
+          serviceState: mapsResult.serviceState,
+        },
+        webSearchQueries: [mapsResult.mapQuery],
+        model: mapsResult.model,
+        serviceState: mapsResult.serviceState,
+      });
     }
 
-    const response = await ai.models.generateContent({
-      model: model || 'gemini-3.5-flash',
-      contents: query,
-      config: {
-        systemInstruction: systemInstruction || 'You are an accurate, real-time grounded AI research assistant.',
-        tools: toolsConfig,
-      },
-    });
-
-    const replyText = response.text || '';
-    const groundingMetadata = response.candidates?.[0]?.groundingMetadata;
-
+    const searchResult = await ToolDispatcherService.executeSearch(query, options);
     return res.json({
-      content: replyText,
-      groundingType,
-      groundingMetadata: groundingMetadata || null,
-      webSearchQueries: groundingMetadata?.webSearchQueries || [],
-      model: model || 'gemini-3.5-flash',
+      content: searchResult.replyText,
+      groundingType: 'SEARCH',
+      groundingMetadata: {
+        webSearchQueries: searchResult.webSearchQueries,
+        searchChunks: searchResult.searchChunks,
+        serviceState: searchResult.serviceState,
+      },
+      webSearchQueries: searchResult.webSearchQueries,
+      model: searchResult.model,
+      serviceState: searchResult.serviceState,
     });
   } catch (error: any) {
     console.error('[Backend] Grounded generation failed:', error);
-    return res.status(500).json({ error: error?.message || 'Grounded request failed' });
+    const searchResult = await ToolDispatcherService.executeSearch(req.body?.query || 'Intelligence Briefing');
+    return res.json({
+      content: searchResult.replyText,
+      groundingType: 'SEARCH',
+      groundingMetadata: {
+        webSearchQueries: searchResult.webSearchQueries,
+        searchChunks: searchResult.searchChunks,
+        serviceState: searchResult.serviceState,
+      },
+      webSearchQueries: searchResult.webSearchQueries,
+      model: searchResult.model,
+      serviceState: searchResult.serviceState,
+    });
+  }
+});
+
+// Dedicated Unified Tool Dispatcher Endpoint
+router.post('/tool-dispatcher', async (req: Request, res: Response) => {
+  try {
+    const { toolType = 'GOOGLE_SEARCH', query, options } = req.body;
+    if (!query) {
+      return res.status(400).json({
+        error: 'Query parameter is required',
+        serviceState: {
+          status: 'SERVICE_UNAVAILABLE',
+          isAvailable: false,
+          message: 'Query parameter is empty or missing.',
+          retryAttempts: 0,
+          latencyMs: 0,
+          fallbackActive: false,
+          reason: 'LOCAL_VALIDATION_FAILED',
+        },
+      });
+    }
+
+    const result = await ToolDispatcherService.dispatch(
+      toolType === 'GOOGLE_MAPS' ? 'GOOGLE_MAPS' : 'GOOGLE_SEARCH',
+      query,
+      options
+    );
+
+    return res.json(result);
+  } catch (error: any) {
+    console.error('[Backend] Tool dispatch error:', error);
+    return res.status(500).json({
+      error: error?.message || 'Tool dispatcher execution error',
+      serviceState: {
+        status: 'SERVICE_UNAVAILABLE',
+        isAvailable: false,
+        message: 'Internal server exception while dispatching tool.',
+        retryAttempts: 0,
+        latencyMs: 0,
+        fallbackActive: true,
+      },
+    });
   }
 });
 

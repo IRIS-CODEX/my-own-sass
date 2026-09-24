@@ -104,8 +104,31 @@ export interface ChatMessage {
   lyrics?: string;
   groundingMetadata?: {
     webSearchQueries?: string[];
-    searchChunks?: Array<{ title?: string; uri?: string; text?: string }>;
+    searchChunks?: Array<{ title?: string; uri?: string; text?: string; snippet?: string }>;
     mapsLocation?: string;
+    mapEmbedUrl?: string;
+    mapQuery?: string;
+    places?: Array<{
+      title: string;
+      address?: string;
+      rating?: number;
+      reviewCount?: number;
+      priceLevel?: string;
+      mapsUri?: string;
+      directionsUri?: string;
+      types?: string[];
+      description?: string;
+      isOpen?: boolean;
+    }>;
+    serviceState?: {
+      status: 'SUCCESS' | 'SERVICE_UNAVAILABLE' | 'RATE_LIMITED' | 'FALLBACK_SYNTHESIS';
+      isAvailable: boolean;
+      message: string;
+      retryAttempts: number;
+      latencyMs: number;
+      fallbackActive: boolean;
+      reason?: string;
+    };
   };
   metrics?: {
     latencyMs: number;

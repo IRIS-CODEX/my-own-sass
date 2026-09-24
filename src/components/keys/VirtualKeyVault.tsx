@@ -58,7 +58,7 @@ const PROVIDER_OPTIONS: ProviderOption[] = [
     id: 'GEMINI',
     name: 'Google Gemini',
     placeholder: 'AIzaSy•••••••••••••••••••••••••••••',
-    defaultModel: 'gemini-1.5-flash',
+    defaultModel: 'gemini-3.8-flash',
     badgeColor: 'bg-blue-500/10 text-blue-600 dark:text-blue-400 border-blue-500/20'
   },
   {

@@ -1,4 +1,11 @@
 import React, { useState, useRef, useEffect } from 'react';
+import {
+  LayoutGrid,
+  Maximize2,
+  Activity,
+  ShieldCheck,
+  Zap,
+} from 'lucide-react';
 import { useWorkflowStore } from '../../stores/useWorkflowStore';
 import { WorkflowTopHeader } from './WorkflowTopHeader';
 import { WorkflowNodeCard } from './WorkflowNodeCard';
@@ -23,9 +30,12 @@ export const WorkflowCanvasHub: React.FC = () => {
     deleteNode,
     deleteEdge,
     zoom,
+    setZoom,
     panX,
     panY,
     setPan,
+    resetView,
+    autoLayoutNodes,
     inspectorOpen,
     executionState,
     currentExecutionStep,
@@ -275,16 +285,46 @@ export const WorkflowCanvasHub: React.FC = () => {
             ))}
           </div>
 
-          {/* Canvas Bottom Legend / Instructions */}
-          <div className="absolute bottom-4 left-4 z-20 flex items-center gap-3 bg-white/90 dark:bg-[#211f1c]/90 backdrop-blur-md px-3.5 py-2 rounded-2xl border border-[#e5e0d5] dark:border-[#33302b] text-[11px] font-mono text-[#878278] dark:text-[#7d7970] shadow-sm">
-            <span className="flex items-center gap-1">
-              <span className="w-2 h-2 rounded-full bg-[#c15f3c]" />
-              Drag sockets to wire nodes
-            </span>
-            <span>•</span>
-            <span>Drag canvas to pan</span>
-            <span>•</span>
-            <span>Del / Backspace to remove</span>
+          {/* Canvas Bottom Legend & Quick Layout Toolbar */}
+          <div className="absolute bottom-4 left-4 right-4 z-20 flex items-center justify-between pointer-events-none">
+            {/* Left: Quick Legend */}
+            <div className="pointer-events-auto flex items-center gap-3 bg-white/90 dark:bg-[#211f1c]/90 backdrop-blur-md px-3.5 py-1.5 rounded-2xl border border-[#e5e0d5] dark:border-[#33302b] text-[11px] font-mono text-[#878278] dark:text-[#7d7970] shadow-sm">
+              <span className="flex items-center gap-1 text-[#1f1e1b] dark:text-[#f5f3ef] font-semibold">
+                <span className="w-2 h-2 rounded-full bg-[#c15f3c]" />
+                {nodes.length} Nodes
+              </span>
+              <span>•</span>
+              <span className="flex items-center gap-1">
+                <span className="w-2 h-2 rounded-full bg-indigo-500" />
+                {edges.length} Wires
+              </span>
+              <span className="hidden sm:inline">•</span>
+              <span className="hidden sm:flex items-center gap-1 text-emerald-600 dark:text-emerald-400 font-semibold">
+                <ShieldCheck className="w-3 h-3" />
+                Zero-Trust Escrow
+              </span>
+            </div>
+
+            {/* Right: Clean Layout & Center Action Pills */}
+            <div className="pointer-events-auto flex items-center gap-1.5 bg-white/90 dark:bg-[#211f1c]/90 backdrop-blur-md p-1 rounded-2xl border border-[#e5e0d5] dark:border-[#33302b] shadow-sm">
+              <button
+                onClick={autoLayoutNodes}
+                className="h-7 px-2.5 rounded-xl hover:bg-[#f4f1ea] dark:hover:bg-[#2a2824] text-[11px] font-mono font-bold text-[#1f1e1b] dark:text-[#f5f3ef] flex items-center gap-1.5 transition-colors cursor-pointer"
+                title="Auto Align Graph"
+              >
+                <LayoutGrid className="w-3.5 h-3.5 text-indigo-500" />
+                <span className="hidden sm:inline">Align Nodes</span>
+              </button>
+              <div className="w-px h-3.5 bg-[#e5e0d5] dark:bg-[#33302b]" />
+              <button
+                onClick={resetView}
+                className="h-7 px-2.5 rounded-xl hover:bg-[#f4f1ea] dark:hover:bg-[#2a2824] text-[11px] font-mono font-bold text-[#5c5850] dark:text-[#b8b4aa] flex items-center gap-1.5 transition-colors cursor-pointer"
+                title="Reset Zoom & Pan"
+              >
+                <Maximize2 className="w-3.5 h-3.5" />
+                <span className="hidden sm:inline">Recenter</span>
+              </button>
+            </div>
           </div>
         </div>
 

@@ -367,10 +367,11 @@ export async function transformData(item: Record<string, any>) {
                   onChange={(e) => updateNodeConfig(selectedNode.id, { model: e.target.value })}
                   className="w-full px-3 py-2 rounded-xl border border-[#e5e0d5] dark:border-[#33302b] bg-white dark:bg-[#211f1c] text-[#1f1e1b] dark:text-[#f5f3ef] font-semibold focus:outline-none focus:ring-1 focus:ring-[#c15f3c]"
                 >
-                  <option value="gemini-2.0-flash">Gemini 2.0 Flash ($0.075 / 1M)</option>
+                  <option value="gemini-3.8-flash">Gemini 3.8 Flash ($0.075 / 1M)</option>
+                  <option value="gemini-3.1-pro-preview">Gemini 3.1 Pro ($1.25 / 1M)</option>
                   <option value="claude-3.5-sonnet">Claude 3.5 Sonnet ($3.00 / 1M)</option>
                   <option value="gpt-4o">GPT-4o Omnimodal ($2.50 / 1M)</option>
-                  <option value="imagen-3.0-generate">Google Imagen 3 (Diffusion)</option>
+                  <option value="gemini-3.1-flash-image">Gemini 3.1 Flash Image</option>
                 </select>
               </div>
             )}

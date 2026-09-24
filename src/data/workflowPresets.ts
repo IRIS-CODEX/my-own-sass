@@ -88,14 +88,14 @@ export const WORKFLOW_PRESETS: WorkflowPreset[] = [
         config: {
           ttlSeconds: 300,
           budgetCapUsd: 20.0,
-          allowedModels: ['gemini-2.0-flash', 'imagen-3.0-generate'],
+          allowedModels: ['gemini-3.8-flash', 'gemini-3.1-flash-image'],
         },
         metrics: { latencyMs: 0.4, tokens: 0, costUsd: 0.0, executions: 8418, errorRate: 0.0 },
         livePayload: {
           output: {
             proxyToken: 'al_live_sec_8849b2...[EXPIRES_300S]',
             budgetRemaining: '$19.88',
-            scope: ['gemini-2.0-flash', 'imagen-3'],
+            scope: ['gemini-3.8-flash', 'gemini-3.1-flash-image'],
           },
           statusSummary: 'Proxy Token Minted (300s TTL)',
         },
@@ -107,7 +107,7 @@ export const WORKFLOW_PRESETS: WorkflowPreset[] = [
       },
       {
         id: 'node_llm_orchestrator',
-        name: 'Gemini 2.0 Flash Prompt Expander',
+        name: 'Gemini 3.8 Flash Prompt Expander',
         type: 'ai_model',
         platform: 'gemini',
         category: 'AI Orchestration',
@@ -121,7 +121,7 @@ export const WORKFLOW_PRESETS: WorkflowPreset[] = [
         ],
         outputs: [{ id: 'out_expanded_prompt', name: 'optimized_prompt', type: 'data' }],
         config: {
-          model: 'gemini-2.0-flash',
+          model: 'gemini-3.8-flash',
           temperature: 0.7,
           promptTemplate: 'You are an award-winning creative prompt engineer. Expand this visual concept into photorealistic scene specs.',
         },
@@ -552,7 +552,7 @@ export const WORKFLOW_PRESETS: WorkflowPreset[] = [
           { id: 'out_archive_pdf', name: 'archived_pdf', type: 'file' },
         ],
         config: {
-          model: 'gemini-2.0-flash',
+          model: 'gemini-3.8-flash',
           temperature: 0.2,
         },
         metrics: { latencyMs: 190, tokens: 380, costUsd: 0.0002, executions: 12390, errorRate: 0.0 },
@@ -716,7 +716,7 @@ export const WORKFLOW_PRESETS: WorkflowPreset[] = [
         inputs: [{ id: 'in_flash_query', name: 'routine_path', type: 'data' }],
         outputs: [{ id: 'out_flash_res', name: 'response_text', type: 'data' }],
         config: {
-          model: 'gemini-2.0-flash',
+          model: 'gemini-3.8-flash',
           pricePerMillion: '$0.075',
         },
         metrics: { latencyMs: 140, tokens: 890000, costUsd: 0.067, executions: 41132, errorRate: 0.0 },
